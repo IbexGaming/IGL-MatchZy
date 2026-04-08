@@ -124,7 +124,7 @@ namespace MatchZy
             string action = "";
             int client = -1;
             string stepMessage = "";
-            switch (option) 
+            switch (option)
             {
                 case "team1_ban":
                     action = $"{ChatColors.Green}{matchzyTeam1.teamName}{ChatColors.Default} must now {ChatColors.Red}BAN{ChatColors.Default} a map.";
@@ -135,7 +135,7 @@ namespace MatchZy
                     action = $"{ChatColors.Green}{matchzyTeam2.teamName}{ChatColors.Default} must now {ChatColors.Red}BAN{ChatColors.Default} a map.";
                     client = vetoCaptains["team2"];
                     stepMessage = $"Use .ban <map> to ban a map";
-                    break;                                                       
+                    break;
                 case "team1_pick":
                     action = $"{ChatColors.Green}{matchzyTeam1.teamName}{ChatColors.Default} must now {ChatColors.Green}PICK{ChatColors.Default} a map to play as map {matchConfig.Maplist.Count + 1}.";
                     client = vetoCaptains["team1"];
@@ -169,7 +169,7 @@ namespace MatchZy
         }
 
         [ConsoleCommand("css_ban", "Bans map")]
-        public void OnBanMapCommand(CCSPlayerController? player, CommandInfo? command) { 
+        public void OnBanMapCommand(CCSPlayerController? player, CommandInfo? command) {
             if (player == null || command == null) return;
             if (command.ArgCount < 1) return;
             string mapArg = command.ArgByIndex(1);
@@ -211,7 +211,7 @@ namespace MatchZy
 
             int playerTeam = player.TeamNum;
             string currentTeamToPick;
-            switch (GetCurrentMapSelectionOption()) 
+            switch (GetCurrentMapSelectionOption())
             {
                 case "team1_pick":
                     currentTeamToPick = "team1";
@@ -267,7 +267,7 @@ namespace MatchZy
             return true;
         }
 
-        public bool BanMap(string mapName, int team) 
+        public bool BanMap(string mapName, int team)
         {
             (bool mapRemoved, string mapRemovedName) = RemoveMapFromMapPool(mapName);
 
@@ -319,7 +319,7 @@ namespace MatchZy
             StartWarmup();
         }
 
-        public void FinishVeto() 
+        public void FinishVeto()
         {
             Server.PrintToChatAll($"{chatPrefix} The maps have been decided:");
             matchConfig.MapsLeftInVetoPool.Clear();
@@ -456,7 +456,7 @@ namespace MatchZy
             string mapName = matchConfig.Maplist[^1];
             Team matchzyTeam = (team == CsTeam.CounterTerrorist) ? reverseTeamSides["CT"] : reverseTeamSides["TERRORIST"];
             string teamString = (matchzyTeam == matchzyTeam1) ? "team1" : "team2";
-            
+
             Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{matchzyTeam.teamName}{ChatColors.Default} must now pick a side to play on {ChatColors.Green}{mapName}{ChatColors.Default}");
 
             int client = vetoCaptains[teamString];
@@ -465,7 +465,7 @@ namespace MatchZy
             playerData[client].PrintToChat($"{chatPrefix} Use .ct or .t to pick a side");
         }
 
-        public bool ValidateMapBanLogic() 
+        public bool ValidateMapBanLogic()
         {
             int numberOfPicks = 0;
             string option;
@@ -571,7 +571,7 @@ namespace MatchZy
                     break;
 
                 case 2:
-                    if (matchConfig.MapsPool.Count < 5)
+                    if (matchConfig.MapsPool.Count < 7)
                     {
                         matchConfig.MapBanOrder.Add(startingVetoTeam == matchzyTeam1 ? "team1_pick"
                                                                         : "team2_pick");
@@ -580,6 +580,10 @@ namespace MatchZy
                     }
                     else
                     {
+                        matchConfig.MapBanOrder.Add(startingVetoTeam == matchzyTeam1 ? "team1_ban"
+                                                                        : "team2_ban");
+                        matchConfig.MapBanOrder.Add(startingVetoTeam == matchzyTeam1 ? "team2_ban"
+                                                                        : "team1_ban");
                         matchConfig.MapBanOrder.Add(startingVetoTeam == matchzyTeam1 ? "team1_ban"
                                                                         : "team2_ban");
                         matchConfig.MapBanOrder.Add(startingVetoTeam == matchzyTeam1 ? "team2_ban"
@@ -657,4 +661,3 @@ namespace MatchZy
         }
     }
 }
-
