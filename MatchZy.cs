@@ -12,11 +12,11 @@ namespace MatchZy
     public partial class MatchZy : BasePlugin
     {
 
-        public override string ModuleName => "MatchZy";
+        public override string ModuleName => "IGL - MatchZy";
 
-        public override string ModuleVersion => "0.8.15";
+        public override string ModuleVersion => "0.9.0";
 
-        public override string ModuleAuthor => "WD- (https://github.com/shobhit-pathak/)";
+        public override string ModuleAuthor => "Ibex Gaming League & WD- (https://github.com/shobhit-pathak/)";
 
         public override string ModuleDescription => "A plugin for running and managing CS2 practice/pugs/scrims/matches!";
 
@@ -81,11 +81,11 @@ namespace MatchZy
         // User command - action map
         public Dictionary<string, Action<CCSPlayerController?, CommandInfo?>>? commandActions;
 
-        // SQLite/MySQL Database 
+        // SQLite/MySQL Database
         private Database database = new();
-    
+
         public override void Load(bool hotReload) {
-            
+
             LoadAdmins();
 
             database.InitializeDatabase(ModuleDirectory);
@@ -213,7 +213,7 @@ namespace MatchZy
             RegisterEventHandler<EventRoundFreezeEnd>(EventRoundFreezeEndHandler);
             RegisterEventHandler<EventPlayerGivenC4>(EventPlayerGivenC4);
             RegisterEventHandler<EventPlayerDeath>(EventPlayerDeathPreHandler, hookMode: HookMode.Pre);
-            RegisterListener<Listeners.OnClientDisconnectPost>(playerSlot => { 
+            RegisterListener<Listeners.OnClientDisconnectPost>(playerSlot => {
                // May not be required, but just to be on safe side so that player data is properly updated in dictionaries
                // Update: Commenting the below function as it was being called multiple times on map change.
                 // UpdatePlayersMap();
@@ -265,7 +265,7 @@ namespace MatchZy
 
             AddCommandListener("noclip", OnConsoleNoClip); // Override noclip
 
-            RegisterEventHandler<EventRoundEnd>((@event, info) => 
+            RegisterEventHandler<EventRoundEnd>((@event, info) =>
             {
                 if (!isKnifeRound) return HookResult.Continue;
 
@@ -286,7 +286,7 @@ namespace MatchZy
             }, HookMode.Pre);
 
            RegisterEventHandler<EventRoundEnd>((@event, info) => {
-                try 
+                try
                 {
                     if (isDryRun)
                     {
@@ -312,7 +312,7 @@ namespace MatchZy
             //     return HookResult.Continue;
             // });
 
-            RegisterListener<Listeners.OnMapStart>(mapName => { 
+            RegisterListener<Listeners.OnMapStart>(mapName => {
                 AddTimer(1.0f, () => {
                     if (!isMatchSetup)
                     {
@@ -355,7 +355,7 @@ namespace MatchZy
 
 				if (!attacker!.IsValid || attacker.IsBot && !(@event.DmgHealth > 0 || @event.DmgArmor > 0))
 					return HookResult.Continue;
-                if (matchStarted && victim!.TeamNum != attacker.TeamNum) 
+                if (matchStarted && victim!.TeamNum != attacker.TeamNum)
                 {
                     int targetId = (int)victim.UserId!;
                     UpdatePlayerDamageInfo(@event, targetId);
