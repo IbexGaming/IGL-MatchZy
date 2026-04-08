@@ -1,10 +1,10 @@
+using System.Text.RegularExpressions;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
-using System.Text.RegularExpressions;
 
 namespace MatchZy
 {
@@ -17,7 +17,9 @@ namespace MatchZy
             if (IsPlayerAdmin(player, "css_whitelist", "@css/config"))
             {
                 isWhitelistRequired = !isWhitelistRequired;
-                string WLStatus = isWhitelistRequired ? Localizer["matchzy.cc.enabled"] : Localizer["matchzy.cc.disabled"];
+                string WLStatus = isWhitelistRequired
+                    ? Localizer["matchzy.cc.enabled"]
+                    : Localizer["matchzy.cc.disabled"];
                 if (player == null)
                 {
                     //ReplyToUserCommand(player, $"Whitelist is now {WLStatus}!");
@@ -42,17 +44,24 @@ namespace MatchZy
             if (IsPlayerAdmin(player, "css_save_nades_as_global", "@css/config"))
             {
                 isSaveNadesAsGlobalEnabled = !isSaveNadesAsGlobalEnabled;
-                string GlobalNadesStatus = isSaveNadesAsGlobalEnabled ? Localizer["matchzy.cc.enabled"] : Localizer["matchzy.cc.disabled"];
+                string GlobalNadesStatus = isSaveNadesAsGlobalEnabled
+                    ? Localizer["matchzy.cc.enabled"]
+                    : Localizer["matchzy.cc.disabled"];
                 if (player == null)
                 {
                     //ReplyToUserCommand(player, $"Saving/Loading Lineups Globally is now {GlobalNadesStatus}!");
-                    ReplyToUserCommand(player, Localizer["matchzy.cc.globalnades", GlobalNadesStatus]);
+                    ReplyToUserCommand(
+                        player,
+                        Localizer["matchzy.cc.globalnades", GlobalNadesStatus]
+                    );
                 }
                 else
                 {
                     //player.PrintToChat($"{chatPrefix} Saving/Loading Lineups Globally is now {ChatColors.Green}{GlobalNadesStatus}{ChatColors.Default}!");
-                    PrintToPlayerChat(player, Localizer["matchzy.cc.globalnades", GlobalNadesStatus]);
-
+                    PrintToPlayerChat(
+                        player,
+                        Localizer["matchzy.cc.globalnades", GlobalNadesStatus]
+                    );
                 }
             }
             else
@@ -64,8 +73,11 @@ namespace MatchZy
         [ConsoleCommand("css_ready", "Marks the player ready")]
         public void OnPlayerReady(CCSPlayerController? player, CommandInfo? command)
         {
-            if (player == null) return;
-            Log($"[!ready command] Sent by: {player.UserId} readyAvailable: {readyAvailable} matchStarted: {matchStarted}");
+            if (player == null)
+                return;
+            Log(
+                $"[!ready command] Sent by: {player.UserId} readyAvailable: {readyAvailable} matchStarted: {matchStarted}"
+            );
             if (readyAvailable && !matchStarted)
             {
                 if (player.UserId.HasValue)
@@ -95,7 +107,8 @@ namespace MatchZy
         [ConsoleCommand("css_notready", "Marks the player unready")]
         public void OnPlayerUnReady(CCSPlayerController? player, CommandInfo? command)
         {
-            if (player == null) return;
+            if (player == null)
+                return;
             Log($"[!unready command] {player.UserId}");
             if (readyAvailable && !matchStarted)
             {
@@ -122,9 +135,12 @@ namespace MatchZy
         [ConsoleCommand("css_stay", "Stays after knife round")]
         public void OnTeamStay(CCSPlayerController? player, CommandInfo? command)
         {
-            if (player == null || !isSideSelectionPhase) return;
+            if (player == null || !isSideSelectionPhase)
+                return;
 
-            Log($"[!stay command] {player.UserId}, TeamNum: {player.TeamNum}, knifeWinner: {knifeWinner}, isSideSelectionPhase: {isSideSelectionPhase}");
+            Log(
+                $"[!stay command] {player.UserId}, TeamNum: {player.TeamNum}, knifeWinner: {knifeWinner}, isSideSelectionPhase: {isSideSelectionPhase}"
+            );
             if (player.TeamNum == knifeWinner)
             {
                 PrintToAllChat(Localizer["matchzy.knife.decidedtostay", knifeWinnerName]);
@@ -137,9 +153,12 @@ namespace MatchZy
         [ConsoleCommand("css_swap", "Switch after knife round")]
         public void OnTeamSwitch(CCSPlayerController? player, CommandInfo? command)
         {
-            if (player == null || !isSideSelectionPhase) return;
+            if (player == null || !isSideSelectionPhase)
+                return;
 
-            Log($"[!switch command] {player.UserId}, TeamNum: {player.TeamNum}, knifeWinner: {knifeWinner}, isSideSelectionPhase: {isSideSelectionPhase}");
+            Log(
+                $"[!switch command] {player.UserId}, TeamNum: {player.TeamNum}, knifeWinner: {knifeWinner}, isSideSelectionPhase: {isSideSelectionPhase}"
+            );
 
             if (player.TeamNum == knifeWinner)
             {
@@ -154,43 +173,57 @@ namespace MatchZy
         [ConsoleCommand("css_t", "Switches team to Terrorist")]
         public void OnTCommand(CCSPlayerController? player, CommandInfo? command)
         {
-            if (player == null || player.UserId == null) return;
-            if (isVeto) {
+            if (player == null || player.UserId == null)
+                return;
+            if (isVeto)
+            {
                 HandleSideChoice(CsTeam.Terrorist, player.UserId.Value);
                 return;
             }
 
-            if (isSideSelectionPhase && player.TeamNum == knifeWinner) {
-                if (player.Team == CsTeam.Terrorist) {
+            if (isSideSelectionPhase && player.TeamNum == knifeWinner)
+            {
+                if (player.Team == CsTeam.Terrorist)
+                {
                     OnTeamStay(player, command);
-                } else {
+                }
+                else
+                {
                     OnTeamSwitch(player, command);
                 }
             }
 
-            if (!isPractice) return;
+            if (!isPractice)
+                return;
             SideSwitchCommand(player, CsTeam.Terrorist);
         }
 
         [ConsoleCommand("css_ct", "Switches team to Counter-Terrorist")]
         public void OnCTCommand(CCSPlayerController? player, CommandInfo? command)
         {
-            if (player == null || player.UserId == null) return;
-            if (isVeto) {
+            if (player == null || player.UserId == null)
+                return;
+            if (isVeto)
+            {
                 HandleSideChoice(CsTeam.CounterTerrorist, player.UserId.Value);
                 return;
             }
 
-            if (isSideSelectionPhase && player.TeamNum == knifeWinner) {
-                if (player.Team == CsTeam.CounterTerrorist) {
+            if (isSideSelectionPhase && player.TeamNum == knifeWinner)
+            {
+                if (player.Team == CsTeam.CounterTerrorist)
+                {
                     OnTeamStay(player, command);
-                } else {
+                }
+                else
+                {
                     OnTeamSwitch(player, command);
                 }
                 return;
             }
 
-            if (!isPractice) return;
+            if (!isPractice)
+                return;
             SideSwitchCommand(player, CsTeam.CounterTerrorist);
         }
 
@@ -251,7 +284,6 @@ namespace MatchZy
                     {
                         unpauseData["t"] = true;
                     }
-
                 }
                 else if (player?.TeamNum == 3)
                 {
@@ -284,7 +316,13 @@ namespace MatchZy
                 }
                 else
                 {
-                    PrintToAllChat(Localizer["matchzy.pause.teamwantstounpause", unpauseTeamName, remainingUnpauseTeam]);
+                    PrintToAllChat(
+                        Localizer[
+                            "matchzy.pause.teamwantstounpause",
+                            unpauseTeamName,
+                            remainingUnpauseTeam
+                        ]
+                    );
                     // Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{unpauseTeamName}{ChatColors.Default} wants to unpause the match. {ChatColors.Green}{remainingUnpauseTeam}{ChatColors.Default}, please write !unpause to confirm.");
                 }
                 if (!isPaused && pausedStateTimer != null)
@@ -298,18 +336,24 @@ namespace MatchZy
         [ConsoleCommand("css_tac", "Starts a tactical timeout for the requested team")]
         public void OnTacCommand(CCSPlayerController? player, CommandInfo? command)
         {
-            if (player == null) return;
+            if (player == null)
+                return;
 
             if (matchStarted && isMatchLive)
             {
-                Log($"[.tac command sent via chat] Sent by: {player.UserId}, connectedPlayers: {connectedPlayers}");
+                Log(
+                    $"[.tac command sent via chat] Sent by: {player.UserId}, connectedPlayers: {connectedPlayers}"
+                );
                 if (isPaused)
                 {
                     // ReplyToUserCommand(player, "Match is already paused, cannot start a tactical timeout!");
                     ReplyToUserCommand(player, Localizer["matchzy.cc.matchpaused"]);
                     return;
                 }
-                var gameRules = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules!;
+                var gameRules = Utilities
+                    .FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules")
+                    .First()
+                    .GameRules!;
                 if (player.TeamNum == 2)
                 {
                     if (gameRules.TerroristTimeOuts > 0)
@@ -384,7 +428,9 @@ namespace MatchZy
             if (IsPlayerAdmin(player, "css_roundknife", "@css/config"))
             {
                 isKnifeRequired = !isKnifeRequired;
-                string knifeStatus = isKnifeRequired ? Localizer["matchzy.cc.enabled"] : Localizer["matchzy.cc.disabled"];
+                string knifeStatus = isKnifeRequired
+                    ? Localizer["matchzy.cc.enabled"]
+                    : Localizer["matchzy.cc.disabled"];
                 if (player == null)
                 {
                     // ReplyToUserCommand(player, $"Knife round is now {knifeStatus}!");
@@ -402,7 +448,10 @@ namespace MatchZy
             }
         }
 
-        [ConsoleCommand("css_readyrequired", "Sets number of ready players required to start the match")]
+        [ConsoleCommand(
+            "css_readyrequired",
+            "Sets number of ready players required to start the match"
+        )]
         public void OnReadyRequiredCommand(CCSPlayerController? player, CommandInfo command)
         {
             if (IsPlayerAdmin(player, "css_readyrequired", "@css/config"))
@@ -414,9 +463,15 @@ namespace MatchZy
                 }
                 else
                 {
-                    string minimumReadyRequiredFormatted = (player == null) ? $"{minimumReadyRequired}" : $"{ChatColors.Green}{minimumReadyRequired}{ChatColors.Default}";
+                    string minimumReadyRequiredFormatted =
+                        (player == null)
+                            ? $"{minimumReadyRequired}"
+                            : $"{ChatColors.Green}{minimumReadyRequired}{ChatColors.Default}";
                     // ReplyToUserCommand(player, $"Current Ready Required: {minimumReadyRequiredFormatted}. Usage: !readyrequired <number_of_ready_players_required>");
-                    ReplyToUserCommand(player, Localizer["matchzy.cc.minreadyrequired", minimumReadyRequiredFormatted]);
+                    ReplyToUserCommand(
+                        player,
+                        Localizer["matchzy.cc.minreadyrequired", minimumReadyRequiredFormatted]
+                    );
                 }
             }
             else
@@ -428,12 +483,17 @@ namespace MatchZy
         [ConsoleCommand("css_settings", "Shows the current match configuration/settings")]
         public void OnMatchSettingsCommand(CCSPlayerController? player, CommandInfo? command)
         {
-            if (player == null) return;
+            if (player == null)
+                return;
 
             if (IsPlayerAdmin(player, "css_settings", "@css/config"))
             {
-                string knifeStatus = isKnifeRequired ? Localizer["matchzy.cc.enabled"] : Localizer["matchzy.cc.disabled"];
-                string playoutStatus = isPlayOutEnabled ? Localizer["matchzy.cc.enabled"] : Localizer["matchzy.cc.disabled"];
+                string knifeStatus = isKnifeRequired
+                    ? Localizer["matchzy.cc.enabled"]
+                    : Localizer["matchzy.cc.disabled"];
+                string playoutStatus = isPlayOutEnabled
+                    ? Localizer["matchzy.cc.enabled"]
+                    : Localizer["matchzy.cc.disabled"];
                 // player.PrintToChat($"{chatPrefix} Current Settings:");
                 PrintToPlayerChat(player, Localizer["matchzy.cc.currentsettings"]);
                 // player.PrintToChat($"{chatPrefix} Knife: {ChatColors.Green}{knifeStatus}{ChatColors.Default}");
@@ -441,14 +501,26 @@ namespace MatchZy
                 if (isMatchSetup)
                 {
                     // player.PrintToChat($"{chatPrefix} Minimum Ready Players Required (Per Team): {ChatColors.Green}{matchConfig.MinPlayersToReady}{ChatColors.Default}");
-                    PrintToPlayerChat(player, Localizer["matchzy.cc.minreadyplayersperteam", matchConfig.MinPlayersToReady]);
+                    PrintToPlayerChat(
+                        player,
+                        Localizer[
+                            "matchzy.cc.minreadyplayersperteam",
+                            matchConfig.MinPlayersToReady
+                        ]
+                    );
                     // player.PrintToChat($"{chatPrefix} Minimum Ready Spectators Required: {ChatColors.Green}{matchConfig.MinSpectatorsToReady}{ChatColors.Default}");
-                    PrintToPlayerChat(player, Localizer["matchzy.cc.minreadyspecs", matchConfig.MinSpectatorsToReady]);
+                    PrintToPlayerChat(
+                        player,
+                        Localizer["matchzy.cc.minreadyspecs", matchConfig.MinSpectatorsToReady]
+                    );
                 }
                 else
                 {
                     // player.PrintToChat($"{chatPrefix} Minimum Ready Required: {ChatColors.Green}{minimumReadyRequired}{ChatColors.Default}");
-                    PrintToPlayerChat(player, Localizer["matchzy.cc.minreadyplayers", minimumReadyRequired]);
+                    PrintToPlayerChat(
+                        player,
+                        Localizer["matchzy.cc.minreadyplayers", minimumReadyRequired]
+                    );
                 }
                 // player.PrintToChat($"{chatPrefix} Playout: {ChatColors.Green}{playoutStatus}{ChatColors.Default}");
                 PrintToPlayerChat(player, Localizer["matchzy.cc.playoutstatus", playoutStatus]);
@@ -516,7 +588,6 @@ namespace MatchZy
         [ConsoleCommand("css_rmap", "Reloads the current map")]
         private void OnMapReloadCommand(CCSPlayerController? player, CommandInfo? command)
         {
-
             if (!IsPlayerAdmin(player))
             {
                 SendPlayerNotAdminMessage(player);
@@ -574,7 +645,8 @@ namespace MatchZy
         [ConsoleCommand("css_asay", "Say as an admin")]
         public void OnAdminSay(CCSPlayerController? player, CommandInfo? command)
         {
-            if (command == null) return;
+            if (command == null)
+                return;
             if (player == null)
             {
                 Server.PrintToChatAll($"{adminChatPrefix} {command.ArgString}");
@@ -656,7 +728,6 @@ namespace MatchZy
             Server.ExecuteCommand(command.ArgString);
             // ReplyToUserCommand(player, "Command sent successfully!");
             ReplyToUserCommand(player, Localizer["matchzy.cc.rcon"]);
-
         }
 
         [ConsoleCommand("css_help", "Triggers provided command on the server")]
@@ -671,7 +742,9 @@ namespace MatchZy
             if (IsPlayerAdmin(player, "css_playout", "@css/config"))
             {
                 isPlayOutEnabled = !isPlayOutEnabled;
-                string playoutStatus = isPlayOutEnabled ? Localizer["matchzy.cc.enabled"] : Localizer["matchzy.cc.disabled"];
+                string playoutStatus = isPlayOutEnabled
+                    ? Localizer["matchzy.cc.enabled"]
+                    : Localizer["matchzy.cc.disabled"];
                 if (player == null)
                 {
                     // ReplyToUserCommand(player, $"Playout is now {playoutStatus}!");
@@ -684,7 +757,6 @@ namespace MatchZy
                 }
 
                 HandlePlayoutConfig();
-
             }
             else
             {
@@ -695,7 +767,8 @@ namespace MatchZy
         [ConsoleCommand("version", "Returns server version")]
         public void OnVersionCommand(CCSPlayerController? player, CommandInfo? command)
         {
-            if (command == null) return;
+            if (command == null)
+                return;
             string steamInfFilePath = Path.Combine(Server.GameDirectory, "csgo", "steam.inf");
 
             if (!File.Exists(steamInfFilePath))
@@ -711,24 +784,38 @@ namespace MatchZy
             string? serverVersion = match.Success ? match.Groups[1].Value : null;
 
             // Currently returning only server version to show server status as available on Get5
-            command.ReplyToCommand((serverVersion != null) ? $"Protocol version {serverVersion} [{serverVersion}/{serverVersion}]" : "Unable to get server version");
+            command.ReplyToCommand(
+                (serverVersion != null)
+                    ? $"Protocol version {serverVersion} [{serverVersion}/{serverVersion}]"
+                    : "Unable to get server version"
+            );
         }
 
         // Overrides noclip console command. Perform the changes on server side.
-        public HookResult OnConsoleNoClip(CCSPlayerController? player, CommandInfo? cmd) {
-            if (player == null || !player.PawnIsAlive || player.Team == CsTeam.Spectator || player.Team == CsTeam.None)
+        public HookResult OnConsoleNoClip(CCSPlayerController? player, CommandInfo? cmd)
+        {
+            if (
+                player == null
+                || !player.PawnIsAlive
+                || player.Team == CsTeam.Spectator
+                || player.Team == CsTeam.None
+            )
                 return HookResult.Stop;
             bool cheatsEnabled = ConVar.Find("sv_cheats")!.GetPrimitiveValue<bool>();
-            if (!cheatsEnabled) {
+            if (!cheatsEnabled)
+            {
                 return HookResult.Stop;
             }
 
             // inspired by cs2-noclip
-            if (player.PlayerPawn.Value!.MoveType == MoveType_t.MOVETYPE_NOCLIP) {
+            if (player.PlayerPawn.Value!.MoveType == MoveType_t.MOVETYPE_NOCLIP)
+            {
                 player.PlayerPawn.Value.MoveType = MoveType_t.MOVETYPE_WALK;
                 player.PlayerPawn.Value.ActualMoveType = MoveType_t.MOVETYPE_WALK;
                 Utilities.SetStateChanged(player.PlayerPawn.Value, "CBaseEntity", "m_MoveType");
-            } else {
+            }
+            else
+            {
                 player.PlayerPawn.Value.MoveType = MoveType_t.MOVETYPE_NOCLIP;
                 player.PlayerPawn.Value.ActualMoveType = MoveType_t.MOVETYPE_OBSERVER;
                 Utilities.SetStateChanged(player.PlayerPawn.Value, "CBaseEntity", "m_MoveType");

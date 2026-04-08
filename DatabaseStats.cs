@@ -1,18 +1,16 @@
 using System;
-using System.IO;
 using System.Data;
-using System.Text.Json;
 using System.Globalization;
-using Microsoft.Data.Sqlite;
-using Dapper;
+using System.IO;
+using System.Text.Json;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory;
 using CsvHelper;
 using CsvHelper.Configuration;
+using Dapper;
+using Microsoft.Data.Sqlite;
 using MySqlConnector;
-
-
 
 namespace MatchZy
 {
@@ -33,9 +31,12 @@ namespace MatchZy
                 Log($"[InitializeDatabase] {dbType} Database connection successful");
 
                 // Create the `matchzy_stats_matches`, `matchzy_stats_players` and `matchzy_stats_maps` tables if they doesn't exist
-                if (connection is SqliteConnection) {
+                if (connection is SqliteConnection)
+                {
                     CreateRequiredTablesSQLite();
-                } else {
+                }
+                else
+                {
                     CreateRequiredTablesSQL();
                 }
 
@@ -45,7 +46,9 @@ namespace MatchZy
             }
             catch (Exception ex)
             {
-                Log($"[InitializeDatabase - FATAL] Database connection or table creation error: {ex.Message}");
+                Log(
+                    $"[InitializeDatabase - FATAL] Database connection or table creation error: {ex.Message}"
+                );
             }
         }
 
@@ -57,32 +60,35 @@ namespace MatchZy
 
                 if (databaseType == DatabaseType.SQLite)
                 {
-                    connection =
-                        new SqliteConnection(
-                            $"Data Source={Path.Join(directory, "matchzy.db")}");
+                    connection = new SqliteConnection(
+                        $"Data Source={Path.Join(directory, "matchzy.db")}"
+                    );
                 }
                 else if (config != null && databaseType == DatabaseType.MySQL)
                 {
-                    string connectionString = $"Server={config.MySqlHost};Port={config.MySqlPort};Database={config.MySqlDatabase};User Id={config.MySqlUsername};Password={config.MySqlPassword};";
-                    connection = new MySqlConnection(connectionString);           
+                    string connectionString =
+                        $"Server={config.MySqlHost};Port={config.MySqlPort};Database={config.MySqlDatabase};User Id={config.MySqlUsername};Password={config.MySqlPassword};";
+                    connection = new MySqlConnection(connectionString);
                 }
                 else
                 {
                     Log($"[InitializeDatabase] Invalid database specified, using SQLite.");
-                    connection = new SqliteConnection($"Data Source={Path.Join(directory, "matchzy.db")}");
+                    connection = new SqliteConnection(
+                        $"Data Source={Path.Join(directory, "matchzy.db")}"
+                    );
                     databaseType = DatabaseType.SQLite;
                 }
-            } 
+            }
             catch (Exception ex)
             {
                 Log($"[InitializeDatabase - FATAL] Database connection error: {ex.Message}");
             }
-
         }
 
         public void CreateRequiredTablesSQLite()
         {
-            connection.Execute($@"
+            connection.Execute(
+                $@"
             CREATE TABLE IF NOT EXISTS matchzy_stats_matches (
                 matchid INTEGER PRIMARY KEY AUTOINCREMENT,
                 start_time DATETIME NOT NULL,
@@ -94,9 +100,11 @@ namespace MatchZy
                 team2_name TEXT NOT NULL DEFAULT '',
                 team2_score INTEGER NOT NULL DEFAULT 0,
                 server_ip TEXT NOT NULL DEFAULT '0'
-            )");
+            )"
+            );
 
-            connection.Execute(@"
+            connection.Execute(
+                @"
                 CREATE TABLE IF NOT EXISTS matchzy_stats_maps (
                     matchid INTEGER NOT NULL,
                     mapnumber INTEGER NOT NULL,
@@ -108,9 +116,11 @@ namespace MatchZy
                     team2_score INTEGER NOT NULL DEFAULT 0,
                     PRIMARY KEY (matchid, mapnumber),
                     FOREIGN KEY (matchid) REFERENCES matchzy_stats_matches (matchid)
-                )");
+                )"
+            );
 
-            connection.Execute(@"
+            connection.Execute(
+                @"
                 CREATE TABLE IF NOT EXISTS matchzy_stats_players (
                     matchid INTEGER NOT NULL,
                     mapnumber INTEGER NOT NULL,
@@ -151,12 +161,14 @@ namespace MatchZy
                     PRIMARY KEY (matchid, mapnumber, steamid64),
                     FOREIGN KEY (matchid) REFERENCES matchzy_stats_matches (matchid),
                     FOREIGN KEY (matchid, mapnumber) REFERENCES matchzy_stats_maps (matchid, mapnumber)
-                )");
+                )"
+            );
         }
 
         public void CreateRequiredTablesSQL()
         {
-            connection.Execute($@"
+            connection.Execute(
+                $@"
                 CREATE TABLE IF NOT EXISTS matchzy_stats_matches (
                     matchid INT PRIMARY KEY AUTO_INCREMENT,
                     start_time DATETIME NOT NULL,
@@ -168,9 +180,11 @@ namespace MatchZy
                     team2_name VARCHAR(255) NOT NULL DEFAULT '',
                     team2_score INT NOT NULL DEFAULT 0,
                     server_ip VARCHAR(255) NOT NULL DEFAULT '0'
-                )");
-                
-            connection.Execute($@"
+                )"
+            );
+
+            connection.Execute(
+                $@"
             CREATE TABLE IF NOT EXISTS matchzy_stats_maps (
                 matchid INT NOT NULL,
                 mapnumber TINYINT(3) UNSIGNED NOT NULL,
@@ -183,9 +197,11 @@ namespace MatchZy
                 PRIMARY KEY (matchid, mapnumber),
                 INDEX mapnumber_index (mapnumber),
                 CONSTRAINT matchzy_stats_maps_matchid FOREIGN KEY (matchid) REFERENCES matchzy_stats_matches (matchid)
-            )");
+            )"
+            );
 
-            connection.Execute($@"
+            connection.Execute(
+                $@"
             CREATE TABLE IF NOT EXISTS matchzy_stats_players (
                 matchid INT NOT NULL,
                 mapnumber TINYINT(3) UNSIGNED NOT NULL,
@@ -226,35 +242,81 @@ namespace MatchZy
                 PRIMARY KEY (matchid, mapnumber, steamid64),
                 CONSTRAINT fk_player_map_ref FOREIGN KEY (matchid, mapnumber) 
                     REFERENCES matchzy_stats_maps (matchid, mapnumber)
-            )");
+            )"
+            );
         }
 
-        public long InitMatch(string team1name, string team2name, string serverIp, bool isMatchSetup, long liveMatchId, int mapNumber, string seriesType, MatchConfig matchConfig)
+        public long InitMatch(
+            string team1name,
+            string team2name,
+            string serverIp,
+            bool isMatchSetup,
+            long liveMatchId,
+            int mapNumber,
+            string seriesType,
+            MatchConfig matchConfig
+        )
         {
             try
             {
                 string mapName = isMatchSetup ? matchConfig.Maplist[mapNumber] : Server.MapName;
-                string dateTimeExpression = (connection is SqliteConnection) ? "datetime('now')" : "NOW()";
+                string dateTimeExpression =
+                    (connection is SqliteConnection) ? "datetime('now')" : "NOW()";
 
-                if (mapNumber == 0) {
-                    if (isMatchSetup && liveMatchId != -1) {
-                        connection.Execute(@"
+                if (mapNumber == 0)
+                {
+                    if (isMatchSetup && liveMatchId != -1)
+                    {
+                        connection.Execute(
+                            @"
                             INSERT INTO matchzy_stats_matches (matchid, start_time, team1_name, team2_name, series_type, server_ip)
-                            VALUES (@liveMatchId, " + dateTimeExpression + ", @team1name, @team2name, @seriesType, @serverIp)",
-                            new { liveMatchId, team1name, team2name, seriesType, serverIp });
-                    } else {
-                        connection.Execute(@"
+                            VALUES (@liveMatchId, "
+                                + dateTimeExpression
+                                + ", @team1name, @team2name, @seriesType, @serverIp)",
+                            new
+                            {
+                                liveMatchId,
+                                team1name,
+                                team2name,
+                                seriesType,
+                                serverIp,
+                            }
+                        );
+                    }
+                    else
+                    {
+                        connection.Execute(
+                            @"
                             INSERT INTO matchzy_stats_matches (start_time, team1_name, team2_name, series_type, server_ip)
-                            VALUES (" + dateTimeExpression + ", @team1name, @team2name, @seriesType, @serverIp)",
-                            new { team1name, team2name, seriesType, serverIp });
+                            VALUES ("
+                                + dateTimeExpression
+                                + ", @team1name, @team2name, @seriesType, @serverIp)",
+                            new
+                            {
+                                team1name,
+                                team2name,
+                                seriesType,
+                                serverIp,
+                            }
+                        );
                     }
                 }
 
-                if (isMatchSetup && liveMatchId != -1) {
-                    connection.Execute(@"
+                if (isMatchSetup && liveMatchId != -1)
+                {
+                    connection.Execute(
+                        @"
                         INSERT INTO matchzy_stats_maps (matchid, start_time, mapnumber, mapname)
-                        VALUES (@liveMatchId, " + dateTimeExpression + ", @mapNumber, @mapName)",
-                        new { liveMatchId, mapNumber, mapName });
+                        VALUES (@liveMatchId, "
+                            + dateTimeExpression
+                            + ", @mapNumber, @mapName)",
+                        new
+                        {
+                            liveMatchId,
+                            mapNumber,
+                            mapName,
+                        }
+                    );
                     return liveMatchId;
                 }
 
@@ -269,12 +331,23 @@ namespace MatchZy
                     matchId = connection.ExecuteScalar<long>("SELECT LAST_INSERT_ID()");
                 }
 
-                connection.Execute(@"
+                connection.Execute(
+                    @"
                     INSERT INTO matchzy_stats_maps (matchid, start_time, mapnumber, mapname)
-                    VALUES (@matchId, " + dateTimeExpression + ", @mapNumber, @mapName)",
-                    new { matchId, mapNumber, mapName });
+                    VALUES (@matchId, "
+                        + dateTimeExpression
+                        + ", @mapNumber, @mapName)",
+                    new
+                    {
+                        matchId,
+                        mapNumber,
+                        mapName,
+                    }
+                );
 
-                Log($"[InsertMatchData] Data inserted into matchzy_stats_matches with match_id: {matchId}");
+                Log(
+                    $"[InsertMatchData] Data inserted into matchzy_stats_matches with match_id: {matchId}"
+                );
                 return matchId;
             }
             catch (Exception ex)
@@ -284,69 +357,129 @@ namespace MatchZy
             }
         }
 
-        public void UpdateTeamData(int matchId, string team1name, string team2name) {
-            try
-            {
-                connection.Execute(@"
-                    UPDATE matchzy_stats_matches
-                    SET team1_name = @team1name, team2_name = @team2name
-                    WHERE matchid = @matchId",
-                    new { matchId, team1name, team2name });
-
-                Log($"[UpdateTeamData] Data updated for matchId: {matchId} team1name: {team1name} team2name: {team2name}");
-            }
-            catch (Exception ex)
-            {
-                Log($"[UpdateTeamData - FATAL] Error updating data of matchId: {matchId} [ERROR]: {ex.Message}");
-            }
-        }
-
-        public async Task SetMapEndData(long matchId, int mapNumber, string winnerName, int t1score, int t2score, int team1SeriesScore, int team2SeriesScore)
+        public void UpdateTeamData(int matchId, string team1name, string team2name)
         {
             try
             {
-                string dateTimeExpression = (connection is SqliteConnection) ? "datetime('now')" : "NOW()";
+                connection.Execute(
+                    @"
+                    UPDATE matchzy_stats_matches
+                    SET team1_name = @team1name, team2_name = @team2name
+                    WHERE matchid = @matchId",
+                    new
+                    {
+                        matchId,
+                        team1name,
+                        team2name,
+                    }
+                );
 
-                string sqlQuery = $@"
+                Log(
+                    $"[UpdateTeamData] Data updated for matchId: {matchId} team1name: {team1name} team2name: {team2name}"
+                );
+            }
+            catch (Exception ex)
+            {
+                Log(
+                    $"[UpdateTeamData - FATAL] Error updating data of matchId: {matchId} [ERROR]: {ex.Message}"
+                );
+            }
+        }
+
+        public async Task SetMapEndData(
+            long matchId,
+            int mapNumber,
+            string winnerName,
+            int t1score,
+            int t2score,
+            int team1SeriesScore,
+            int team2SeriesScore
+        )
+        {
+            try
+            {
+                string dateTimeExpression =
+                    (connection is SqliteConnection) ? "datetime('now')" : "NOW()";
+
+                string sqlQuery =
+                    $@"
                     UPDATE matchzy_stats_maps
                     SET winner = @winnerName, end_time = {dateTimeExpression}, team1_score = @t1score, team2_score = @t2score
                     WHERE matchid = @matchId AND mapNumber = @mapNumber";
 
-                await connection.ExecuteAsync(sqlQuery, new { matchId, winnerName, t1score, t2score, mapNumber });
+                await connection.ExecuteAsync(
+                    sqlQuery,
+                    new
+                    {
+                        matchId,
+                        winnerName,
+                        t1score,
+                        t2score,
+                        mapNumber,
+                    }
+                );
 
-                sqlQuery = $@"
+                sqlQuery =
+                    $@"
                     UPDATE matchzy_stats_matches
                     SET team1_score = @team1SeriesScore, team2_score = @team2SeriesScore
                     WHERE matchid = @matchId";
 
-                await connection.ExecuteAsync(sqlQuery, new { matchId, team1SeriesScore, team2SeriesScore });
+                await connection.ExecuteAsync(
+                    sqlQuery,
+                    new
+                    {
+                        matchId,
+                        team1SeriesScore,
+                        team2SeriesScore,
+                    }
+                );
 
-                Log($"[SetMapEndData] Data updated for matchId: {matchId} mapNumber: {mapNumber} winnerName: {winnerName}");
+                Log(
+                    $"[SetMapEndData] Data updated for matchId: {matchId} mapNumber: {mapNumber} winnerName: {winnerName}"
+                );
             }
             catch (Exception ex)
             {
-                Log($"[SetMapEndData - FATAL] Error updating data of matchId: {matchId} mapNumber: {mapNumber} [ERROR]: {ex.Message}");
-            } 
+                Log(
+                    $"[SetMapEndData - FATAL] Error updating data of matchId: {matchId} mapNumber: {mapNumber} [ERROR]: {ex.Message}"
+                );
+            }
         }
 
         public async Task SetMatchEndData(long matchId, string winnerName, int t1score, int t2score)
         {
             try
             {
-                string dateTimeExpression = (connection is SqliteConnection) ? "datetime('now')" : "NOW()";
+                string dateTimeExpression =
+                    (connection is SqliteConnection) ? "datetime('now')" : "NOW()";
 
-                string sqlQuery = $@"
+                string sqlQuery =
+                    $@"
                     UPDATE matchzy_stats_matches
                     SET winner = @winnerName, end_time = {dateTimeExpression}, team1_score = @t1score, team2_score = @t2score
                     WHERE matchid = @matchId";
 
-                await connection.ExecuteAsync(sqlQuery, new { matchId, winnerName, t1score, t2score });
+                await connection.ExecuteAsync(
+                    sqlQuery,
+                    new
+                    {
+                        matchId,
+                        winnerName,
+                        t1score,
+                        t2score,
+                    }
+                );
 
-                Log($"[SetMatchEndData] Data updated for matchId: {matchId} winnerName: {winnerName}");
+                Log(
+                    $"[SetMatchEndData] Data updated for matchId: {matchId} winnerName: {winnerName}"
+                );
             }
             catch (Exception ex)
             {
-                Log($"[SetMatchEndData - FATAL] Error updating data of matchId: {matchId} [ERROR]: {ex.Message}");
+                Log(
+                    $"[SetMatchEndData - FATAL] Error updating data of matchId: {matchId} [ERROR]: {ex.Message}"
+                );
             }
         }
 
@@ -354,30 +487,49 @@ namespace MatchZy
         {
             try
             {
-                string sqlQuery = $@"
+                string sqlQuery =
+                    $@"
                     UPDATE matchzy_stats_maps
                     SET team1_score = @t1score, team2_score = @t2score
                     WHERE matchid = @matchId AND mapnumber = @mapNumber";
 
-                await connection.ExecuteAsync(sqlQuery, new { matchId, mapNumber, t1score, t2score });
+                await connection.ExecuteAsync(
+                    sqlQuery,
+                    new
+                    {
+                        matchId,
+                        mapNumber,
+                        t1score,
+                        t2score,
+                    }
+                );
             }
             catch (Exception ex)
             {
-                Log($"[UpdatePlayerStats - FATAL] Error updating data of matchId: {matchId} [ERROR]: {ex.Message}");
+                Log(
+                    $"[UpdatePlayerStats - FATAL] Error updating data of matchId: {matchId} [ERROR]: {ex.Message}"
+                );
             }
         }
 
-        public async Task UpdatePlayerStatsAsync(long matchId, int mapNumber, Dictionary<ulong, Dictionary<string, object>> playerStatsDictionary)
+        public async Task UpdatePlayerStatsAsync(
+            long matchId,
+            int mapNumber,
+            Dictionary<ulong, Dictionary<string, object>> playerStatsDictionary
+        )
         {
             try
             {
                 foreach (ulong steamid64 in playerStatsDictionary.Keys)
                 {
-                    Log($"[UpdatePlayerStats] Going to update data for Match: {matchId}, MapNumber: {mapNumber}, Player: {steamid64}");
+                    Log(
+                        $"[UpdatePlayerStats] Going to update data for Match: {matchId}, MapNumber: {mapNumber}, Player: {steamid64}"
+                    );
 
                     var playerStats = playerStatsDictionary[steamid64];
 
-                    string sqlQuery = $@"
+                    string sqlQuery =
+                        $@"
                     INSERT INTO matchzy_stats_players (
                         matchid, mapnumber, steamid64, team, name, kills, deaths, damage, assists,
                         enemy5ks, enemy4ks, enemy3ks, enemy2ks, utility_count, utility_damage,
@@ -409,8 +561,10 @@ namespace MatchZy
                         kill_reward = @kill_reward, live_time = @live_time, head_shot_kills = @head_shot_kills,
                         cash_earned = @cash_earned, enemies_flashed = @enemies_flashed";
 
-                    if (connection is SqliteConnection) {
-                        sqlQuery = @"
+                    if (connection is SqliteConnection)
+                    {
+                        sqlQuery =
+                            @"
                         INSERT OR REPLACE INTO matchzy_stats_players (
                             matchid, mapnumber, steamid64, team, name, kills, deaths, damage, assists,
                             enemy5ks, enemy4ks, enemy3ks, enemy2ks, utility_count, utility_damage,
@@ -429,7 +583,8 @@ namespace MatchZy
                             @head_shot_kills, @cash_earned, @enemies_flashed)";
                     }
 
-                    await connection.ExecuteAsync(sqlQuery,
+                    await connection.ExecuteAsync(
+                        sqlQuery,
                         new
                         {
                             matchId,
@@ -467,10 +622,13 @@ namespace MatchZy
                             live_time = playerStats["LiveTime"],
                             head_shot_kills = playerStats["HeadShotKills"],
                             cash_earned = playerStats["CashEarned"],
-                            enemies_flashed = playerStats["EnemiesFlashed"]
-                        });
+                            enemies_flashed = playerStats["EnemiesFlashed"],
+                        }
+                    );
 
-                    Log($"[UpdatePlayerStats] Data inserted/updated for player {steamid64} in match {matchId}");
+                    Log(
+                        $"[UpdatePlayerStats] Data inserted/updated for player {steamid64} in match {matchId}"
+                    );
                 }
             }
             catch (Exception ex)
@@ -481,7 +639,8 @@ namespace MatchZy
 
         public async Task WritePlayerStatsToCsv(string filePath, long matchId, int mapNumber)
         {
-            try {
+            try
+            {
                 string csvFilePath = $"{filePath}/match_data_map{mapNumber}_{matchId}.csv";
                 string? directoryPath = Path.GetDirectoryName(csvFilePath);
                 if (directoryPath != null)
@@ -493,16 +652,25 @@ namespace MatchZy
                 }
 
                 using (var writer = new StreamWriter(csvFilePath))
-                using (var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture)))
+                using (
+                    var csv = new CsvWriter(
+                        writer,
+                        new CsvConfiguration(CultureInfo.InvariantCulture)
+                    )
+                )
                 {
                     IEnumerable<dynamic> playerStatsData = await connection.QueryAsync(
-                        "SELECT * FROM matchzy_stats_players WHERE matchid = @MatchId AND mapnumber = @MapNumber ORDER BY team, kills DESC", new { MatchId = matchId, MapNumber = mapNumber });
+                        "SELECT * FROM matchzy_stats_players WHERE matchid = @MatchId AND mapnumber = @MapNumber ORDER BY team, kills DESC",
+                        new { MatchId = matchId, MapNumber = mapNumber }
+                    );
 
                     // Use the first data row to get the column names
                     dynamic? firstDataRow = playerStatsData.FirstOrDefault();
                     if (firstDataRow != null)
                     {
-                        foreach (var propertyName in ((IDictionary<string, object>)firstDataRow).Keys)
+                        foreach (
+                            var propertyName in ((IDictionary<string, object>)firstDataRow).Keys
+                        )
                         {
                             csv.WriteField(propertyName);
                         }
@@ -511,7 +679,11 @@ namespace MatchZy
                         // Write data to the CSV file
                         foreach (var playerStats in playerStatsData)
                         {
-                            foreach (var propertyValue in ((IDictionary<string, object>)playerStats).Values)
+                            foreach (
+                                var propertyValue in (
+                                    (IDictionary<string, object>)playerStats
+                                ).Values
+                            )
                             {
                                 csv.WriteField(propertyValue);
                             }
@@ -519,13 +691,14 @@ namespace MatchZy
                         }
                     }
                 }
-                Log($"[WritePlayerStatsToCsv] Match stats for ID: {matchId} written successfully at: {csvFilePath}");
+                Log(
+                    $"[WritePlayerStatsToCsv] Match stats for ID: {matchId} written successfully at: {csvFilePath}"
+                );
             }
             catch (Exception ex)
             {
                 Log($"[WritePlayerStatsToCsv - FATAL] Error writing data: {ex.Message}");
             }
-
         }
 
         private void CreateDefaultConfigFile(string configFile)
@@ -538,11 +711,14 @@ namespace MatchZy
                 MySqlDatabase = "your_mysql_database",
                 MySqlUsername = "your_mysql_username",
                 MySqlPassword = "your_mysql_password",
-                MySqlPort = 3306
+                MySqlPort = 3306,
             };
 
             // Serialize and save the default configuration to the file
-            string defaultConfigJson = JsonSerializer.Serialize(defaultConfig, new JsonSerializerOptions { WriteIndented = true });
+            string defaultConfigJson = JsonSerializer.Serialize(
+                defaultConfig,
+                new JsonSerializerOptions { WriteIndented = true }
+            );
             File.WriteAllText(configFile, defaultConfigJson);
 
             Log($"[InitializeDatabase] Default configuration file created at: {configFile}");
@@ -564,16 +740,20 @@ namespace MatchZy
                 string jsonContent = File.ReadAllText(configFile);
                 config = JsonSerializer.Deserialize<DatabaseConfig>(jsonContent);
                 // Set the database type
-                if (config != null && config.DatabaseType?.Trim().ToLower() == "mysql") {
+                if (config != null && config.DatabaseType?.Trim().ToLower() == "mysql")
+                {
                     databaseType = DatabaseType.MySQL;
-                } else {
+                }
+                else
+                {
                     databaseType = DatabaseType.SQLite;
                 }
-                
             }
             catch (JsonException ex)
             {
-                Log($"[TryDeserializeConfig - ERROR] Error deserializing database.json: {ex.Message}. Using SQLite DB");
+                Log(
+                    $"[TryDeserializeConfig - ERROR] Error deserializing database.json: {ex.Message}. Using SQLite DB"
+                );
                 databaseType = DatabaseType.SQLite;
             }
         }
@@ -586,7 +766,7 @@ namespace MatchZy
         public enum DatabaseType
         {
             SQLite,
-            MySQL
+            MySQL,
         }
     }
 
@@ -599,5 +779,4 @@ namespace MatchZy
         public string? MySqlPassword { get; set; }
         public int? MySqlPort { get; set; }
     }
-
 }

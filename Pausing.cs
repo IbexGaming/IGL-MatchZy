@@ -14,7 +14,8 @@ public partial class MatchZy
         // Tech Pause is WIP
         return;
 
-        if (!isMatchLive) return;
+        if (!isMatchLive)
+            return;
 
         // Treating .tech command as .forcepause if it is used via server console.
         if (player == null)
@@ -32,7 +33,8 @@ public partial class MatchZy
         if (IsHalfTimePhase())
         {
             // ReplyToUserCommand(player, "You cannot use this command during halftime.");
-            ReplyToUserCommand(player, Localizer["matchzy.pause.duringhalftime"]); ;
+            ReplyToUserCommand(player, Localizer["matchzy.pause.duringhalftime"]);
+            ;
             return;
         }
         if (IsPostGamePhase())
@@ -48,7 +50,8 @@ public partial class MatchZy
             return;
         }
 
-        if (player.Team == CsTeam.Spectator || player.Team == CsTeam.None) return;
+        if (player.Team == CsTeam.Spectator || player.Team == CsTeam.None)
+            return;
 
         if (!techPauseEnabled.Value && player != null)
         {
@@ -56,12 +59,19 @@ public partial class MatchZy
             return;
         }
 
-        if (maxTechPausesAllowed.Value <= 0) return;
+        if (maxTechPausesAllowed.Value <= 0)
+            return;
 
-        Team playerTeam = (player!.Team == CsTeam.CounterTerrorist) ? reverseTeamSides["CT"] : reverseTeamSides["TERRORIST"];
+        Team playerTeam =
+            (player!.Team == CsTeam.CounterTerrorist)
+                ? reverseTeamSides["CT"]
+                : reverseTeamSides["TERRORIST"];
         if (technicalPauseUsed[playerTeam] >= maxTechPausesAllowed.Value)
         {
-            PrintToPlayerChat(player, Localizer["matchzy.pause.notechpauseleft", playerTeam.teamName]);
+            PrintToPlayerChat(
+                player,
+                Localizer["matchzy.pause.notechpauseleft", playerTeam.teamName]
+            );
             return;
         }
     }

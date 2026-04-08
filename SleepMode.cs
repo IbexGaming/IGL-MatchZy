@@ -3,17 +3,16 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
 
-
 namespace MatchZy
 {
-
     public partial class MatchZy
     {
         public const string sleepCfgPath = "MatchZy/sleep.cfg";
 
         public void StartSleepMode()
         {
-            if (matchStarted) return;
+            if (matchStarted)
+                return;
             isSleep = true;
             isPractice = false;
             isDryRun = false;
@@ -32,7 +31,9 @@ namespace MatchZy
             }
             else
             {
-                Log($"Starting Sleep Mode! Sleep CFG not found in {absolutePath}, using default CFG!");
+                Log(
+                    $"Starting Sleep Mode! Sleep CFG not found in {absolutePath}, using default CFG!"
+                );
                 ExecUnpracCommands();
                 Server.ExecuteCommand("""exec gamemode_competitive.cfg;""");
             }
@@ -56,6 +57,5 @@ namespace MatchZy
             }
             StartSleepMode();
         }
-
     }
 }

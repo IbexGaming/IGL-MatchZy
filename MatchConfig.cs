@@ -1,10 +1,8 @@
 using System.Text.Json.Serialization;
 using Newtonsoft.Json.Linq;
 
-
 namespace MatchZy
 {
-
     public class MatchConfig
     {
         [JsonPropertyName("maplist")]

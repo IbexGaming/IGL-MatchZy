@@ -1,6 +1,5 @@
 using CounterStrikeSharp.API;
 
-
 class SourceSynchronizationContext : SynchronizationContext
 {
     public override void Post(SendOrPostCallback d, object? state)

@@ -1,14 +1,13 @@
+using System.Text.Json;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Modules.Utils;
 using CounterStrikeSharp.API.Modules.Cvars;
-using System.Text.Json;
+using CounterStrikeSharp.API.Modules.Utils;
 
 namespace MatchZy;
 
 public partial class MatchZy
 {
-
     public CounterStrikeSharp.API.Modules.Timers.Timer? coachKillTimer = null;
 
     public HashSet<CCSPlayerController> GetAllCoaches()
@@ -21,7 +20,8 @@ public partial class MatchZy
 
     public void HandleCoachCommand(CCSPlayerController? player, string side)
     {
-        if (!IsPlayerValid(player)) return;
+        if (!IsPlayerValid(player))
+            return;
         if (isPractice)
         {
             ReplyToUserCommand(player, "Coach command can only be used in match mode!");
@@ -69,9 +69,15 @@ public partial class MatchZy
 
         matchZyCoachTeam.coach.Add(player!);
         player!.Clan = $"[{matchZyCoachTeam.teamName} COACH]";
-        if (player.InGameMoneyServices != null) player.InGameMoneyServices.Account = 0;
-        ReplyToUserCommand(player, $"You are now coaching {matchZyCoachTeam.teamName}! Use .uncoach to stop coaching");
-        PrintToAllChat($"{ChatColors.Green}{player.PlayerName}{ChatColors.Default} is now coaching {ChatColors.Green}{matchZyCoachTeam.teamName}{ChatColors.Default}!");
+        if (player.InGameMoneyServices != null)
+            player.InGameMoneyServices.Account = 0;
+        ReplyToUserCommand(
+            player,
+            $"You are now coaching {matchZyCoachTeam.teamName}! Use .uncoach to stop coaching"
+        );
+        PrintToAllChat(
+            $"{ChatColors.Green}{player.PlayerName}{ChatColors.Default} is now coaching {ChatColors.Green}{matchZyCoachTeam.teamName}{ChatColors.Default}!"
+        );
     }
 
     public void HandleCoaches()
@@ -79,24 +85,29 @@ public partial class MatchZy
         coachKillTimer?.Kill();
         coachKillTimer = null;
         HashSet<CCSPlayerController> coaches = GetAllCoaches();
-        if (IsWingmanMode() || coaches.Count == 0) return;
-        if (spawnsData.Values.Any(list => list.Count == 0)) GetSpawns();
-        if (coachSpawns.Count == 0 || 
-            coachSpawns[(byte)CsTeam.CounterTerrorist].Count == 0 || 
-            coachSpawns[(byte)CsTeam.Terrorist].Count == 0)
+        if (IsWingmanMode() || coaches.Count == 0)
+            return;
+        if (spawnsData.Values.Any(list => list.Count == 0))
+            GetSpawns();
+        if (
+            coachSpawns.Count == 0
+            || coachSpawns[(byte)CsTeam.CounterTerrorist].Count == 0
+            || coachSpawns[(byte)CsTeam.Terrorist].Count == 0
+        )
         {
             Log($"[HandleCoaches] No coach spawns found, player positions will not be swapped!");
             return;
         }
 
         int freezeTime = ConVar.Find("mp_freezetime")!.GetPrimitiveValue<int>();
-        freezeTime = freezeTime > 2 ? freezeTime: 2;
+        freezeTime = freezeTime > 2 ? freezeTime : 2;
         coachKillTimer ??= AddTimer(freezeTime - 1f, KillCoaches);
 
         Random random = new();
         foreach (CCSPlayerController coach in coaches)
         {
-            if (!IsPlayerValid(coach)) continue;
+            if (!IsPlayerValid(coach))
+                continue;
             Team coachTeam = matchzyTeam1.coach.Contains(coach) ? matchzyTeam1 : matchzyTeam2;
             int coachTeamNum = teamSides[coachTeam] == "CT" ? 3 : 2;
             coach.InGameMoneyServices!.Account = 0;
@@ -114,19 +125,28 @@ public partial class MatchZy
             coach.PlayerPawn.Value!.ActualMoveType = MoveType_t.MOVETYPE_NONE;
 
             List<Position> coachTeamSpawns = coachSpawns[coach.TeamNum];
-            Position coachPosition = new(coach.PlayerPawn.Value!.CBodyComponent!.SceneNode!.AbsOrigin, coach.PlayerPawn.Value!.CBodyComponent!.SceneNode!.AbsRotation);
+            Position coachPosition = new(
+                coach.PlayerPawn.Value!.CBodyComponent!.SceneNode!.AbsOrigin,
+                coach.PlayerPawn.Value!.CBodyComponent!.SceneNode!.AbsRotation
+            );
 
             // Picking a random position for the coach (from coachSpawns) to teleport them.
             Position newPosition = coachTeamSpawns[random.Next(0, coachTeamSpawns.Count)];
 
             // Elevating coach before dropping the C4 to prevent it going inside the ground.
-            AddTimer(0.05f, () =>
-            {
-                // coach!.PlayerPawn.Value!.Teleport(new Vector(coachPosition.PlayerPosition.X, coachPosition.PlayerPosition.Y, coachPosition.PlayerPosition.Z + 20.0f), coachPosition.PlayerAngle, new Vector(0, 0, 0));
-                HandleCoachWeapons(coach);
-                coach!.PlayerPawn.Value.Teleport(newPosition.PlayerPosition, newPosition.PlayerAngle, new Vector(0, 0, 0));
-            });
-
+            AddTimer(
+                0.05f,
+                () =>
+                {
+                    // coach!.PlayerPawn.Value!.Teleport(new Vector(coachPosition.PlayerPosition.X, coachPosition.PlayerPosition.Y, coachPosition.PlayerPosition.Z + 20.0f), coachPosition.PlayerAngle, new Vector(0, 0, 0));
+                    HandleCoachWeapons(coach);
+                    coach!.PlayerPawn.Value.Teleport(
+                        newPosition.PlayerPosition,
+                        newPosition.PlayerAngle,
+                        new Vector(0, 0, 0)
+                    );
+                }
+            );
         }
 
         List<CCSPlayerController> players = Utilities.GetPlayers();
@@ -138,10 +158,14 @@ public partial class MatchZy
 
         foreach (CCSPlayerController player in players)
         {
-            if (!IsPlayerValid(player) || coaches.Contains(player)) continue;
+            if (!IsPlayerValid(player) || coaches.Contains(player))
+                continue;
 
             List<Position> teamPositions = spawnsData[player.TeamNum];
-            Position playerPosition = new(player.PlayerPawn.Value!.CBodyComponent!.SceneNode!.AbsOrigin, player.PlayerPawn.Value!.CBodyComponent!.SceneNode!.AbsRotation);
+            Position playerPosition = new(
+                player.PlayerPawn.Value!.CBodyComponent!.SceneNode!.AbsOrigin,
+                player.PlayerPawn.Value!.CBodyComponent!.SceneNode!.AbsRotation
+            );
             bool isCompetitiveSpawn = false;
             foreach (Position position in teamPositions)
             {
@@ -152,7 +176,8 @@ public partial class MatchZy
                     break;
                 }
             }
-            if (isCompetitiveSpawn) continue;
+            if (isCompetitiveSpawn)
+                continue;
 
             // The player is not on a competitive spawn, we will put them on one in the next loop.
             incorrectSpawnedPlayers.Add(player);
@@ -160,18 +185,30 @@ public partial class MatchZy
 
         foreach (CCSPlayerController player in incorrectSpawnedPlayers)
         {
-            if (!IsPlayerValid(player) || coaches.Contains(player)) continue;
+            if (!IsPlayerValid(player) || coaches.Contains(player))
+                continue;
 
             List<Position> teamPositions = spawnsData[player.TeamNum];
-            Position playerPosition = new(player.PlayerPawn.Value!.CBodyComponent!.SceneNode!.AbsOrigin, player.PlayerPawn.Value!.CBodyComponent!.SceneNode!.AbsRotation);
+            Position playerPosition = new(
+                player.PlayerPawn.Value!.CBodyComponent!.SceneNode!.AbsOrigin,
+                player.PlayerPawn.Value!.CBodyComponent!.SceneNode!.AbsRotation
+            );
             foreach (Position position in teamPositions)
             {
-                if (occupiedSpawns.Contains(position)) continue;
+                if (occupiedSpawns.Contains(position))
+                    continue;
                 occupiedSpawns.Add(position);
-                AddTimer(0.1f, () =>
-                {
-                    player!.PlayerPawn.Value.Teleport(position.PlayerPosition, position.PlayerAngle, new Vector(0, 0, 0));
-                });
+                AddTimer(
+                    0.1f,
+                    () =>
+                    {
+                        player!.PlayerPawn.Value.Teleport(
+                            position.PlayerPosition,
+                            position.PlayerAngle,
+                            new Vector(0, 0, 0)
+                        );
+                    }
+                );
                 break;
             }
         }
@@ -179,33 +216,43 @@ public partial class MatchZy
 
     private void HandleCoachWeapons(CCSPlayerController coach)
     {
-        if (!IsPlayerValid(coach)) return;
+        if (!IsPlayerValid(coach))
+            return;
         coach.RemoveWeapons();
     }
 
     /// <summary>
     /// Transfers bomb from coach to first available non-coach terrorist.
-    /// </summary> 
-    public void TransferCoachBomb(CCSPlayerController coach) {
-        if (coach.TeamNum != (int)CsTeam.Terrorist) return; // can't have bomb
+    /// </summary>
+    public void TransferCoachBomb(CCSPlayerController coach)
+    {
+        if (coach.TeamNum != (int)CsTeam.Terrorist)
+            return; // can't have bomb
 
         // find bomb and new target
-        var bomb = coach.PlayerPawn.Value!.WeaponServices!.MyWeapons
-            .Where(w => w != null && w.IsValid && w.Value!.DesignerName == "weapon_c4")
+        var bomb = coach
+            .PlayerPawn.Value!.WeaponServices!.MyWeapons.Where(w =>
+                w != null && w.IsValid && w.Value!.DesignerName == "weapon_c4"
+            )
             .FirstOrDefault();
-        if (bomb == null || bomb.Value == null) return; // should never trigger
+        if (bomb == null || bomb.Value == null)
+            return; // should never trigger
 
-        var target = Utilities.GetPlayers()
-            .FirstOrDefault(
-                p => IsPlayerValid(p)
+        var target = Utilities
+            .GetPlayers()
+            .FirstOrDefault(p =>
+                IsPlayerValid(p)
                 && !reverseTeamSides["TERRORIST"].coach.Contains(p)
                 && p.TeamNum == (int)CsTeam.Terrorist
                 && p.PawnIsAlive
             );
-        if (!IsPlayerValid(target)) return; // should never trigger
+        if (!IsPlayerValid(target))
+            return; // should never trigger
 
         // transfer bomb
-        Log($"[EventPlayerGivenC4 INFO] Transferred bomb from {coach.PlayerName} (Coach) to {target.PlayerName}.");
+        Log(
+            $"[EventPlayerGivenC4 INFO] Transferred bomb from {coach.PlayerName} (Coach) to {target.PlayerName}."
+        );
         bomb.Value!.Remove();
         target.GiveNamedItem("weapon_c4");
     }
@@ -245,30 +292,52 @@ public partial class MatchZy
             playerController.ChangeTeam(CsTeam.Spectator);
             AddTimer(0.01f, () => playerController.ChangeTeam(oldTeam));
         }
-        if (playerController.InGameMoneyServices != null) playerController.InGameMoneyServices.Account = 0;
+        if (playerController.InGameMoneyServices != null)
+            playerController.InGameMoneyServices.Account = 0;
     }
 
     private void KillCoaches()
     {
-        if (isPaused || IsTacticalTimeoutActive()) return;
+        if (isPaused || IsTacticalTimeoutActive())
+            return;
         HashSet<CCSPlayerController> coaches = GetAllCoaches();
-        if (IsWingmanMode() || coaches.Count == 0) return;
+        if (IsWingmanMode() || coaches.Count == 0)
+            return;
         string suicidePenalty = GetConvarStringValue(ConVar.Find("mp_suicide_penalty"));
         string specFreezeTime = GetConvarStringValue(ConVar.Find("spec_freeze_time"));
         string specFreezeTimeLock = GetConvarStringValue(ConVar.Find("spec_freeze_time_lock"));
-        string specFreezeDeathanim = GetConvarStringValue(ConVar.Find("spec_freeze_deathanim_time"));
-        Server.ExecuteCommand("mp_suicide_penalty 0;spec_freeze_time 0; spec_freeze_time_lock 0; spec_freeze_deathanim_time 0;");
+        string specFreezeDeathanim = GetConvarStringValue(
+            ConVar.Find("spec_freeze_deathanim_time")
+        );
+        Server.ExecuteCommand(
+            "mp_suicide_penalty 0;spec_freeze_time 0; spec_freeze_time_lock 0; spec_freeze_deathanim_time 0;"
+        );
 
         foreach (var coach in coaches)
         {
-            if (!IsPlayerValid(coach)) continue;
-            if (isPaused || IsTacticalTimeoutActive()) continue;
+            if (!IsPlayerValid(coach))
+                continue;
+            if (isPaused || IsTacticalTimeoutActive())
+                continue;
 
-            Position coachPosition = new(coach.PlayerPawn.Value!.CBodyComponent!.SceneNode!.AbsOrigin, coach.PlayerPawn.Value!.CBodyComponent!.SceneNode!.AbsRotation);
-            coach!.PlayerPawn.Value!.Teleport(new Vector(coachPosition.PlayerPosition.X, coachPosition.PlayerPosition.Y, coachPosition.PlayerPosition.Z + 20.0f), coachPosition.PlayerAngle, new Vector(0, 0, 0));
+            Position coachPosition = new(
+                coach.PlayerPawn.Value!.CBodyComponent!.SceneNode!.AbsOrigin,
+                coach.PlayerPawn.Value!.CBodyComponent!.SceneNode!.AbsRotation
+            );
+            coach!.PlayerPawn.Value!.Teleport(
+                new Vector(
+                    coachPosition.PlayerPosition.X,
+                    coachPosition.PlayerPosition.Y,
+                    coachPosition.PlayerPosition.Z + 20.0f
+                ),
+                coachPosition.PlayerAngle,
+                new Vector(0, 0, 0)
+            );
             coach.PlayerPawn.Value!.CommitSuicide(explode: false, force: true);
         }
-        Server.ExecuteCommand($"mp_suicide_penalty {suicidePenalty}; spec_freeze_time {specFreezeTime}; spec_freeze_time_lock {specFreezeTimeLock}; spec_freeze_deathanim_time {specFreezeDeathanim};");
+        Server.ExecuteCommand(
+            $"mp_suicide_penalty {suicidePenalty}; spec_freeze_time {specFreezeTime}; spec_freeze_time_lock {specFreezeTimeLock}; spec_freeze_deathanim_time {specFreezeDeathanim};"
+        );
     }
 
     private void GetCoachSpawns()
@@ -276,11 +345,19 @@ public partial class MatchZy
         coachSpawns = GetEmptySpawnsData();
         try
         {
-            string spawnsConfigPath = Path.Combine(ModuleDirectory, "spawns", "coach", $"{Server.MapName}.json");
+            string spawnsConfigPath = Path.Combine(
+                ModuleDirectory,
+                "spawns",
+                "coach",
+                $"{Server.MapName}.json"
+            );
             string spawnsConfig = File.ReadAllText(spawnsConfigPath);
 
-            var jsonDictionary = JsonSerializer.Deserialize<Dictionary<string, List<Dictionary<string, string>>>>(spawnsConfig);
-            if (jsonDictionary is null) return;
+            var jsonDictionary = JsonSerializer.Deserialize<
+                Dictionary<string, List<Dictionary<string, string>>>
+            >(spawnsConfig);
+            if (jsonDictionary is null)
+                return;
             foreach (var entry in jsonDictionary)
             {
                 byte team = byte.Parse(entry.Key);
@@ -292,14 +369,22 @@ public partial class MatchZy
                     string[] angleArray = positionData["QAngle"].Split(' ');
 
                     // Parse position and angle
-                    Vector vector = new(float.Parse(vectorArray[0]), float.Parse(vectorArray[1]), float.Parse(vectorArray[2]));
-                    QAngle qAngle = new(float.Parse(angleArray[0]), float.Parse(angleArray[1]), float.Parse(angleArray[2]));
+                    Vector vector = new(
+                        float.Parse(vectorArray[0]),
+                        float.Parse(vectorArray[1]),
+                        float.Parse(vectorArray[2])
+                    );
+                    QAngle qAngle = new(
+                        float.Parse(angleArray[0]),
+                        float.Parse(angleArray[1]),
+                        float.Parse(angleArray[2])
+                    );
 
                     Position position = new(vector, qAngle);
 
                     positionList.Add(position);
                 }
-                coachSpawns[team] =  positionList;
+                coachSpawns[team] = positionList;
             }
             Log($"[GetCoachSpawns] Loaded {coachSpawns.Count} coach spawns");
         }

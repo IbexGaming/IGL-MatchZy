@@ -1,9 +1,9 @@
+using System.Runtime.Serialization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
-using System.Text.Json.Serialization;
-using System.Runtime.Serialization;
 
 namespace MatchZy
 {
@@ -75,7 +75,7 @@ namespace MatchZy
         GoingLive = 6,
         Live = 7,
         PendingRestore = 8,
-        PostGame = 9
+        PostGame = 9,
     }
 
     public class G5WebAvailable
@@ -111,7 +111,7 @@ namespace MatchZy
             {
                 PluginVersion = PluginVersion,
                 GameState = gamestateString,
-                Paused = isPaused
+                Paused = isPaused,
             };
 
             if (gamestate != Get5GameState.None)
@@ -142,7 +142,7 @@ namespace MatchZy
                     CurrentMapScore = team1,
                     ConnectedClients = -1,
                     Ready = ready,
-                    Side = teamSides[matchzyTeam1].ToLower()
+                    Side = teamSides[matchzyTeam1].ToLower(),
                 };
 
                 get5Status.Team2 = new Get5StatusTeam
@@ -152,7 +152,7 @@ namespace MatchZy
                     CurrentMapScore = team2,
                     ConnectedClients = -1,
                     Ready = ready,
-                    Side = teamSides[matchzyTeam2].ToLower()
+                    Side = teamSides[matchzyTeam2].ToLower(),
                 };
             }
 
@@ -172,7 +172,9 @@ namespace MatchZy
         [ConsoleCommand("get5_web_available", "Returns get5 web available")]
         public void Get5WebAvailable(CCSPlayerController? player, CommandInfo command)
         {
-            command.ReplyToCommand(JsonSerializer.Serialize(new G5WebAvailable { GameState = (int) getGet5Gamestate() }));
+            command.ReplyToCommand(
+                JsonSerializer.Serialize(new G5WebAvailable { GameState = (int)getGet5Gamestate() })
+            );
         }
 
         private Get5GameState getGet5Gamestate()
@@ -232,7 +234,7 @@ namespace MatchZy
 
         private string mapGet5GameState(Get5GameState state)
         {
-            switch(state)
+            switch (state)
             {
                 case Get5GameState.None:
                     return "none";

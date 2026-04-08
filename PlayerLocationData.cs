@@ -13,10 +13,11 @@ public class PlayerLocationData
         this.Position = position;
         this.Angle = angle;
     }
-    
+
     public void LoadPosition(CCSPlayerController player)
     {
-        if (player == null || player.PlayerPawn.Value == null) return;
+        if (player == null || player.PlayerPawn.Value == null)
+            return;
         player.PlayerPawn.Value.Teleport(Position, Angle, new Vector(0, 0, 0));
     }
 }
