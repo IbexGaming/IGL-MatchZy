@@ -13,7 +13,12 @@ namespace MatchZy.Integrations
         /// <param name="message">The message to send.</param>
         /// <param name="webhookUrl">The URL of the Discord webhook.</param>
         /// <returns>True if the message was sent successfully, false otherwise.</returns>
-        public static bool SendAdminMessage(string player, string message, string webhookUrl, string discordAdminGroupId)
+        public static bool SendAdminMessage(
+            string player,
+            string message,
+            string webhookUrl,
+            string discordAdminGroupId
+        )
         {
             string? ip = ConVar.Find("ip")?.StringValue;
             if (string.IsNullOrEmpty(ip))
@@ -32,11 +37,18 @@ namespace MatchZy.Integrations
 
             HttpClient client = new();
             client.DefaultRequestHeaders.Add("Content-Type", "application/json");
-            var toSend = new { content = $"<@&{discordAdminGroupId}> {player}: {message}\n\n[Connect to the server](steam://connect/{ip}:{port})" };
+            var toSend = new
+            {
+                content = $"<@&{discordAdminGroupId}> {player}: {message}\n\n[Connect to the server](steam://connect/{ip}:{port})",
+            };
             var response = client
                 .PostAsync(
                     webhookUrl,
-                    new StringContent(JsonSerializer.Serialize(toSend), System.Text.Encoding.UTF8, "application/json")
+                    new StringContent(
+                        JsonSerializer.Serialize(toSend),
+                        System.Text.Encoding.UTF8,
+                        "application/json"
+                    )
                 )
                 .Result;
 
