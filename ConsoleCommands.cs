@@ -238,13 +238,24 @@ namespace MatchZy
             if (string.IsNullOrEmpty(message))
                 return;
 
-            var success = DiscordIntegration.SendAdminMessage(player.PlayerName, message, discordWebhookURL, discordAdminGroupId.Value);
+            var success = DiscordIntegration.SendAdminMessage(
+                player.PlayerName,
+                message,
+                discordWebhookURL,
+                discordAdminGroupId.Value
+            );
 
             if (!success)
             {
-                player.PrintToChat($"<color=red>Failed to send message to admins. Please open a support ticket on the Discord server.</color>");
-            } else {
-                player.PrintToChat($"<color=green>Message sent to admins. Hold tight for a response.</color>");
+                player.PrintToChat(
+                    $"<color=red>Failed to send message to admins. Please open a support ticket on the Discord server.</color>"
+                );
+            }
+            else
+            {
+                player.PrintToChat(
+                    $"<color=green>Message sent to admins. Hold tight for a response.</color>"
+                );
             }
         }
 
