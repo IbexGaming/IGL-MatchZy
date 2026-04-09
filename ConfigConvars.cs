@@ -72,6 +72,12 @@ namespace MatchZy
             ""
         );
 
+        public FakeConVar<string> discordAdminGroupId = new(
+            "matchzy_discord_admin_group_id",
+            "ID of the Discord admin group to mention in Admin Discord webhook messages.",
+            ""
+        );
+
         [ConsoleCommand(
             "matchzy_whitelist_enabled_default",
             "Whether Whitelist is enabled by default or not. Default value: false"
@@ -258,6 +264,27 @@ namespace MatchZy
                 return;
             }
             demoUploadURL = url;
+        }
+
+        [ConsoleCommand(
+            "matchzy_discord_webhook_url",
+            "If defined, important Events and .admin messages will be sent to this Discord webhook URL."
+        )]
+        public void MatchZyDiscordWebhookURL(CCSPlayerController? player, CommandInfo command)
+        {
+            if (player != null)
+                return;
+            string url = command.ArgByIndex(1);
+            if (url.Trim() == "")
+                return;
+            if (!IsValidUrl(url))
+            {
+                Log(
+                    $"[MatchZyDiscordWebhookURL] Invalid URL: {url}. Please provide a valid URL for the Discord webhook!"
+                );
+                return;
+            }
+            discordWebhookURL = url;
         }
 
         [ConsoleCommand(

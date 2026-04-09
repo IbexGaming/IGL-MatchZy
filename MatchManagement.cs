@@ -5,6 +5,8 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
+using MatchZy.Integrations;
+using MatchZy.Util;
 using Newtonsoft.Json.Linq;
 
 namespace MatchZy
@@ -435,6 +437,13 @@ namespace MatchZy
             SetTeamNames();
             UpdatePlayersMap();
             UpdateHostname();
+
+            DiscordIntegration.SendEmbed(
+                "Match Loaded",
+                $"Series starting with {matchConfig.NumMaps} maps between {matchzyTeam1.teamName} and {matchzyTeam2.teamName}",
+                HexColors.Red,
+                discordWebhookURL
+            );
 
             var seriesStartedEvent = new MatchZySeriesStartedEvent
             {
