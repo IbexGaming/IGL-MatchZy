@@ -1,5 +1,20 @@
 # MatchZy Changelog
 
+# 0.9.1
+
+#### April 9, 2026
+
+- Code Formatting with csharpier
+- Refine Ban Calculation accoridng to [IGL Ruleset](https://ibexgaming.org/rules/counterstrike2)
+
+# 0.9.0
+
+#### April 8, 2026
+
+- Added support for BO2 Veto according to [IGL Ruleset](https://ibexgaming.org/rules/counterstrike2)
+- Updated Authorship and Module name
+- Updated CI to match IGL requirements
+
 # 0.8.15
 
 #### October 26, 2025
