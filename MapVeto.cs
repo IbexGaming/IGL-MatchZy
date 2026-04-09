@@ -724,8 +724,7 @@ namespace MatchZy
                     if (matchConfig.MapsPool.Count >= matchConfig.NumMaps + 2)
                     { // 7 >= 3 + 2
                         int numberOfPicks = matchConfig.NumMaps - 1; // 2 picks in a Bo3
-                        int totalNumberOfBans =
-                            matchConfig.MapsPool.Count - 1 - numberOfPicks;
+                        int totalNumberOfBans = matchConfig.MapsPool.Count - 1 - numberOfPicks;
                         // Determine how many bans before we start picking (may be 0):
                         int numberOfStartBans =
                             matchConfig.NumMaps >= 5
