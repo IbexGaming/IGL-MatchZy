@@ -5,6 +5,7 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
+using MatchZy.Integrations;
 
 namespace MatchZy
 {
@@ -225,6 +226,26 @@ namespace MatchZy
             if (!isPractice)
                 return;
             SideSwitchCommand(player, CsTeam.CounterTerrorist);
+        }
+
+        [ConsoleCommand("css_admin", "Message an Admin for Support")]
+        public void OnMessageAdmin(CCSPlayerController? player, CommandInfo? command)
+        {
+            if (player == null || command == null)
+                return;
+
+            var message = command.ArgByIndex(1);
+            if (string.IsNullOrEmpty(message))
+                return;
+
+            var success = DiscordIntegration.SendAdminMessage(player.PlayerName, message, discordWebhookURL, discordAdminGroupId.Value);
+
+            if (!success)
+            {
+                player.PrintToChat($"<color=red>Failed to send message to admins. Please open a support ticket on the Discord server.</color>");
+            } else {
+                player.PrintToChat($"<color=green>Message sent to admins. Hold tight for a response.</color>");
+            }
         }
 
         [ConsoleCommand("css_tech", "Pause the match")]
