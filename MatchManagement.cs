@@ -451,7 +451,9 @@ namespace MatchZy
                 }
                 catch (Exception ex)
                 {
-                    Log($"[MatchManagement] Exception when sending server start embed: {ex.Message}");
+                    Log(
+                        $"[MatchManagement] Exception when sending server start embed: {ex.Message}"
+                    );
                 }
             });
 
