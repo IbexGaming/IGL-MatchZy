@@ -108,12 +108,26 @@ namespace MatchZy
 
             var hostname = ConVar.Find("hostname")?.StringValue ?? "Unknown Server";
 
-            DiscordIntegration.SendEmbed(
-                "Server has started.",
-                hostname,
-                HexColors.Green,
-                discordWebhookURL
-            );
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var success = await DiscordIntegration.SendEmbed(
+                        "Server has started.",
+                        hostname,
+                        HexColors.Green,
+                        discordWebhookURL
+                    );
+                    if (!success)
+                    {
+                        Log("Failed to send server start embed via DiscordIntegration.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log($"Exception when sending server start embed: {ex.Message}");
+                }
+            });
 
             if (!hotReload)
             {
