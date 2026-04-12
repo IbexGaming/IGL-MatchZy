@@ -22,6 +22,10 @@ namespace MatchZy.Integrations
             string discordAdminGroupId
         )
         {
+            if (string.IsNullOrEmpty(webhookUrl))
+            {
+                return false;
+            }
             string? ip = ConVar.Find("ip")?.StringValue;
             if (string.IsNullOrEmpty(ip))
             {
@@ -73,6 +77,10 @@ namespace MatchZy.Integrations
             string webhookUrl
         )
         {
+            if (string.IsNullOrEmpty(webhookUrl))
+            {
+                return false;
+            }
             string? ip = ConVar.Find("ip")?.StringValue;
             int? port = ConVar.Find("hostport")?.GetPrimitiveValue<int>();
 
