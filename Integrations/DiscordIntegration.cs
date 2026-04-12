@@ -6,6 +6,8 @@ namespace MatchZy.Integrations
 {
     public static class DiscordIntegration
     {
+        private static readonly HttpClient _httpClient = new();
+
         /// <summary>
         /// Sends an admin message via a Discord webhook.
         /// </summary>
@@ -13,7 +15,7 @@ namespace MatchZy.Integrations
         /// <param name="message">The message to send.</param>
         /// <param name="webhookUrl">The URL of the Discord webhook.</param>
         /// <returns>True if the message was sent successfully, false otherwise.</returns>
-        public static bool SendAdminMessage(
+        public async static Task<bool> SendAdminMessage(
             string player,
             string message,
             string webhookUrl,
@@ -25,8 +27,8 @@ namespace MatchZy.Integrations
             {
                 return false;
             }
-            string? port = ConVar.Find("port")?.StringValue;
-            if (string.IsNullOrEmpty(port))
+            int? port = ConVar.Find("hostport")?.GetPrimitiveValue<int>();
+            if (port == null)
             {
                 return false;
             }
@@ -35,13 +37,11 @@ namespace MatchZy.Integrations
                 return false;
             }
 
-            HttpClient client = new();
-            client.DefaultRequestHeaders.Add("Content-Type", "application/json");
             var toSend = new
             {
                 content = $"<@&{discordAdminGroupId}> {player}: {message}\n\n[Connect to the server](steam://connect/{ip}:{port})",
             };
-            var response = client
+            var response = await _httpClient
                 .PostAsync(
                     webhookUrl,
                     new StringContent(
@@ -49,8 +49,7 @@ namespace MatchZy.Integrations
                         System.Text.Encoding.UTF8,
                         "application/json"
                     )
-                )
-                .Result;
+                );
 
             if (response.IsSuccessStatusCode)
             {
@@ -68,7 +67,7 @@ namespace MatchZy.Integrations
         /// <param name="color">The color of the embed.</param>
         /// <param name="webhookUrl">The URL of the Discord webhook.</param>
         /// <returns>True if the embed was sent successfully, false otherwise.</returns>
-        public static bool SendEmbed(
+        public async static Task<bool> SendEmbed(
             string title,
             string description,
             HexColor color,
@@ -84,8 +83,6 @@ namespace MatchZy.Integrations
                 footerText += $" | connect {ip}:{port}";
             }
 
-            HttpClient client = new();
-            client.DefaultRequestHeaders.Add("Content-Type", "application/json");
             var message = new
             {
                 embeds = new[]
@@ -99,7 +96,7 @@ namespace MatchZy.Integrations
                     },
                 },
             };
-            var response = client
+            var response = await _httpClient
                 .PostAsync(
                     webhookUrl,
                     new StringContent(
@@ -107,8 +104,7 @@ namespace MatchZy.Integrations
                         System.Text.Encoding.UTF8,
                         "application/json"
                     )
-                )
-                .Result;
+                );
 
             if (response.IsSuccessStatusCode)
             {

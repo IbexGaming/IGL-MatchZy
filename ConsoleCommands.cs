@@ -243,7 +243,7 @@ namespace MatchZy
                 message,
                 discordWebhookURL,
                 discordAdminGroupId.Value
-            );
+            ).Result; // Explicitly await the result here
 
             if (!success)
             {

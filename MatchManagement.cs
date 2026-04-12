@@ -438,12 +438,22 @@ namespace MatchZy
             UpdatePlayersMap();
             UpdateHostname();
 
-            DiscordIntegration.SendEmbed(
-                "Match Loaded",
-                $"Series starting with {matchConfig.NumMaps} maps between {matchzyTeam1.teamName} and {matchzyTeam2.teamName}",
-                HexColors.Red,
-                discordWebhookURL
-            );
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await DiscordIntegration.SendEmbed(
+                        "Match Loaded",
+                        $"Series starting with {matchConfig.NumMaps} maps between {matchzyTeam1.teamName} and {matchzyTeam2.teamName}",
+                        HexColors.Red,
+                        discordWebhookURL
+                    );
+                }
+                catch (Exception ex)
+                {
+                    Log($"[MatchManagement] Exception when sending server start embed: {ex.Message}");
+                }
+            });
 
             var seriesStartedEvent = new MatchZySeriesStartedEvent
             {
