@@ -238,12 +238,14 @@ namespace MatchZy
             if (string.IsNullOrEmpty(message))
                 return;
 
-            var success = DiscordIntegration.SendAdminMessage(
-                player.PlayerName,
-                message,
-                discordWebhookURL,
-                discordAdminGroupId.Value
-            ).Result; // Explicitly await the result here
+            var success = DiscordIntegration
+                .SendAdminMessage(
+                    player.PlayerName,
+                    message,
+                    discordWebhookURL,
+                    discordAdminGroupId.Value
+                )
+                .Result; // Explicitly await the result here
 
             if (!success)
             {
