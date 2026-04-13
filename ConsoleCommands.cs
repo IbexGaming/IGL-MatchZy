@@ -253,8 +253,17 @@ namespace MatchZy
             }
             else
             {
+                string teamName;
+
+                if(player.CsTeam == CsTeam.CounterTerrorist){
+                    teamName = matchzyTeam1.teamName
+                }
+                else{
+                    teamName = matchzyTeam2.teamName
+                }
+
                 PrintToAllChat(
-                    $"<color=green>{player.teamName} ({player.PlayerName}</color> {Localizer["matchzy.calladmin.admincalled"]}"
+                    $"<color=green>{teamName} ({player.PlayerName})</color> {Localizer["matchzy.calladmin.admincalled"]}"
                 );
             }
         }
