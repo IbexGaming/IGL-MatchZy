@@ -228,7 +228,7 @@ namespace MatchZy
             SideSwitchCommand(player, CsTeam.CounterTerrorist);
         }
 
-        [ConsoleCommand("css_admin", "Message an Admin for Support")]
+        [ConsoleCommand("css_admin", "Call an Admin")]
         public void OnMessageAdmin(CCSPlayerController? player, CommandInfo? command)
         {
             if (player == null || command == null)
@@ -249,14 +249,12 @@ namespace MatchZy
 
             if (!success)
             {
-                player.PrintToChat(
-                    $"<color=red>Failed to send message to admins. Please open a support ticket on the Discord server.</color>"
-                );
+                player.PrintToChat(Localizer["matchzy.calladmin.admincalled"]);
             }
             else
             {
-                player.PrintToChat(
-                    $"<color=green>Message sent to admins. Hold tight for a response.</color>"
+                PrintToAllChat(
+                    $"<color=green>{player.teamName} ({player.PlayerName}</color> {Localizer["matchzy.calladmin.admincalled"]}"
                 );
             }
         }
