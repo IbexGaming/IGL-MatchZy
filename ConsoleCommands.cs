@@ -256,10 +256,10 @@ namespace MatchZy
                 string teamName;
 
                 if(player.CsTeam == CsTeam.CounterTerrorist){
-                    teamName = matchzyTeam1.teamName
+                    teamName = matchzyTeam1.teamName;
                 }
                 else{
-                    teamName = matchzyTeam2.teamName
+                    teamName = matchzyTeam2.teamName;
                 }
 
                 PrintToAllChat(
