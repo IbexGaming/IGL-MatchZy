@@ -255,10 +255,13 @@ namespace MatchZy
             {
                 string teamName;
 
-                if(player.Team == CsTeam.CounterTerrorist){
+                // Get team of the player
+                if (player.Team == CsTeam.CounterTerrorist)
+                {
                     teamName = matchzyTeam1.teamName;
                 }
-                else{
+                else
+                {
                     teamName = matchzyTeam2.teamName;
                 }
 
