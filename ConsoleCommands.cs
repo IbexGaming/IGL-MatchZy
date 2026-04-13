@@ -255,7 +255,7 @@ namespace MatchZy
             {
                 string teamName;
 
-                if(player.CsTeam == CsTeam.CounterTerrorist){
+                if(player.Team == CsTeam.CounterTerrorist){
                     teamName = matchzyTeam1.teamName;
                 }
                 else{
