@@ -21,6 +21,9 @@
   "matchzy.pause.matchended": "You cannot use this command after the game has ended.",
   "matchzy.pause.tacticaltimeout": "You cannot use this command when tactical timeout is active.",
 
+  "matchzy.calladmin.admincalled" : "called an {red}Amdin{default} !",
+  "matchzy.calladmin.callfailded" : "Failed to call an {red}Admin{default}, please open a support ticket on Discord !",
+
   "matchzy.restore.teamwantstorestore": "{green}{0}{default} wants to restore the game to the beginning of the current round. {green}{1}{default}, please write !stop to confirm.",
   "matchzy.restore.loadedsuccessfully": "Backup file loaded successfully: {0}",
   "matchzy.restore.restoredsuccessfully": "Backup restored successfully from file: {0}",
