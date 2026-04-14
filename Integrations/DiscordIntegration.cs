@@ -59,6 +59,15 @@ namespace MatchZy.Integrations
                 return true;
             }
 
+            Console.WriteLine(
+                "[DiscordIntegration] Non-200 Error Code returned while sending Admin Message: "
+                    + response.StatusCode
+            );
+            Console.WriteLine(
+                "[DiscordIntegration] Response Content: "
+                    + await response.Content.ReadAsStringAsync()
+            );
+
             return false;
         }
 
@@ -116,6 +125,15 @@ namespace MatchZy.Integrations
             {
                 return true;
             }
+
+            Console.WriteLine(
+                "[DiscordIntegration] Non-200 Error Code returned while sending Embed: "
+                    + response.StatusCode
+            );
+            Console.WriteLine(
+                "[DiscordIntegration] Response Content: "
+                    + await response.Content.ReadAsStringAsync()
+            );
 
             return false;
         }
