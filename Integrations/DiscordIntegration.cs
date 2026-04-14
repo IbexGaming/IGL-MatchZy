@@ -45,30 +45,38 @@ namespace MatchZy.Integrations
             {
                 content = $"<@&{discordAdminGroupId}> {player}: {message}\n\n[Connect to the server](steam://connect/{ip}:{port})",
             };
-            var response = await _httpClient.PostAsync(
-                webhookUrl,
-                new StringContent(
-                    JsonSerializer.Serialize(toSend),
-                    System.Text.Encoding.UTF8,
-                    "application/json"
-                )
-            );
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return true;
+                var response = await _httpClient.PostAsync(
+                    webhookUrl,
+                    new StringContent(
+                        JsonSerializer.Serialize(toSend),
+                        System.Text.Encoding.UTF8,
+                        "application/json"
+                    )
+                );
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+
+                Console.WriteLine(
+                    "[DiscordIntegration] Non-200 Error Code returned while sending Admin Message: "
+                        + response.StatusCode
+                );
+                Console.WriteLine(
+                    "[DiscordIntegration] Response Content: "
+                        + await response.Content.ReadAsStringAsync()
+                );
+
+                return false;
             }
-
-            Console.WriteLine(
-                "[DiscordIntegration] Non-200 Error Code returned while sending Admin Message: "
-                    + response.StatusCode
-            );
-            Console.WriteLine(
-                "[DiscordIntegration] Response Content: "
-                    + await response.Content.ReadAsStringAsync()
-            );
-
-            return false;
+            catch (Exception ex)
+            {
+                Console.WriteLine("[DiscordIntegration] Exception: " + ex.Message);
+                return false;
+            }
         }
 
         /// <summary>
@@ -83,14 +91,15 @@ namespace MatchZy.Integrations
             string title,
             string description,
             HexColor color,
-            string webhookUrl
+            string webhookUrl,
+            string ip
         )
         {
             if (string.IsNullOrEmpty(webhookUrl))
             {
                 return false;
             }
-            string? ip = ConVar.Find("ip")?.StringValue;
+            //string? ip = ConVar.Find("matchzy_public_ip")?.StringValue;
             int? port = ConVar.Find("hostport")?.GetPrimitiveValue<int>();
 
             string footerText = "MatchZy Server";
@@ -107,35 +116,43 @@ namespace MatchZy.Integrations
                     {
                         title,
                         description,
-                        color = color.Hex,
+                        color = color.Value,
                         footer = new { text = footerText },
                     },
                 },
             };
-            var response = await _httpClient.PostAsync(
-                webhookUrl,
-                new StringContent(
-                    JsonSerializer.Serialize(message),
-                    System.Text.Encoding.UTF8,
-                    "application/json"
-                )
-            );
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return true;
+                var response = await _httpClient.PostAsync(
+                    webhookUrl,
+                    new StringContent(
+                        JsonSerializer.Serialize(message),
+                        System.Text.Encoding.UTF8,
+                        "application/json"
+                    )
+                );
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+
+                Console.WriteLine(
+                    "[DiscordIntegration] Non-200 Error Code returned while sending Embed: "
+                        + response.StatusCode
+                );
+                Console.WriteLine(
+                    "[DiscordIntegration] Response Content: "
+                        + await response.Content.ReadAsStringAsync()
+                );
+
+                return false;
             }
-
-            Console.WriteLine(
-                "[DiscordIntegration] Non-200 Error Code returned while sending Embed: "
-                    + response.StatusCode
-            );
-            Console.WriteLine(
-                "[DiscordIntegration] Response Content: "
-                    + await response.Content.ReadAsStringAsync()
-            );
-
-            return false;
+            catch (Exception ex)
+            {
+                Console.WriteLine("[DiscordIntegration] Exception: " + ex.Message);
+                return false;
+            }
         }
     }
 }

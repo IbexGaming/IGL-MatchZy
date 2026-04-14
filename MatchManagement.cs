@@ -446,7 +446,8 @@ namespace MatchZy
                         "Match Loaded",
                         $"Series starting with {matchConfig.NumMaps} maps between {matchzyTeam1.teamName} and {matchzyTeam2.teamName}",
                         HexColors.Red,
-                        discordWebhookURL
+                        discordWebhookURL,
+                        publicIp.Value
                     );
                 }
                 catch (Exception ex)
@@ -771,7 +772,8 @@ namespace MatchZy
                                 : matchzyTeam1.teamName
                         ],
                     HexColors.Green,
-                    discordWebhookURL
+                    discordWebhookURL,
+                    publicIp.Value
                 );
             });
 
