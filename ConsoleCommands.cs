@@ -231,43 +231,52 @@ namespace MatchZy
         [ConsoleCommand("css_admin", "Call an Admin")]
         public void OnMessageAdmin(CCSPlayerController? player, CommandInfo? command)
         {
-            if (player == null || command == null)
-                return;
+            Log($"[MatchZy] Try to call and admin ...");
 
-            var message = command.ArgByIndex(1);
-            if (string.IsNullOrEmpty(message))
-                return;
-
-            var success = DiscordIntegration
-                .SendAdminMessage(
-                    player.PlayerName,
-                    message,
-                    discordWebhookURL,
-                    discordAdminGroupId.Value
-                )
-                .Result; // Explicitly await the result here
-
-            if (!success)
+            try
             {
-                player.PrintToChat(Localizer["matchzy.calladmin.admincalled"]);
-            }
-            else
-            {
-                string teamName;
+                if (player == null || command == null)
+                    return;
 
-                // Get team of the player
-                if (player.Team == CsTeam.CounterTerrorist)
+                var message = command.ArgByIndex(1);
+                if (string.IsNullOrEmpty(message))
+                    return;
+
+                var success = DiscordIntegration
+                    .SendAdminMessage(
+                        player.PlayerName,
+                        message,
+                        discordWebhookURL,
+                        discordAdminGroupId.Value
+                    )
+                    .Result; // Explicitly await the result here
+
+                if (!success)
                 {
-                    teamName = matchzyTeam1.teamName;
+                    PrintToPlayerChat(player, Localizer["matchzy.calladmin."]);
                 }
                 else
                 {
-                    teamName = matchzyTeam2.teamName;
-                }
+                    string teamName;
 
-                PrintToAllChat(
-                    $"<color=green>{teamName} ({player.PlayerName})</color> {Localizer["matchzy.calladmin.admincalled"]}"
-                );
+                    // Get team of the player
+                    if (player.Team == CsTeam.CounterTerrorist)
+                    {
+                        teamName = matchzyTeam1.teamName;
+                    }
+                    else
+                    {
+                        teamName = matchzyTeam2.teamName;
+                    }
+
+                    PrintToAllChat(
+                        $"<color=green>{teamName} ({player.PlayerName})</color> {Localizer["matchzy.calladmin.admincalled"]}"
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"[MatchZy] Fail to send to Discord webhook : {ex.Message}");
             }
         }
 

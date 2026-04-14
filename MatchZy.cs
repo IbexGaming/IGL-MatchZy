@@ -118,6 +118,7 @@ namespace MatchZy
                         HexColors.Green,
                         discordWebhookURL
                     );
+
                     if (!success)
                     {
                         Log("Failed to send server start embed via DiscordIntegration.");
