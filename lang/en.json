@@ -133,6 +133,10 @@
   "matchzy.utility.tacticaltimeout": "You cannot use this command when tactical timeout is active.",
   "matchzy.utility.dontpermission": "You do not have permission to use this command!",
 
+  "matchzy.discord.series_end_title": "Series Ended",
+  "matchzy.discord.series_end_victory_description": "{0} won the series with {1} - {2} against {3}.",
+  "matchzy.discord.series_end_draw_description": "The series between {0} and {1} ended in a draw with {2} - {3}.",
+
   "matchzy.pracc.smoke": "Smoke thrown by {red}{0}{default} took {green}{1}{default}s to detonate",
   "matchzy.pracc.flash": "Flash thrown by {red}{0}{default} took {green}{1}{default}s to detonate",
   "matchzy.pracc.grenade": "Grenade thrown by {red}{0}{default} took {green}{1}{default}s to detonate",
