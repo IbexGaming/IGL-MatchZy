@@ -9,6 +9,12 @@ namespace MatchZy
 {
     public partial class MatchZy
     {
+        public FakeConVar<string> publicIp = new(
+            "matchzy_public_ip",
+            "Public IP address of the server",
+            ""
+        );
+
         public FakeConVar<bool> smokeColorEnabled = new(
             "matchzy_smoke_color_enabled",
             "Whether player-specific smoke color is enabled or not. Default: false",
