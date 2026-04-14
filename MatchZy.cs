@@ -106,28 +106,31 @@ namespace MatchZy
             reverseTeamSides["CT"] = matchzyTeam1;
             reverseTeamSides["TERRORIST"] = matchzyTeam2;
 
-            var hostname = ConVar.Find("hostname")?.StringValue ?? "Unknown Server";
-
-            Task.Run(async () =>
-            {
-                try
+            AddTimer(
+                2.0f,
+                async () =>
                 {
-                    var success = await DiscordIntegration.SendEmbed(
-                        "Server has started.",
-                        hostname,
-                        HexColors.Green,
-                        discordWebhookURL
-                    );
-                    if (!success)
+                    try
                     {
-                        Log("Failed to send server start embed via DiscordIntegration.");
+                        var hostname = ConVar.Find("hostname")?.StringValue ?? "Unknown Server";
+                        var success = await DiscordIntegration.SendEmbed(
+                            "Server has started.",
+                            hostname,
+                            HexColors.Green,
+                            discordWebhookURL,
+                            publicIp.Value
+                        );
+                        if (!success)
+                        {
+                            Log("Failed to send server start embed via DiscordIntegration.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log($"Exception when sending server start embed: {ex.Message}");
                     }
                 }
-                catch (Exception ex)
-                {
-                    Log($"Exception when sending server start embed: {ex.Message}");
-                }
-            });
+            );
 
             if (!hotReload)
             {
