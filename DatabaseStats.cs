@@ -16,7 +16,7 @@ namespace MatchZy
 {
     public class Database
     {
-        private IDbConnection connection;
+        private IDbConnection connection = null!;
 
         DatabaseConfig? config;
         public DatabaseType databaseType { get; set; }
@@ -240,7 +240,7 @@ namespace MatchZy
                 cash_earned INT NOT NULL,
                 enemies_flashed INT NOT NULL,
                 PRIMARY KEY (matchid, mapnumber, steamid64),
-                CONSTRAINT fk_player_map_ref FOREIGN KEY (matchid, mapnumber) 
+                CONSTRAINT fk_player_map_ref FOREIGN KEY (matchid, mapnumber)
                     REFERENCES matchzy_stats_maps (matchid, mapnumber)
             )"
             );

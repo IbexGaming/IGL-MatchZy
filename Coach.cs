@@ -251,7 +251,7 @@ public partial class MatchZy
 
         // transfer bomb
         Log(
-            $"[EventPlayerGivenC4 INFO] Transferred bomb from {coach.PlayerName} (Coach) to {target.PlayerName}."
+            $"[EventPlayerGivenC4 INFO] Transferred bomb from {coach.PlayerName} (Coach) to {target!.PlayerName}."
         );
         bomb.Value!.Remove();
         target.GiveNamedItem("weapon_c4");
