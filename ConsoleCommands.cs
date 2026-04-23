@@ -5,6 +5,7 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
+using MatchZy.Integrations;
 
 namespace MatchZy
 {
@@ -225,6 +226,49 @@ namespace MatchZy
             if (!isPractice)
                 return;
             SideSwitchCommand(player, CsTeam.CounterTerrorist);
+        }
+
+        [ConsoleCommand("css_admin", "Call an Admin")]
+        public void OnMessageAdmin(CCSPlayerController? player, CommandInfo? command)
+        {
+            if (player == null || command == null)
+                return;
+
+            var message = command.ArgByIndex(1);
+            if (string.IsNullOrEmpty(message))
+                return;
+
+            var success = DiscordIntegration
+                .SendAdminMessage(
+                    player.PlayerName,
+                    message,
+                    discordWebhookURL,
+                    discordAdminGroupId.Value
+                )
+                .Result; // Explicitly await the result here
+
+            if (!success)
+            {
+                player.PrintToChat(Localizer["matchzy.calladmin.admincalled"]);
+            }
+            else
+            {
+                string teamName;
+
+                // Get team of the player
+                if (player.Team == CsTeam.CounterTerrorist)
+                {
+                    teamName = matchzyTeam1.teamName;
+                }
+                else
+                {
+                    teamName = matchzyTeam2.teamName;
+                }
+
+                PrintToAllChat(
+                    $"<color=green>{teamName} ({player.PlayerName})</color> {Localizer["matchzy.calladmin.admincalled"]}"
+                );
+            }
         }
 
         [ConsoleCommand("css_tech", "Pause the match")]
