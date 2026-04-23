@@ -601,7 +601,7 @@ namespace MatchZy
 
                     // A player controller still exists after a player disconnects
                     // Hence checking whether the player is actually in the server or not
-                    if (player.Connected != PlayerConnectedState.PlayerConnected)
+                    if (player.Connected != PlayerConnectedState.Connected)
                         continue;
 
                     if (player.UserId.HasValue)
@@ -923,6 +923,7 @@ namespace MatchZy
         {
             // Currently it is not possible to keep updating player tags while in warmup without restarting the match
             // Hence returning from here until we find a proper solution
+#pragma warning disable CS0162
             return;
 
             if (readyAvailable && !matchStarted)
@@ -960,7 +961,7 @@ namespace MatchZy
                 }
             }
         }
-
+#pragma warning restore CS0162
         private void HandleMatchEnd()
         {
             if (!isMatchLive)

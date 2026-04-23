@@ -865,7 +865,7 @@ namespace MatchZy
                                     }
 
                                     // Extract description, if available
-                                    string lineupDesc = lineupInfo.ContainsKey("Desc")
+                                    string? lineupDesc = lineupInfo.ContainsKey("Desc")
                                         ? lineupInfo["Desc"]
                                         : null;
 

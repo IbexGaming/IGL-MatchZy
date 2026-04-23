@@ -11,6 +11,7 @@ public partial class MatchZy
 
     public void TechPause(CCSPlayerController? player, CommandInfo? command)
     {
+#pragma warning disable CS0162
         // Tech Pause is WIP
         return;
 
@@ -74,5 +75,6 @@ public partial class MatchZy
             );
             return;
         }
+#pragma warning restore CS0162
     }
 }
