@@ -202,6 +202,12 @@ public class MatchZySidePickedEvent : MatchZyMapSelectionEvent
         : base("side_picked") { }
 }
 
+public class MatchZyVetoStartedEvent : MatchZyMatchEvent
+{
+    public MatchZyVetoStartedEvent()
+        : base("veto_started") { }
+}
+
 public class MatchZyDemoUploadedEvent : MatchZyMatchEvent
 {
     [JsonPropertyName("map_number")]
