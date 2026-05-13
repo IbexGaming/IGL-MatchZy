@@ -38,10 +38,7 @@ namespace MatchZy
             unpauseData["pauseTeam"] = "Admin";
             vetoStateTimer = AddTimer(1, VetoCountdown, TimerFlags.REPEAT);
             isVeto = true;
-            var vetoStartedEvent = new MatchZyVetoStartedEvent
-            {
-                MatchId = liveMatchId,
-            };
+            var vetoStartedEvent = new MatchZyVetoStartedEvent { MatchId = liveMatchId };
             Task.Run(async () =>
             {
                 await SendEventAsync(vetoStartedEvent);
