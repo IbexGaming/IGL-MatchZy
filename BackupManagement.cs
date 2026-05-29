@@ -384,6 +384,8 @@ namespace MatchZy
                             string fileName = Path.GetFileName(tempFilePath);
 
                             Server.ExecuteCommand($"mp_backup_restore_load_file {fileName}");
+                            Server.ExecuteCommand($"mp_teamname_1 {matchzyTeam1.teamName}");
+                            Server.ExecuteCommand($"mp_teamname_2 {matchzyTeam2.teamName}");
                             StartDemoRecording();
                         }
                     );
