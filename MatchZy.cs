@@ -10,7 +10,7 @@ namespace MatchZy
     [MinimumApiVersion(227)]
     public partial class MatchZy : BasePlugin
     {
-        public override string ModuleName => "IGL - MatchZy";
+        public override string ModuleName => "IbexBot";
 
         public override string ModuleVersion => "0.9.4";
 
@@ -20,7 +20,7 @@ namespace MatchZy
         public override string ModuleDescription =>
             "A plugin for running and managing CS2 practice/pugs/scrims/matches!";
 
-        public string chatPrefix = $"[{ChatColors.Green}MatchZy{ChatColors.Default}]";
+        public string chatPrefix = $"[{ChatColors.DarkBlue}IbexBot{ChatColors.Default}]";
         public string adminChatPrefix = $"[{ChatColors.Red}ADMIN{ChatColors.Default}]";
 
         // Plugin start phase data
