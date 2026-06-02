@@ -1220,14 +1220,14 @@ namespace MatchZy
                     coachKillTimer?.Kill();
                     coachKillTimer = null;
                     (int t1score, int t2score) = GetTeamsScore();
-                    
+
                     if (enableScoreReport.Value)
                     {
                         Server.PrintToChatAll(
                             $"{chatPrefix} {ChatColors.Green}{matchzyTeam1.teamName} [{t1score} - {t2score}] {matchzyTeam2.teamName}"
                         );
                     }
-                    
+
                     ShowDamageInfo();
 
                     (
