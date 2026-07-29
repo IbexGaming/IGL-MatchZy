@@ -2191,7 +2191,7 @@ namespace MatchZy
                 using FileStream fileStream = File.OpenRead(filePath);
 
                 byte[] fileContent = new byte[fileStream.Length];
-                await fileStream.ReadAsync(fileContent, 0, (int)fileStream.Length);
+                await fileStream.ReadExactlyAsync(fileContent, 0, (int)fileStream.Length);
 
                 using ByteArrayContent content = new(fileContent);
                 content.Headers.Add("Content-Type", "application/octet-stream");
