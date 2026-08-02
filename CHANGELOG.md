@@ -1,5 +1,25 @@
 # MatchZy Changelog
 
+# 0.9.4
+
+#### August 2, 2026
+
+- Upgraded project to .NET 10
+- Fixed team names not being set correctly after round backup restore
+- Fixed backup file reading to use exact file length
+
+# 0.9.3
+
+#### May 13, 2026
+
+- Upgraded CounterStrikeSharp dependency
+
+# 0.9.2
+
+#### April 23, 2026
+
+- Added `veto_started` event
+
 # 0.9.1
 
 #### April 9, 2026
