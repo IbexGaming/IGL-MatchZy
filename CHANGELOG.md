@@ -1,5 +1,11 @@
 # MatchZy Changelog
 
+# 0.9.5
+
+#### August 27
+
+- Upgraded CounterStrikeSharp to 1.0.373
+
 # 0.9.4
 
 #### August 2, 2026
@@ -51,7 +57,7 @@
 - Added .savepos and .loadpos commands in practice mode.
 - Fixed noclip not getting disabled after switching out from practice mode.
 - Fixed issues with rethrow of smoke / molly / nade.
-- Fixed .rethrow always throwing incendiary instead of molotov. 
+- Fixed .rethrow always throwing incendiary instead of molotov.
 - Fixed `RemoteLogHeaderValue` value while resetting the match.
 
 # 0.8.13
@@ -132,7 +138,7 @@
 - Fixes in coach system, where players would spawn into each other.
 - Improved backup loading (teams will be locked automatically with the first restore if match setup was being used.)
 - Fixed veto bug where ready system would not work after the veto.
-- Updated Uzbek translations 
+- Updated Uzbek translations
 
 # 0.8.3
 
@@ -151,7 +157,7 @@
 - If a match is loaded, player will directly join their respective team, skipping the join team menu.
 - Fixed a bug where loading a saved nade would make the player stuck.
 - Added `matchzy_stop_command_no_damage` convar to determine whether the stop command becomes unavailable if a player damages a player from the opposing team.
-- `.map` command can now be used without "de_" prefix for maps. (Example: .map dust2)
+- `.map` command can now be used without "de\_" prefix for maps. (Example: .map dust2)
 
 # 0.8.1
 
@@ -170,7 +176,7 @@
 - Added matchzy_hostname_format for hostname formatting.
 - Improved player color smokes in practice mode
 - Fixed .last grenade's player rotation
-- Added switching of maps without adding de_ prefix (using .map command)
+- Added switching of maps without adding de\_ prefix (using .map command)
 - Marked the requestBody as required: true in event_schema.yml
 
 # 0.7.13
@@ -181,10 +187,9 @@
 - Added smart quering for nadenames, where the closest name is being selected for loading names (.ln mid can be used to load a nade with name midflash)
 - Added to allow the same lineup-name on different maps, so you can pick like b-smoke multiple times, but once per map. Updated logic for savenade, deletenade, importnade for this.
 - Added missing ! commands for listnades, importnade and deletenade.
-- Changed cash_team_planted_bomb_but_defused from 800 to 600 as per the update https://store.steampowered.com/news/app/730/view/4177730135016140040
+- Changed cash_team_planted_bomb_but_defused from 800 to 600 as per the update <https://store.steampowered.com/news/app/730/view/4177730135016140040>
 - Added "override" config for live.cfg and live_wingman.cfg (Simply create live_override.cfg and live_wingman_override.cfg in the cfg folder if you want to override any of the commands.)
 - Added Uzbek, Japanese, Hungarian and Traditional Chinese translations
-
 
 # 0.7.12
 
@@ -321,7 +326,7 @@
 
 **Admin**
 
-- Added a convar `matchzy_everyone_is_admin`, if set to `true`, all the players will be granted admin privileges for MatchZy commands. 
+- Added a convar `matchzy_everyone_is_admin`, if set to `true`, all the players will be granted admin privileges for MatchZy commands.
 
 **CSSharp**
 
@@ -345,7 +350,7 @@
 
 **Match Mode**
 
-- Fixed `.stay` and `.switch` not working in in side-selection phase after CS2's Arms Race update. 
+- Fixed `.stay` and `.switch` not working in in side-selection phase after CS2's Arms Race update.
 - Added `!forceready` command which force-readies player's team (Currently works only in match setup using JSON/Get5, based on the value of `min_players_to_ready`)
 - Improved `get5_status` command, which will now display proper `gamestate` and `matchid` when a match is loaded using JSON/Get5 (Thanks to [@The0mikkel](https://github.com/The0mikkel))
 
@@ -367,16 +372,16 @@
 
 #### Dec 14, 2023
 
-- Added support for Get5 Web panel! (G5V and G5API) (Read more at: https://shobhit-pathak.github.io/MatchZy/get5/)
-What can Get5 Web Panel + MatchZy can do?
+- Added support for Get5 Web panel! (G5V and G5API) (Read more at: <https://shobhit-pathak.github.io/MatchZy/get5/>)
+  What can Get5 Web Panel + MatchZy can do?
 
 1. Create teams and setup matches from web panel
 2. Support for BO1, BO3, BO5, etc with Veto and Knife Round
-2. Get veto, scores and player stats live on the panel
-3. Get demo uploaded automatically on the panel (which can be downloaded from its match page)
-4. Pause and unpause game from the panel
-5. Add players in a live game
-6. And much more!!!
+3. Get veto, scores and player stats live on the panel
+4. Get demo uploaded automatically on the panel (which can be downloaded from its match page)
+5. Pause and unpause game from the panel
+6. Add players in a live game
+7. And much more!!!
 
 # 0.5.1-alpha
 
@@ -397,21 +402,20 @@ What can Get5 Web Panel + MatchZy can do?
 
 #### Dec 6, 2023
 
-- Matches can now be setup using JSON file! This includes locking players to their correct team and side, setting the map(s) and configuring the game rules. Added `matchzy_loadmatch <filepath>` and `matchzy_loadmatch_url "<url>"` commands (read more at https://shobhit-pathak.github.io/MatchZy/match_setup/)
-- Demos can now be uploaded to a URL once the map and recording ends. Command to setup the upload URL: `matchzy_demo_upload_url "<url>"` (read more at https://shobhit-pathak.github.io/MatchZy/gotv/#automatic-upload)
+- Matches can now be setup using JSON file! This includes locking players to their correct team and side, setting the map(s) and configuring the game rules. Added `matchzy_loadmatch <filepath>` and `matchzy_loadmatch_url "<url>"` commands (read more at <https://shobhit-pathak.github.io/MatchZy/match_setup/>)
+- Demos can now be uploaded to a URL once the map and recording ends. Command to setup the upload URL: `matchzy_demo_upload_url "<url>"` (read more at <https://shobhit-pathak.github.io/MatchZy/gotv/#automatic-upload>)
 - Removed map reload on map end to avoid any issues
 - Fixed issues while restoring round during halftime
 - Fixed lag on round end which was due to pushing stats into the database. Now that operation is async!
-- This one is not related to the working of the plugin, but we have a new documentation page! https://shobhit-pathak.github.io/MatchZy/
+- This one is not related to the working of the plugin, but we have a new documentation page! <https://shobhit-pathak.github.io/MatchZy/>
 
 # 0.4.3-alpha
 
 #### Nov 25, 2023
 
 - A full implementation of CSSharp's admin system!
-You can now fine-tune admin permissions as per your requirement
-Flag-wise permissions:
-
+  You can now fine-tune admin permissions as per your requirement
+  Flag-wise permissions:
   - `@css/root`: Grants access to all admin commands
   - `@css/config`: Grants access to config related admin commands
   - `@custom/prac`: Grants access to practice related admin commands
@@ -421,7 +425,7 @@ Flag-wise permissions:
 
 - Added `.forcepause` and `.forceunpause` commands for admins so that they can use `.pause` and `.unpause` as a player while playing (Use `.fp` and `.fup` for shorter commands)
 - Added `.playout` commands to toggle Playout! (If playout is enabled, all rounds would be played irrespective of winner. Useful in scrims!). Also added `matchzy_playout_enabled_default` command to enable/disable playout by default. Default: `matchzy_playout_enabled_default false`
--  Added `matchzy_admin_chat_prefix` command to configure admin chat prefix when using `.asay <message>`. Default: `matchzy_admin_chat_prefix [{Red}ADMIN{Default}]`
+- Added `matchzy_admin_chat_prefix` command to configure admin chat prefix when using `.asay <message>`. Default: `matchzy_admin_chat_prefix [{Red}ADMIN{Default}]`
 - Added `.help` command to list all the available commands during that match phase
 - Rounded off blind duration in practice mode to 2 decimal places.
 - Added damage report for bot in practice mode (for every hit, similar to Get5 practice mode)
@@ -434,7 +438,8 @@ Flag-wise permissions:
 #### Nov 21, 2023
 
 - MatchZy now supports CSSharp's admin system!
-You can create a new entry in the `/addons/counterstrikesharp/configs/admins.json` file with `@css/generic` generic flag like mentioned in the below example:
+  You can create a new entry in the `/addons/counterstrikesharp/configs/admins.json` file with `@css/generic` generic flag like mentioned in the below example:
+
 ```
 {
   "WD-": {
@@ -481,7 +486,7 @@ To maintain backwards compatibility, we still support creating admins using olde
 - Team names can now be configured using `!team1 <teamname>` and `!team2 <teamname>` command. The same will be stored in Database and CSV.
 - If team names are not configured, it will be configured automatically by picking a player's name randomly from both the teams (For example, if there is a player `WD-`, their teamname will be set to `team_WD-`)
 - Damage report in chat will be shown on round end (similar to Faceit!)
-- Chat timer delay can now be configured using `matchzy_chat_messages_timer_delay`. Example: `matchzy_chat_messages_timer_delay 12` 
+- Chat timer delay can now be configured using `matchzy_chat_messages_timer_delay`. Example: `matchzy_chat_messages_timer_delay 12`
 - Players can be whitelisted by adding their steam64id in `cfg/MatchZy/whitelist.cfg`. Whitelisting is a toggleable feature and can be enabled using `.whitelist`. To enable it by default, set `matchzy_whitelist_enabled_default true` in `cfg/MatchZy/config.cfg`
 
 ![image](https://github.com/shobhit-pathak/MatchZy/assets/140690706/85b64823-419c-41d2-850d-d8f88fa4a4ca)

@@ -12,7 +12,7 @@ namespace MatchZy
     {
         public override string ModuleName => "IGL - MatchZy";
 
-        public override string ModuleVersion => "0.9.4";
+        public override string ModuleVersion => "0.9.5";
 
         public override string ModuleAuthor =>
             "Ibex Gaming League & WD- (https://github.com/shobhit-pathak/)";
