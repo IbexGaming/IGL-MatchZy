@@ -2,8 +2,11 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes;
 using CounterStrikeSharp.API.Modules.Commands;
+using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Events;
 using CounterStrikeSharp.API.Modules.Utils;
+using MatchZy.Integrations;
+using MatchZy.Util;
 
 namespace MatchZy
 {
@@ -80,6 +83,9 @@ namespace MatchZy
 
         public bool playerHasTakenDamage = false;
 
+        // Integration Settings
+        public string discordWebhookURL = "";
+
         // User command - action map
         public Dictionary<string, Action<CCSPlayerController?, CommandInfo?>>? commandActions;
 
@@ -100,6 +106,32 @@ namespace MatchZy
             reverseTeamSides["CT"] = matchzyTeam1;
             reverseTeamSides["TERRORIST"] = matchzyTeam2;
 
+            AddTimer(
+                2.0f,
+                async () =>
+                {
+                    try
+                    {
+                        var hostname = ConVar.Find("hostname")?.StringValue ?? "Unknown Server";
+                        var success = await DiscordIntegration.SendEmbed(
+                            "Server has started.",
+                            hostname,
+                            HexColors.Green,
+                            discordWebhookURL,
+                            publicIp.Value
+                        );
+                        if (!success)
+                        {
+                            Log("Failed to send server start embed via DiscordIntegration.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log($"Exception when sending server start embed: {ex.Message}");
+                    }
+                }
+            );
+
             if (!hotReload)
             {
                 AutoStart();
@@ -114,6 +146,7 @@ namespace MatchZy
 
             commandActions = new Dictionary<string, Action<CCSPlayerController?, CommandInfo?>>
             {
+                { ".admin", OnMessageAdmin },
                 { ".ready", OnPlayerReady },
                 { ".r", OnPlayerReady },
                 { ".forceready", OnForceReadyCommandCommand },
@@ -643,7 +676,7 @@ namespace MatchZy
             RegisterEventHandler<EventDecoyStarted>(EventDecoyDetonateHandler);
 
             Console.WriteLine(
-                $"[{ModuleName} {ModuleVersion} LOADED] MatchZy by WD- (https://github.com/shobhit-pathak/)"
+                $"[{ModuleName} {ModuleVersion} LOADED] IGL-MatchZy by Ibex Gaming League (https://github.com/IbexGaming) & WD- (https://github.com/shobhit-pathak/)"
             );
         }
     }
