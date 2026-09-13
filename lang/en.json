@@ -1,18 +1,18 @@
 {
-  "matchzy.ready.markedready": "You have been marked as ready.",
-  "matchzy.ready.markedunready": "You have been marked as NOT ready.",
-  "matchzy.ready.readytotestorebackupinfomessage": "Unready players: {0}. Please type .ready when you are ready to restore the match backup. {1}",
+  "matchzy.ready.markedready": "You have been marked as {green}ready{default}.",
+  "matchzy.ready.markedunready": "You have been marked as {red}not ready{default}.",
+  "matchzy.ready.readytotestorebackupinfomessage": "Waiting for ready from: {0} to restore the match backup. {1}",
 
   "matchzy.knife.sidedecisionpending": "{green}{0}{default} won the knife round. Waiting for them to type {green}.stay{default} or {green}.switch{default}.",
   "matchzy.knife.decidedtostay": "{green}{0}{default} has decided to stay.",
   "matchzy.knife.decidedtoswitch": "{green}{0}{default} has decided to switch.",
 
   "matchzy.pause.pausedthematch": "{green}{0}{default} has paused the match. Type .unpause to unpause the match.",
-  "matchzy.pause.teamsunpausedthematch": "Both teams have unpaused, resuming the match!",
-  "matchzy.pause.teamwantstounpause": "{green}{0}{default} wants to unpause the match. {green}{1}{default}, please write !unpause to confirm.",
+  "matchzy.pause.teamsunpausedthematch": "Match has resumed!",
+  "matchzy.pause.teamwantstounpause": "{green}{0}{default} wants to unpause the match. Waiting for unpause from: {green}{1}{default}.",
   "matchzy.pause.adminpausedthematch": "{green}Admin{default} has paused the match!",
-  "matchzy.pause.adminunpausedthematch": "{green}Admin{default} has unpaused, resuming the match!",
-  "matchzy.pause.onlyadmincanunpause": "Match has been paused by an admin, hence it can be unpaused by an admin only.",
+  "matchzy.pause.adminunpausedthematch": "{green}Admin{default} has unpaused the match!",
+  "matchzy.pause.onlyadmincanunpause": "Match has been paused by an {red}admin{default}, hence it can be unpaused by an admin only.",
   "matchzy.pause.pausedbecauserestore": "Match has been paused because of Round Restore. Both teams need to type {green}.unpause{default} to unpause the match.",
   "matchzy.pause.techpausenotenabled": "Technical pauses are not enabled.",
   "matchzy.pause.notechpauseleft": "{green}{0}{default} has no more tech pauses!",
@@ -51,7 +51,7 @@
   "matchzy.cc.startmatchstarted": "Start command cannot be used if match is already started! If you want to unpause, please use .unpause",
   "matchzy.cc.gamestarted": "{red}Admin{default} has started the game!",
   "matchzy.cc.rrispracc": "Practice mode is active, cannot restart the match.",
-  "matchzy.cc.endmatch": "An admin force-ended the match.",
+  "matchzy.cc.endmatch": "{red}Admin{default} force-ended the match.",
   "matchzy.cc.endmatchispracc": "Practice mode is active, cannot end the match.",
   "matchzy.cc.currentsettings": "Current Settings:",
   "matchzy.cc.knifestatus": "Knife: {green}{0}{default}",
@@ -117,7 +117,7 @@
 
   "matchzy.sleep.sleepwhenmatchstared": "Sleep Mode cannot be started when a match has been started!",
 
-  "matchzy.utility.unreadyplayers": "Unready players: {0}. Please type .ready to ready up! {1}",
+  "matchzy.utility.unreadyplayers": "Waiting for ready from: {0}. Please type .ready to ready up! {1}",
   "matchzy.utility.readyplayers": "Current ready players: {green}{0}{default}",
   "matchzy.utility.minimumreadyplayers": "Minimum ready players required {green}{0}{default}, current ready players: {green}{1}{default}",
   "matchzy.utility.matchstarted": "Map cannot be changed once the match is started!",

@@ -188,10 +188,10 @@ namespace MatchZy
             else
             {
                 int countOfReadyPlayers = playerReadyStatus.Count(kv => kv.Value == true);
-                if (isMatchSetup)
+                /*if (isMatchSetup)
                 {
                     // Server.PrintToChatAll($"{chatPrefix} Current ready players: {ChatColors.Green}{countOfReadyPlayers}{ChatColors.Default}");
-                    PrintToAllChat(Localizer["matchzy.utility.readyplayers", countOfReadyPlayers]);
+                    // PrintToAllChat(Localizer["matchzy.utility.readyplayers", countOfReadyPlayers]);
                 }
                 else
                 {
@@ -203,7 +203,7 @@ namespace MatchZy
                             countOfReadyPlayers
                         ]
                     );
-                }
+                }*/
             }
         }
 
@@ -317,9 +317,7 @@ namespace MatchZy
                 );
             }
 
-            PrintToAllChat($"{ChatColors.Olive}KNIFE!");
-            PrintToAllChat($"{ChatColors.Lime}KNIFE!");
-            PrintToAllChat($"{ChatColors.Green}KNIFE!");
+            PrintToAllChat($"Knife round is {ChatColors.Green}live!");
         }
 
         private void SendSideSelectionMessage()
@@ -389,9 +387,7 @@ namespace MatchZy
             // This is to reload the map once it is over so that all flags are reset accordingly
             Server.ExecuteCommand("mp_match_end_restart true");
 
-            PrintToAllChat($"{ChatColors.Olive}LIVE!");
-            PrintToAllChat($"{ChatColors.Lime}LIVE!");
-            PrintToAllChat($"{ChatColors.Green}LIVE!");
+            PrintToAllChat($"Match is {ChatColors.Green}live!");
 
             var goingLiveEvent = new GoingLiveEvent
             {
@@ -1220,9 +1216,13 @@ namespace MatchZy
                     coachKillTimer?.Kill();
                     coachKillTimer = null;
                     (int t1score, int t2score) = GetTeamsScore();
-                    Server.PrintToChatAll(
-                        $"{chatPrefix} {ChatColors.Green}{matchzyTeam1.teamName} [{t1score} - {t2score}] {matchzyTeam2.teamName}"
-                    );
+
+                    if (enableScoreReport.Value)
+                    {
+                        Server.PrintToChatAll(
+                            $"{chatPrefix} {ChatColors.Green}{matchzyTeam1.teamName} [{t1score} - {t2score}] {matchzyTeam2.teamName}"
+                        );
+                    }
 
                     ShowDamageInfo();
 

@@ -56,8 +56,14 @@ namespace MatchZy
 
         public FakeConVar<bool> enableDamageReport = new(
             "matchzy_enable_damage_report",
-            "Whether to show damage report after each round or not. Default: true",
-            true
+            "Whether to show damage report after each round or not. Default: false",
+            false
+        );
+
+        public FakeConVar<bool> enableScoreReport = new(
+            "match_enable_score_report",
+            "Whether to show score report after each round or not. Default: false",
+            false
         );
 
         public FakeConVar<bool> stopCommandNoDamage = new(
