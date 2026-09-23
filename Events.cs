@@ -246,6 +246,17 @@ public class MatchZyForceUnpausedEvent : MatchZyMapEvent
     public MatchZyForceUnpausedEvent() : base("match_force_unpaused") { }
 }
 
+public class MatchZyTimeoutStartedEvent : MatchZyMapEvent
+{
+    [JsonPropertyName("team")]
+    public required string Team { get; init; }
+
+    [JsonPropertyName("side")]
+    public required string Side { get; init; }
+
+    public MatchZyTimeoutStartedEvent() : base("timeout_started") { }
+}
+
 public class MatchZyChatMessageEvent : MatchZyMapEvent
 {
     [JsonPropertyName("steamid")]

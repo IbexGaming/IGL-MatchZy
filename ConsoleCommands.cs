@@ -368,6 +368,14 @@ namespace MatchZy
                     if (gameRules.TerroristTimeOuts > 0)
                     {
                         Server.ExecuteCommand("timeout_terrorist_start");
+                        var timeoutEvent = new MatchZyTimeoutStartedEvent
+                        {
+                            MatchId = liveMatchId,
+                            MapNumber = matchConfig.CurrentMapNumber,
+                            Team = reverseTeamSides["TERRORIST"].teamName,
+                            Side = "T",
+                        };
+                        Task.Run(async () => { await SendEventAsync(timeoutEvent); });
                     }
                     else
                     {
@@ -380,6 +388,14 @@ namespace MatchZy
                     if (gameRules.CTTimeOuts > 0)
                     {
                         Server.ExecuteCommand("timeout_ct_start");
+                        var timeoutEvent = new MatchZyTimeoutStartedEvent
+                        {
+                            MatchId = liveMatchId,
+                            MapNumber = matchConfig.CurrentMapNumber,
+                            Team = reverseTeamSides["CT"].teamName,
+                            Side = "CT",
+                        };
+                        Task.Run(async () => { await SendEventAsync(timeoutEvent); });
                     }
                     else
                     {
