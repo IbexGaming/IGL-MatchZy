@@ -463,6 +463,27 @@ namespace MatchZy
                         player = playerData[playerUserId];
                     }
 
+                    if (isMatchLive && player != null)
+                    {
+                        string chatSide = player.TeamNum == 2 ? "T" : player.TeamNum == 3 ? "CT" : "Spectator";
+                        string chatTeam = player.TeamNum == 2
+                            ? reverseTeamSides["TERRORIST"].teamName
+                            : player.TeamNum == 3
+                                ? reverseTeamSides["CT"].teamName
+                                : "";
+                        var chatEvent = new MatchZyChatMessageEvent
+                        {
+                            MatchId = liveMatchId,
+                            MapNumber = matchConfig.CurrentMapNumber,
+                            SteamId = player.SteamID,
+                            PlayerName = player.PlayerName,
+                            Team = chatTeam,
+                            Side = chatSide,
+                            Message = originalMessage,
+                        };
+                        Task.Run(async () => { await SendEventAsync(chatEvent); });
+                    }
+
                     // Handling player commands
                     if (commandActions.ContainsKey(message))
                     {
