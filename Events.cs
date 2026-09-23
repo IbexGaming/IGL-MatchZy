@@ -208,6 +208,44 @@ public class MatchZyVetoStartedEvent : MatchZyMatchEvent
         : base("veto_started") { }
 }
 
+public class MatchZyPausedEvent : MatchZyMapEvent
+{
+    [JsonPropertyName("team")]
+    public required string Team { get; init; }
+
+    [JsonPropertyName("side")]
+    public required string Side { get; init; }
+
+    public MatchZyPausedEvent() : base("match_paused") { }
+}
+
+public class MatchZyForcePausedEvent : MatchZyMapEvent
+{
+    public MatchZyForcePausedEvent() : base("match_force_paused") { }
+}
+
+public class MatchZyUnpausedEvent : MatchZyMapEvent
+{
+    [JsonPropertyName("team")]
+    public required string Team { get; init; }
+
+    [JsonPropertyName("side")]
+    public required string Side { get; init; }
+
+    [JsonPropertyName("pause_duration")]
+    public required int PauseDuration { get; init; }
+
+    public MatchZyUnpausedEvent() : base("match_unpaused") { }
+}
+
+public class MatchZyForceUnpausedEvent : MatchZyMapEvent
+{
+    [JsonPropertyName("pause_duration")]
+    public required int PauseDuration { get; init; }
+
+    public MatchZyForceUnpausedEvent() : base("match_force_unpaused") { }
+}
+
 public class MatchZyChatMessageEvent : MatchZyMapEvent
 {
     [JsonPropertyName("steamid")]

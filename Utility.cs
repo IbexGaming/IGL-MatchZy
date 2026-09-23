@@ -1428,6 +1428,14 @@ namespace MatchZy
                 // Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{pauseTeamName}{ChatColors.Default} has paused the match. Type .unpause to unpause the match");
 
                 SetMatchPausedFlags();
+                var pausedEvent = new MatchZyPausedEvent
+                {
+                    MatchId = liveMatchId,
+                    MapNumber = matchConfig.CurrentMapNumber,
+                    Team = pauseTeamName,
+                    Side = player?.TeamNum == 2 ? "T" : "CT",
+                };
+                Task.Run(async () => { await SendEventAsync(pausedEvent); });
             }
         }
 
@@ -1474,6 +1482,12 @@ namespace MatchZy
                 );
             }
             SetMatchPausedFlags();
+            var forcePausedEvent = new MatchZyForcePausedEvent
+            {
+                MatchId = liveMatchId,
+                MapNumber = matchConfig.CurrentMapNumber,
+            };
+            Task.Run(async () => { await SendEventAsync(forcePausedEvent); });
         }
 
         private void ForceUnpauseMatch(CCSPlayerController? player, CommandInfo? command)
@@ -1486,6 +1500,13 @@ namespace MatchZy
                     return;
                 }
                 PrintToAllChat(Localizer["matchzy.pause.adminunpausedthematch"]);
+                var forceUnpausedEvent = new MatchZyForceUnpausedEvent
+                {
+                    MatchId = liveMatchId,
+                    MapNumber = matchConfig.CurrentMapNumber,
+                    PauseDuration = (int)(DateTime.Now - _pauseStartTime).TotalSeconds,
+                };
+                Task.Run(async () => { await SendEventAsync(forceUnpausedEvent); });
                 UnpauseMatch();
 
                 if (player == null)
@@ -1515,6 +1536,7 @@ namespace MatchZy
             coachKillTimer?.Kill();
             coachKillTimer = null;
 
+            _pauseStartTime = DateTime.Now;
             Server.ExecuteCommand("mp_pause_match;");
             isPaused = true;
 

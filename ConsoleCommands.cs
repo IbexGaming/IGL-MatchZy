@@ -301,6 +301,15 @@ namespace MatchZy
                 if ((bool)unpauseData["t"] && (bool)unpauseData["ct"])
                 {
                     PrintToAllChat(Localizer["matchzy.pause.teamsunpausedthematch"]);
+                    var unpausedEvent = new MatchZyUnpausedEvent
+                    {
+                        MatchId = liveMatchId,
+                        MapNumber = matchConfig.CurrentMapNumber,
+                        Team = unpauseTeamName,
+                        Side = player?.TeamNum == 2 ? "T" : "CT",
+                        PauseDuration = (int)(DateTime.Now - _pauseStartTime).TotalSeconds,
+                    };
+                    Task.Run(async () => { await SendEventAsync(unpausedEvent); });
                     Server.ExecuteCommand("mp_unpause_match;");
                     isPaused = false;
                     unpauseData["ct"] = false;

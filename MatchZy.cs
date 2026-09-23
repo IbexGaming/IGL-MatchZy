@@ -39,6 +39,7 @@ namespace MatchZy
 
         // Pause Data
         public bool isPaused = false;
+        private DateTime _pauseStartTime = DateTime.Now;
         public Dictionary<string, object> unpauseData = new Dictionary<string, object>
         {
             { "ct", false },
