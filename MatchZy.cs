@@ -466,12 +466,14 @@ namespace MatchZy
 
                     if (isMatchLive && player != null)
                     {
-                        string chatSide = player.TeamNum == 2 ? "T" : player.TeamNum == 3 ? "CT" : "Spectator";
-                        string chatTeam = player.TeamNum == 2
-                            ? reverseTeamSides["TERRORIST"].teamName
-                            : player.TeamNum == 3
-                                ? reverseTeamSides["CT"].teamName
-                                : "";
+                        string chatSide =
+                            player.TeamNum == 2 ? "T"
+                            : player.TeamNum == 3 ? "CT"
+                            : "Spectator";
+                        string chatTeam =
+                            player.TeamNum == 2 ? reverseTeamSides["TERRORIST"].teamName
+                            : player.TeamNum == 3 ? reverseTeamSides["CT"].teamName
+                            : "";
                         var chatEvent = new MatchZyChatMessageEvent
                         {
                             MatchId = liveMatchId,
@@ -482,7 +484,10 @@ namespace MatchZy
                             Side = chatSide,
                             Message = originalMessage,
                         };
-                        Task.Run(async () => { await SendEventAsync(chatEvent); });
+                        Task.Run(async () =>
+                        {
+                            await SendEventAsync(chatEvent);
+                        });
                     }
 
                     // Handling player commands

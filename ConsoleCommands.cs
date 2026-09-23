@@ -309,7 +309,10 @@ namespace MatchZy
                         Side = player?.TeamNum == 2 ? "T" : "CT",
                         PauseDuration = (int)(DateTime.Now - _pauseStartTime).TotalSeconds,
                     };
-                    Task.Run(async () => { await SendEventAsync(unpausedEvent); });
+                    Task.Run(async () =>
+                    {
+                        await SendEventAsync(unpausedEvent);
+                    });
                     Server.ExecuteCommand("mp_unpause_match;");
                     isPaused = false;
                     unpauseData["ct"] = false;
@@ -375,7 +378,10 @@ namespace MatchZy
                             Team = reverseTeamSides["TERRORIST"].teamName,
                             Side = "T",
                         };
-                        Task.Run(async () => { await SendEventAsync(timeoutEvent); });
+                        Task.Run(async () =>
+                        {
+                            await SendEventAsync(timeoutEvent);
+                        });
                     }
                     else
                     {
@@ -395,7 +401,10 @@ namespace MatchZy
                             Team = reverseTeamSides["CT"].teamName,
                             Side = "CT",
                         };
-                        Task.Run(async () => { await SendEventAsync(timeoutEvent); });
+                        Task.Run(async () =>
+                        {
+                            await SendEventAsync(timeoutEvent);
+                        });
                     }
                     else
                     {

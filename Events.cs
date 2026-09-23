@@ -216,12 +216,14 @@ public class MatchZyPausedEvent : MatchZyMapEvent
     [JsonPropertyName("side")]
     public required string Side { get; init; }
 
-    public MatchZyPausedEvent() : base("match_paused") { }
+    public MatchZyPausedEvent()
+        : base("match_paused") { }
 }
 
 public class MatchZyForcePausedEvent : MatchZyMapEvent
 {
-    public MatchZyForcePausedEvent() : base("match_force_paused") { }
+    public MatchZyForcePausedEvent()
+        : base("match_force_paused") { }
 }
 
 public class MatchZyUnpausedEvent : MatchZyMapEvent
@@ -235,7 +237,8 @@ public class MatchZyUnpausedEvent : MatchZyMapEvent
     [JsonPropertyName("pause_duration")]
     public required int PauseDuration { get; init; }
 
-    public MatchZyUnpausedEvent() : base("match_unpaused") { }
+    public MatchZyUnpausedEvent()
+        : base("match_unpaused") { }
 }
 
 public class MatchZyForceUnpausedEvent : MatchZyMapEvent
@@ -243,7 +246,8 @@ public class MatchZyForceUnpausedEvent : MatchZyMapEvent
     [JsonPropertyName("pause_duration")]
     public required int PauseDuration { get; init; }
 
-    public MatchZyForceUnpausedEvent() : base("match_force_unpaused") { }
+    public MatchZyForceUnpausedEvent()
+        : base("match_force_unpaused") { }
 }
 
 public class MatchZyTimeoutStartedEvent : MatchZyMapEvent
@@ -254,7 +258,8 @@ public class MatchZyTimeoutStartedEvent : MatchZyMapEvent
     [JsonPropertyName("side")]
     public required string Side { get; init; }
 
-    public MatchZyTimeoutStartedEvent() : base("timeout_started") { }
+    public MatchZyTimeoutStartedEvent()
+        : base("timeout_started") { }
 }
 
 public class MatchZyChatMessageEvent : MatchZyMapEvent
@@ -274,7 +279,8 @@ public class MatchZyChatMessageEvent : MatchZyMapEvent
     [JsonPropertyName("message")]
     public required string Message { get; init; }
 
-    public MatchZyChatMessageEvent() : base("chat_message") { }
+    public MatchZyChatMessageEvent()
+        : base("chat_message") { }
 }
 
 public class MatchZyDemoUploadedEvent : MatchZyMatchEvent
