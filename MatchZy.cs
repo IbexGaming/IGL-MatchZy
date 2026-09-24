@@ -471,8 +471,14 @@ namespace MatchZy
                             : player.TeamNum == 3 ? "ct"
                             : "spec";
                         string chatTeam =
-                            player.TeamNum == 2 ? (reverseTeamSides["TERRORIST"] == matchzyTeam1 ? "team1" : "team2")
-                            : player.TeamNum == 3 ? (reverseTeamSides["CT"] == matchzyTeam1 ? "team1" : "team2")
+                            player.TeamNum == 2
+                                ? (
+                                    reverseTeamSides["TERRORIST"] == matchzyTeam1
+                                        ? "team1"
+                                        : "team2"
+                                )
+                            : player.TeamNum == 3
+                                ? (reverseTeamSides["CT"] == matchzyTeam1 ? "team1" : "team2")
                             : "spec";
                         var chatEvent = new MatchZyChatMessageEvent
                         {
