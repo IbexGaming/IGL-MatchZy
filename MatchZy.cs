@@ -39,6 +39,7 @@ namespace MatchZy
 
         // Pause Data
         public bool isPaused = false;
+        private DateTime _pauseStartTime = DateTime.Now;
         public Dictionary<string, object> unpauseData = new Dictionary<string, object>
         {
             { "ct", false },
@@ -461,6 +462,38 @@ namespace MatchZy
                         // Somehow we did not had the player in playerData, hence updating the maps again before getting the player
                         UpdatePlayersMap();
                         player = playerData[playerUserId];
+                    }
+
+                    if (isMatchLive && player != null)
+                    {
+                        string chatSide =
+                            player.TeamNum == 2 ? "t"
+                            : player.TeamNum == 3 ? "ct"
+                            : "spec";
+                        string chatTeam =
+                            player.TeamNum == 2
+                                ? (
+                                    reverseTeamSides["TERRORIST"] == matchzyTeam1
+                                        ? "team1"
+                                        : "team2"
+                                )
+                            : player.TeamNum == 3
+                                ? (reverseTeamSides["CT"] == matchzyTeam1 ? "team1" : "team2")
+                            : "spec";
+                        var chatEvent = new MatchZyChatMessageEvent
+                        {
+                            MatchId = liveMatchId,
+                            MapNumber = matchConfig.CurrentMapNumber,
+                            SteamId = player.SteamID,
+                            PlayerName = player.PlayerName,
+                            Team = chatTeam,
+                            Side = chatSide,
+                            Message = originalMessage,
+                        };
+                        Task.Run(async () =>
+                        {
+                            await SendEventAsync(chatEvent);
+                        });
                     }
 
                     // Handling player commands

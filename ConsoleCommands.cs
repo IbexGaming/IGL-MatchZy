@@ -301,6 +301,22 @@ namespace MatchZy
                 if ((bool)unpauseData["t"] && (bool)unpauseData["ct"])
                 {
                     PrintToAllChat(Localizer["matchzy.pause.teamsunpausedthematch"]);
+                    var unpausingTeam =
+                        player?.TeamNum == 2
+                            ? reverseTeamSides["TERRORIST"]
+                            : reverseTeamSides["CT"];
+                    var unpausedEvent = new MatchZyUnpausedEvent
+                    {
+                        MatchId = liveMatchId,
+                        MapNumber = matchConfig.CurrentMapNumber,
+                        Team = (unpausingTeam == matchzyTeam1) ? "team1" : "team2",
+                        Side = player?.TeamNum == 2 ? "t" : "ct",
+                        PauseDuration = (int)(DateTime.Now - _pauseStartTime).TotalSeconds,
+                    };
+                    Task.Run(async () =>
+                    {
+                        await SendEventAsync(unpausedEvent);
+                    });
                     Server.ExecuteCommand("mp_unpause_match;");
                     isPaused = false;
                     unpauseData["ct"] = false;
@@ -359,6 +375,18 @@ namespace MatchZy
                     if (gameRules.TerroristTimeOuts > 0)
                     {
                         Server.ExecuteCommand("timeout_terrorist_start");
+                        var timeoutEvent = new MatchZyTimeoutStartedEvent
+                        {
+                            MatchId = liveMatchId,
+                            MapNumber = matchConfig.CurrentMapNumber,
+                            Team =
+                                (reverseTeamSides["TERRORIST"] == matchzyTeam1) ? "team1" : "team2",
+                            Side = "t",
+                        };
+                        Task.Run(async () =>
+                        {
+                            await SendEventAsync(timeoutEvent);
+                        });
                     }
                     else
                     {
@@ -371,6 +399,17 @@ namespace MatchZy
                     if (gameRules.CTTimeOuts > 0)
                     {
                         Server.ExecuteCommand("timeout_ct_start");
+                        var timeoutEvent = new MatchZyTimeoutStartedEvent
+                        {
+                            MatchId = liveMatchId,
+                            MapNumber = matchConfig.CurrentMapNumber,
+                            Team = (reverseTeamSides["CT"] == matchzyTeam1) ? "team1" : "team2",
+                            Side = "ct",
+                        };
+                        Task.Run(async () =>
+                        {
+                            await SendEventAsync(timeoutEvent);
+                        });
                     }
                     else
                     {

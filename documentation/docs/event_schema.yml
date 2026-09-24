@@ -178,6 +178,49 @@ webhooks:
                       enum:
                         - map_vetoed
 
+  "MatchZyOnVetoStarted":
+    post:
+      tags:
+        - Series Flow
+      summary: MatchZyOnVetoStarted
+      description: |
+        Fired when the veto phase begins.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              title: MatchZyVetoStartedEvent
+              allOf:
+                - "$ref": "#/components/schemas/MatchZyMatchEvent"
+                - type: object
+                  properties:
+                    event:
+                      enum:
+                        - veto_started
+  "MatchZyOnPlayerDisconnected":
+    post:
+      tags:
+        - Series Flow
+      summary: MatchZyOnPlayerDisconnected
+      description: |
+        Fired when a player disconnects during a match.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              title: MatchZyPlayerDisconnectedEvent
+              allOf:
+                - "$ref": "#/components/schemas/MatchZyMatchEvent"
+                - type: object
+                  properties:
+                    event:
+                      enum:
+                        - player_disconnect
+                    player:
+                      type: integer
+                      description: The user ID of the disconnected player.
   "MatchZyOnGoingLive":
     post:
       tags:
@@ -234,8 +277,164 @@ webhooks:
                       description: The stats for team 2.
                       allOf:
                         - $ref: "#/components/schemas/MatchZyStatsTeam"
+  "MatchZyOnMatchPaused":
+    post:
+      tags:
+        - Pause
+      summary: MatchZyOnMatchPaused
+      description: |
+        Fired when a team pauses the match.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              title: MatchZyPausedEvent
+              allOf:
+                - "$ref": "#/components/schemas/MatchZyMapEvent"
+                - type: object
+                  properties:
+                    event:
+                      enum:
+                        - match_paused
+                    team:
+                      $ref: "#/components/schemas/Team"
+                    side:
+                      $ref: "#/components/schemas/Side"
+  "MatchZyOnMatchForcePaused":
+    post:
+      tags:
+        - Pause
+      summary: MatchZyOnMatchForcePaused
+      description: |
+        Fired when an admin force-pauses the match.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              title: MatchZyForcePausedEvent
+              allOf:
+                - "$ref": "#/components/schemas/MatchZyMapEvent"
+                - type: object
+                  properties:
+                    event:
+                      enum:
+                        - match_force_paused
+  "MatchZyOnMatchUnpaused":
+    post:
+      tags:
+        - Pause
+      summary: MatchZyOnMatchUnpaused
+      description: |
+        Fired when both teams confirm unpause.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              title: MatchZyUnpausedEvent
+              allOf:
+                - "$ref": "#/components/schemas/MatchZyMapEvent"
+                - type: object
+                  properties:
+                    event:
+                      enum:
+                        - match_unpaused
+                    team:
+                      $ref: "#/components/schemas/Team"
+                    side:
+                      $ref: "#/components/schemas/Side"
+                    pause_duration:
+                      type: integer
+                      minimum: 0
+                      description: The duration of the pause in seconds.
+  "MatchZyOnMatchForceUnpaused":
+    post:
+      tags:
+        - Pause
+      summary: MatchZyOnMatchForceUnpaused
+      description: |
+        Fired when an admin force-unpauses the match.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              title: MatchZyForceUnpausedEvent
+              allOf:
+                - "$ref": "#/components/schemas/MatchZyMapEvent"
+                - type: object
+                  properties:
+                    event:
+                      enum:
+                        - match_force_unpaused
+                    pause_duration:
+                      type: integer
+                      minimum: 0
+                      description: The duration of the pause in seconds.
+  "MatchZyOnTimeoutStarted":
+    post:
+      tags:
+        - Pause
+      summary: MatchZyOnTimeoutStarted
+      description: |
+        Fired when a team starts a tactical timeout.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              title: MatchZyTimeoutStartedEvent
+              allOf:
+                - "$ref": "#/components/schemas/MatchZyMapEvent"
+                - type: object
+                  properties:
+                    event:
+                      enum:
+                        - timeout_started
+                    team:
+                      $ref: "#/components/schemas/Team"
+                    side:
+                      $ref: "#/components/schemas/Side"
+  "MatchZyOnChatMessage":
+    post:
+      tags:
+        - Client Actions
+      summary: MatchZyOnChatMessage
+      description: |
+        Fired for every player chat message during a live match.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              title: MatchZyChatMessageEvent
+              allOf:
+                - "$ref": "#/components/schemas/MatchZyMapEvent"
+                - type: object
+                  properties:
+                    event:
+                      enum:
+                        - chat_message
+                    steamid:
+                      type: string
+                      description: The SteamID64 of the player.
+                      example: "76561198279375306"
+                    player_name:
+                      type: string
+                      description: The in-game name of the player.
+                    team:
+                      $ref: "#/components/schemas/Team"
+                    side:
+                      $ref: "#/components/schemas/Side"
+                    message:
+                      type: string
+                      description: The chat message content.
   "MatchZyOnDemoUploadEnded":
     post:
+      tags:
+        - Map Flow
       requestBody:
         required: true
         content:
@@ -344,7 +543,7 @@ components:
     Side:
       type: string
       nullable: true
-      description: Represents a side (CT vs T). `null` if no side. Represented as an integer enum.
+      description: Represents a side. `null` if no side.
       enum:
         - ct
         - t
@@ -607,5 +806,7 @@ tags:
     description: Events that occur in relation to a map pick or match-events on a map.
   - name: Live
     description: Events that only occur during live rounds (not during knife, veto or warmup).
-  # - name: Client Actions
-  #   description: Events that occur based on players' chat or connection activity.
+  - name: Pause
+    description: Events related to match pauses and tactical timeouts.
+  - name: Client Actions
+    description: Events that occur based on players' chat or connection activity.
