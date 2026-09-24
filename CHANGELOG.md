@@ -1,5 +1,13 @@
 # MatchZy Changelog
 
+# 0.10.1
+
+#### September 24, 2026
+
+- Fixed an issue where `player_disconnect` isn't sent
+- Adjusted some english strings
+- Fixed `chat_message` event parameter from int to string
+
 # 0.10.0
 
 #### September 24, 2026
