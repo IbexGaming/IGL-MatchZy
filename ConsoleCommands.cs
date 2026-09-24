@@ -306,7 +306,7 @@ namespace MatchZy
                         MatchId = liveMatchId,
                         MapNumber = matchConfig.CurrentMapNumber,
                         Team = unpauseTeamName,
-                        Side = player?.TeamNum == 2 ? "T" : "CT",
+                        Side = player?.TeamNum == 2 ? "t" : "ct",
                         PauseDuration = (int)(DateTime.Now - _pauseStartTime).TotalSeconds,
                     };
                     Task.Run(async () =>
@@ -376,7 +376,7 @@ namespace MatchZy
                             MatchId = liveMatchId,
                             MapNumber = matchConfig.CurrentMapNumber,
                             Team = reverseTeamSides["TERRORIST"].teamName,
-                            Side = "T",
+                            Side = "t",
                         };
                         Task.Run(async () =>
                         {
@@ -399,7 +399,7 @@ namespace MatchZy
                             MatchId = liveMatchId,
                             MapNumber = matchConfig.CurrentMapNumber,
                             Team = reverseTeamSides["CT"].teamName,
-                            Side = "CT",
+                            Side = "ct",
                         };
                         Task.Run(async () =>
                         {

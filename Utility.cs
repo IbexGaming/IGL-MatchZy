@@ -1433,7 +1433,7 @@ namespace MatchZy
                     MatchId = liveMatchId,
                     MapNumber = matchConfig.CurrentMapNumber,
                     Team = pauseTeamName,
-                    Side = player?.TeamNum == 2 ? "T" : "CT",
+                    Side = player?.TeamNum == 2 ? "t" : "ct",
                 };
                 Task.Run(async () =>
                 {

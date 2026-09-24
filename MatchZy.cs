@@ -467,9 +467,9 @@ namespace MatchZy
                     if (isMatchLive && player != null)
                     {
                         string chatSide =
-                            player.TeamNum == 2 ? "T"
-                            : player.TeamNum == 3 ? "CT"
-                            : "Spectator";
+                            player.TeamNum == 2 ? "t"
+                            : player.TeamNum == 3 ? "ct"
+                            : "spec";
                         string chatTeam =
                             player.TeamNum == 2 ? reverseTeamSides["TERRORIST"].teamName
                             : player.TeamNum == 3 ? reverseTeamSides["CT"].teamName
