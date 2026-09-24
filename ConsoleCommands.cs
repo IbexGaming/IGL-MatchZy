@@ -301,11 +301,12 @@ namespace MatchZy
                 if ((bool)unpauseData["t"] && (bool)unpauseData["ct"])
                 {
                     PrintToAllChat(Localizer["matchzy.pause.teamsunpausedthematch"]);
+                    var unpausingTeam = player?.TeamNum == 2 ? reverseTeamSides["TERRORIST"] : reverseTeamSides["CT"];
                     var unpausedEvent = new MatchZyUnpausedEvent
                     {
                         MatchId = liveMatchId,
                         MapNumber = matchConfig.CurrentMapNumber,
-                        Team = unpauseTeamName,
+                        Team = (unpausingTeam == matchzyTeam1) ? "team1" : "team2",
                         Side = player?.TeamNum == 2 ? "t" : "ct",
                         PauseDuration = (int)(DateTime.Now - _pauseStartTime).TotalSeconds,
                     };
@@ -375,7 +376,7 @@ namespace MatchZy
                         {
                             MatchId = liveMatchId,
                             MapNumber = matchConfig.CurrentMapNumber,
-                            Team = reverseTeamSides["TERRORIST"].teamName,
+                            Team = (reverseTeamSides["TERRORIST"] == matchzyTeam1) ? "team1" : "team2",
                             Side = "t",
                         };
                         Task.Run(async () =>
@@ -398,7 +399,7 @@ namespace MatchZy
                         {
                             MatchId = liveMatchId,
                             MapNumber = matchConfig.CurrentMapNumber,
-                            Team = reverseTeamSides["CT"].teamName,
+                            Team = (reverseTeamSides["CT"] == matchzyTeam1) ? "team1" : "team2",
                             Side = "ct",
                         };
                         Task.Run(async () =>

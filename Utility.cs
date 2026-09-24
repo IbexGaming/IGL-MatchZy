@@ -1428,11 +1428,12 @@ namespace MatchZy
                 // Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{pauseTeamName}{ChatColors.Default} has paused the match. Type .unpause to unpause the match");
 
                 SetMatchPausedFlags();
+                var pausingTeam = player?.TeamNum == 2 ? reverseTeamSides["TERRORIST"] : reverseTeamSides["CT"];
                 var pausedEvent = new MatchZyPausedEvent
                 {
                     MatchId = liveMatchId,
                     MapNumber = matchConfig.CurrentMapNumber,
-                    Team = pauseTeamName,
+                    Team = (pausingTeam == matchzyTeam1) ? "team1" : "team2",
                     Side = player?.TeamNum == 2 ? "t" : "ct",
                 };
                 Task.Run(async () =>
