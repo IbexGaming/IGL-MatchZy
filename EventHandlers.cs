@@ -95,6 +95,16 @@ public partial class MatchZy
                 return HookResult.Continue;
             int userId = player.UserId.Value;
 
+            if (isMatchSetup && matchStarted)
+            {
+                var playerDisconnectEvent = new MatchZyPlayerDisconnectedEvent
+                {
+                    MatchId = liveMatchId,
+                    Player = userId
+                };
+                _ = SendEventAsync(playerDisconnectEvent);
+            }
+
             if (playerReadyStatus.ContainsKey(userId))
             {
                 playerReadyStatus.Remove(userId);
