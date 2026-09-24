@@ -1,5 +1,15 @@
 # MatchZy Changelog
 
+# 0.10.0
+
+#### September 24, 2026
+
+- Added `chat_message` event
+- Added `match_paused`, `match_force_paused`, `match_unpaused`, `match_force_unpaused` events
+- Added `timeout_started` event
+- Added `chat`, `pause`, `unpause`, `timeout` webhook events with `team1`/`team2`/`spec` side enum values
+- Upgraded CounterStrikeSharp to 1.0.375
+
 # 0.9.5
 
 #### August 27
