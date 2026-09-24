@@ -265,7 +265,7 @@ public class MatchZyTimeoutStartedEvent : MatchZyMapEvent
 public class MatchZyChatMessageEvent : MatchZyMapEvent
 {
     [JsonPropertyName("steamid")]
-    public required ulong SteamId { get; init; }
+    public required string SteamId { get; init; }
 
     [JsonPropertyName("player_name")]
     public required string PlayerName { get; init; }

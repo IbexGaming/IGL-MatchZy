@@ -484,7 +484,7 @@ namespace MatchZy
                         {
                             MatchId = liveMatchId,
                             MapNumber = matchConfig.CurrentMapNumber,
-                            SteamId = player.SteamID,
+                            SteamId = player.SteamID.ToString(),
                             PlayerName = player.PlayerName,
                             Team = chatTeam,
                             Side = chatSide,
