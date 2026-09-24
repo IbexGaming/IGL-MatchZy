@@ -132,6 +132,41 @@ namespace MatchZy
             }
         }
 
+        [ConsoleCommand("css_captain", "Claims the captain role for your team")]
+        public void OnCaptainCommand(CCSPlayerController? player, CommandInfo? command)
+        {
+            if (player == null || !player.UserId.HasValue)
+                return;
+
+            if (!isPreVeto && !isVeto)
+            {
+                PrintToPlayerChat(player, Localizer["matchzy.captain.wrongphase"]);
+                return;
+            }
+
+            Team? playerTeam = null;
+            if (matchzyTeam1.teamPlayers != null && matchzyTeam1.teamPlayers[player.SteamID.ToString()] != null)
+                playerTeam = matchzyTeam1;
+            else if (matchzyTeam2.teamPlayers != null && matchzyTeam2.teamPlayers[player.SteamID.ToString()] != null)
+                playerTeam = matchzyTeam2;
+
+            if (playerTeam == null)
+            {
+                PrintToPlayerChat(player, Localizer["matchzy.captain.notinteam"]);
+                return;
+            }
+
+            playerTeam.captainOverrideSteamId = player.SteamID.ToString();
+            PrintToAllChat(Localizer["matchzy.captain.newcaptain", player.PlayerName, playerTeam.teamName]);
+            Log($"[!captain] {player.PlayerName} ({player.SteamID}) set as captain of {playerTeam.teamName}");
+
+            if (isVeto)
+            {
+                string teamKey = playerTeam == matchzyTeam1 ? "team1" : "team2";
+                vetoCaptains[teamKey] = player.UserId.Value;
+            }
+        }
+
         [ConsoleCommand("css_stay", "Stays after knife round")]
         public void OnTeamStay(CCSPlayerController? player, CommandInfo? command)
         {

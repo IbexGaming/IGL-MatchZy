@@ -27,6 +27,9 @@ namespace MatchZy
         [JsonIgnore, Newtonsoft.Json.JsonIgnore]
         public HashSet<CCSPlayerController> coach = [];
 
+        [JsonIgnore, Newtonsoft.Json.JsonIgnore]
+        public string? captainOverrideSteamId = null;
+
         [JsonPropertyName("seriesscore")]
         public int seriesScore = 0;
     }
