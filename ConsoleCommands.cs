@@ -145,9 +145,15 @@ namespace MatchZy
             }
 
             Team? playerTeam = null;
-            if (matchzyTeam1.teamPlayers != null && matchzyTeam1.teamPlayers[player.SteamID.ToString()] != null)
+            if (
+                matchzyTeam1.teamPlayers != null
+                && matchzyTeam1.teamPlayers[player.SteamID.ToString()] != null
+            )
                 playerTeam = matchzyTeam1;
-            else if (matchzyTeam2.teamPlayers != null && matchzyTeam2.teamPlayers[player.SteamID.ToString()] != null)
+            else if (
+                matchzyTeam2.teamPlayers != null
+                && matchzyTeam2.teamPlayers[player.SteamID.ToString()] != null
+            )
                 playerTeam = matchzyTeam2;
 
             if (playerTeam == null)
@@ -157,8 +163,12 @@ namespace MatchZy
             }
 
             playerTeam.captainOverrideSteamId = player.SteamID.ToString();
-            PrintToAllChat(Localizer["matchzy.captain.newcaptain", player.PlayerName, playerTeam.teamName]);
-            Log($"[!captain] {player.PlayerName} ({player.SteamID}) set as captain of {playerTeam.teamName}");
+            PrintToAllChat(
+                Localizer["matchzy.captain.newcaptain", player.PlayerName, playerTeam.teamName]
+            );
+            Log(
+                $"[!captain] {player.PlayerName} ({player.SteamID}) set as captain of {playerTeam.teamName}"
+            );
 
             if (isVeto)
             {
