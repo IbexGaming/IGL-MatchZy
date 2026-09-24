@@ -1,7 +1,7 @@
 {
   "matchzy.ready.markedready": "You have been marked as {green}ready{default}.",
   "matchzy.ready.markedunready": "You have been marked as {red}not ready{default}.",
-  "matchzy.ready.readytotestorebackupinfomessage": "Waiting for ready from: {0} to restore the match backup. {1}",
+  "matchzy.ready.readytotestorebackupinfomessage": "Waiting for ready from: {0}. Please type .ready when you are ready to restore the match backup. {1}",
 
   "matchzy.knife.sidedecisionpending": "{green}{0}{default} won the knife round. Waiting for them to type {green}.stay{default} or {green}.switch{default}.",
   "matchzy.knife.decidedtostay": "{green}{0}{default} has decided to stay.",
@@ -9,9 +9,9 @@
 
   "matchzy.pause.pausedthematch": "{green}{0}{default} has paused the match. Type .unpause to unpause the match.",
   "matchzy.pause.teamsunpausedthematch": "Match has resumed!",
-  "matchzy.pause.teamwantstounpause": "{green}{0}{default} wants to unpause the match. Waiting for unpause from: {green}{1}{default}.",
-  "matchzy.pause.adminpausedthematch": "{green}Admin{default} has paused the match!",
-  "matchzy.pause.adminunpausedthematch": "{green}Admin{default} has unpaused the match!",
+  "matchzy.pause.teamwantstounpause": "{green}{0}{default} wants to unpause the match. Waiting for unpause from: {green}{1}{default}. Type .unpause to confirm.",
+  "matchzy.pause.adminpausedthematch": "An {red}Admin{default} has paused the match!",
+  "matchzy.pause.adminunpausedthematch": "An {red}Admin{default} has unpaused the match!",
   "matchzy.pause.onlyadmincanunpause": "Match has been paused by an {red}admin{default}, hence it can be unpaused by an admin only.",
   "matchzy.pause.pausedbecauserestore": "Match has been paused because of Round Restore. Both teams need to type {green}.unpause{default} to unpause the match.",
   "matchzy.pause.techpausenotenabled": "Technical pauses are not enabled.",
@@ -49,9 +49,9 @@
   "matchzy.cc.match": "MatchZy is already in match mode!",
   "matchzy.cc.startisprac": "Cannot start a match while in practice mode. Please use .exitprac command to exit practice mode first!",
   "matchzy.cc.startmatchstarted": "Start command cannot be used if match is already started! If you want to unpause, please use .unpause",
-  "matchzy.cc.gamestarted": "{red}Admin{default} has started the game!",
+  "matchzy.cc.gamestarted": "An {red}Admin{default} has started the game!",
   "matchzy.cc.rrispracc": "Practice mode is active, cannot restart the match.",
-  "matchzy.cc.endmatch": "{red}Admin{default} force-ended the match.",
+  "matchzy.cc.endmatch": "An {red}Admin{default} force-ended the match.",
   "matchzy.cc.endmatchispracc": "Practice mode is active, cannot end the match.",
   "matchzy.cc.currentsettings": "Current Settings:",
   "matchzy.cc.knifestatus": "Knife: {green}{0}{default}",
