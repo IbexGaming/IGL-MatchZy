@@ -83,7 +83,10 @@ public partial class MatchZy
                 List<string> connectMessages = [.. playerConnectMessage.Value.Split("$$$")];
                 foreach (string message in connectMessages)
                 {
-                    PrintToPlayerChat(player!, GetColorTreatedString(FormatCvarValue(message.Trim())));
+                    PrintToPlayerChat(
+                        player!,
+                        GetColorTreatedString(FormatCvarValue(message.Trim()))
+                    );
                 }
             }
 
