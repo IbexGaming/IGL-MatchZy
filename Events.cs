@@ -88,7 +88,7 @@ public class MatchZyPlayerTimedRoundEvent : MatchZyTimedRoundEvent
 public class MatchZyPlayerDisconnectedEvent : MatchZyMatchEvent
 {
     [JsonPropertyName("player")]
-    public required int Player { get; init; }
+    public required string Player { get; init; }
 
     public MatchZyPlayerDisconnectedEvent()
         : base("player_disconnect") { }

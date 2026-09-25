@@ -116,7 +116,7 @@ public partial class MatchZy
                 var playerDisconnectEvent = new MatchZyPlayerDisconnectedEvent
                 {
                     MatchId = liveMatchId,
-                    Player = userId,
+                    Player = player.SteamID.ToString(),
                 };
                 _ = SendEventAsync(playerDisconnectEvent);
             }
