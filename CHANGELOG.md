@@ -1,5 +1,13 @@
 # MatchZy Changelog
 
+# 0.10.2
+
+#### September 25, 2026
+
+- **Breaking**: Events now use player SteamID instead of CSS entity ID (string instead of int)
+- Added `matchzy_connect_message_enabled` cvar to toggle player connect messages
+- Added ability to override captains before and during veto
+
 # 0.10.1
 
 #### September 24, 2026
