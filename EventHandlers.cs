@@ -74,6 +74,19 @@ public partial class MatchZy
                     AutoStart();
                 }
             }
+
+            if (
+                playerConnectMessage.Value.Trim() != ""
+                && playerConnectMessage.Value.Trim() != "\"\""
+            )
+            {
+                List<string> connectMessages = [.. playerConnectMessage.Value.Split("$$$")];
+                foreach (string message in connectMessages)
+                {
+                    PrintToPlayerChat(player!, GetColorTreatedString(FormatCvarValue(message.Trim())));
+                }
+            }
+
             return HookResult.Continue;
         }
         catch (Exception e)

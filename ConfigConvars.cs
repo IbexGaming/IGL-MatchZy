@@ -78,6 +78,12 @@ namespace MatchZy
             ""
         );
 
+        public FakeConVar<string> playerConnectMessage = new(
+            "matchzy_player_connect_message",
+            "Message to show to a player when they connect. Use $$$ to break message into multiple lines. Set to \"\" to disable.",
+            ""
+        );
+
         [ConsoleCommand(
             "matchzy_whitelist_enabled_default",
             "Whether Whitelist is enabled by default or not. Default value: false"
