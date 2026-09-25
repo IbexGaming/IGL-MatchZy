@@ -121,6 +121,7 @@ namespace MatchZy
                 { ".unready", OnPlayerUnReady },
                 { ".notready", OnPlayerUnReady },
                 { ".ur", OnPlayerUnReady },
+                { ".captain", OnCaptainCommand },
                 { ".stay", OnTeamStay },
                 { ".switch", OnTeamSwitch },
                 { ".swap", OnTeamSwitch },

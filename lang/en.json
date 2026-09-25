@@ -115,6 +115,10 @@
   "matchzy.rs.minreadyplayers": "You must have at least {green}{0}{default} player(s) on the server to ready up.",
   "matchzy.rs.forcereadiedby": "Your team was force-readied by {green}{0}{default}",
 
+  "matchzy.captain.wrongphase": "Captain can only be claimed before or during veto.",
+  "matchzy.captain.notinteam": "You are not part of a team in this match.",
+  "matchzy.captain.newcaptain": "{green}{0}{default} is now the captain of {green}{1}{default}.",
+
   "matchzy.sleep.sleepwhenmatchstared": "Sleep Mode cannot be started when a match has been started!",
 
   "matchzy.utility.unreadyplayers": "Waiting for ready from: {0}. Please type .ready to ready up! {1}",

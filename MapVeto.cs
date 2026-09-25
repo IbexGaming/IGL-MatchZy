@@ -357,6 +357,8 @@ namespace MatchZy
                 UnpauseMatch();
             }
             vetoCaptains = new() { { "team1", -1 }, { "team2", -1 } };
+            matchzyTeam1.captainOverrideSteamId = null;
+            matchzyTeam2.captainOverrideSteamId = null;
             foreach (var key in playerReadyStatus.Keys)
             {
                 playerReadyStatus[key] = false;
@@ -431,6 +433,42 @@ namespace MatchZy
         {
             Team matchzyTeam = team == "team1" ? matchzyTeam1 : matchzyTeam2;
             int teamSide = teamSides[matchzyTeam] == "CT" ? 3 : 2;
+
+            // Check for explicit captain override first
+            if (matchzyTeam.captainOverrideSteamId != null)
+            {
+                foreach (var key in playerData.Keys)
+                {
+                    if (!playerData[key].IsValid || playerData[key].IsBot)
+                        continue;
+                    if (
+                        playerData[key].TeamNum == teamSide
+                        && playerData[key].SteamID.ToString() == matchzyTeam.captainOverrideSteamId
+                    )
+                        return key;
+                }
+            }
+
+            // Fall back to first listed player in config who is connected
+            if (matchzyTeam.teamPlayers is Newtonsoft.Json.Linq.JObject jobj)
+            {
+                foreach (var prop in jobj.Properties())
+                {
+                    string steamId = prop.Name;
+                    foreach (var key in playerData.Keys)
+                    {
+                        if (!playerData[key].IsValid || playerData[key].IsBot)
+                            continue;
+                        if (
+                            playerData[key].TeamNum == teamSide
+                            && playerData[key].SteamID.ToString() == steamId
+                        )
+                            return key;
+                    }
+                }
+            }
+
+            // Fall back to first connected player on the team
             foreach (var key in playerData.Keys)
             {
                 if (!playerData[key].IsValid || playerData[key].IsBot)

@@ -518,6 +518,8 @@ namespace MatchZy
 
                 matchzyTeam1.coach = new();
                 matchzyTeam2.coach = new();
+                matchzyTeam1.captainOverrideSteamId = null;
+                matchzyTeam2.captainOverrideSteamId = null;
                 coachKillTimer?.Kill();
                 coachKillTimer = null;
 
