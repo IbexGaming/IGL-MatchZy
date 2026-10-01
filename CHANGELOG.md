@@ -1,5 +1,11 @@
 # MatchZy Changelog
 
+# 0.10.3
+
+#### October 1, 2026
+
+- Fixed a bug that caused demos to not be recorded correctly
+
 # 0.10.2
 
 #### September 25, 2026
