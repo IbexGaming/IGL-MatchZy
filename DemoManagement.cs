@@ -62,9 +62,7 @@ namespace MatchZy
                 // server crash mid-match.
                 Server.ExecuteCommand($"tv_record_immediate 1;tv_record {recordArg}");
                 isDemoRecording = true;
-                Log(
-                    $"[StartDemoRecording] tv_record {recordArg}"
-                );
+                Log($"[StartDemoRecording] tv_record {recordArg}");
             }
             catch (Exception ex)
             {
