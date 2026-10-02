@@ -181,6 +181,51 @@ namespace MatchZy
         }
 
         [ConsoleCommand(
+            "matchzy_default_map_on_series_end",
+            "Map to load after a series ends. Set to empty string to disable. This helps prevent segfaults when the next match veto picks a map not in the current mapgroup. Default: empty (disabled)"
+        )]
+        public void MatchZyDefaultMapOnSeriesEndConvar(
+            CCSPlayerController? player,
+            CommandInfo command
+        )
+        {
+            if (player != null)
+                return;
+            string args = command.ArgString.Trim();
+
+            if (string.IsNullOrEmpty(args))
+            {
+                defaultMapOnSeriesEnd = "";
+                Log("[MatchZyDefaultMapOnSeriesEnd] Default map on series end disabled");
+                return;
+            }
+
+            // Validate map (check if it's a workshop map ID or valid map name)
+            if (long.TryParse(args, out _))
+            {
+                // Workshop map ID - accept it
+                defaultMapOnSeriesEnd = args;
+                Log(
+                    $"[MatchZyDefaultMapOnSeriesEnd] Default map on series end set to workshop map: {defaultMapOnSeriesEnd}"
+                );
+            }
+            else if (Server.IsMapValid(args))
+            {
+                // Valid map name
+                defaultMapOnSeriesEnd = args;
+                Log(
+                    $"[MatchZyDefaultMapOnSeriesEnd] Default map on series end set to: {defaultMapOnSeriesEnd}"
+                );
+            }
+            else
+            {
+                Log(
+                    $"[MatchZyDefaultMapOnSeriesEnd] Invalid map name or workshop ID: {args}. Default map not changed."
+                );
+            }
+        }
+
+        [ConsoleCommand(
             "matchzy_minimum_ready_required",
             "Minimum ready players required to start the match. Default: 1"
         )]
