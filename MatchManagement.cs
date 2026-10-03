@@ -19,6 +19,8 @@ namespace MatchZy
 
         public bool resetCvarsOnSeriesEnd = true;
 
+        public string defaultMapOnSeriesEnd = "";
+
         public string loadedConfigFile = "";
 
         public Team matchzyTeam1 = new() { teamName = "COUNTER-TERRORISTS" };
@@ -735,13 +737,37 @@ namespace MatchZy
             if (resetCvarsOnSeriesEnd)
                 ResetChangedConvars();
             isMatchLive = false;
-            AddTimer(
-                restartDelay,
-                () =>
-                {
-                    ResetMatch(false);
-                }
-            );
+
+            if (!string.IsNullOrEmpty(defaultMapOnSeriesEnd))
+            {
+                Log(
+                    $"[EndSeries] Changing to default map '{defaultMapOnSeriesEnd}' before resetting match"
+                );
+                AddTimer(
+                    restartDelay,
+                    () =>
+                    {
+                        ChangeMap(defaultMapOnSeriesEnd, 3.0f);
+                        AddTimer(
+                            5.0f,
+                            () =>
+                            {
+                                ResetMatch(false);
+                            }
+                        );
+                    }
+                );
+            }
+            else
+            {
+                AddTimer(
+                    restartDelay,
+                    () =>
+                    {
+                        ResetMatch(false);
+                    }
+                );
+            }
         }
 
         public void HandlePlayoutConfig()
