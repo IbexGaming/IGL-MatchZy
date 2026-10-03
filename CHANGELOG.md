@@ -1,5 +1,11 @@
 # MatchZy Changelog
 
+# 0.10.4
+
+#### October 2, 2026
+
+- Add a mitigation for a bug that caused servers to segfault if they were still on the map that was last played on the server. (More info about incident: https://ibexgaming.statuspage.io/incidents/rvf7gzjmzz6s)
+
 # 0.10.3
 
 #### October 1, 2026
