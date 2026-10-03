@@ -72,12 +72,14 @@ namespace MatchZy
             false
         );
 
+        // To be deprecated
         public FakeConVar<string> matchStartMessage = new(
             "matchzy_match_start_message",
             "Message to show when the match starts. Use $$$ to break message into multiple lines. Set to \"\" to disable.",
             ""
         );
 
+        // To be deprecated
         public FakeConVar<string> playerConnectMessage = new(
             "matchzy_player_connect_message",
             "Message to show to a player when they connect. Use $$$ to break message into multiple lines. Set to \"\" to disable.",

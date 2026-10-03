@@ -4,7 +4,6 @@ using CounterStrikeSharp.API.Core.Attributes;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Events;
 using CounterStrikeSharp.API.Modules.Utils;
-
 namespace MatchZy
 {
     [MinimumApiVersion(227)]
@@ -87,10 +86,14 @@ namespace MatchZy
         // SQLite/MySQL Database
         private Database database = new();
 
+        public AdvertMessageManager AdvertMessages { get; private set; } = null!;
+
         public override void Load(bool hotReload)
         {
-            LoadAdmins();
+            AdvertMessages = new AdvertMessageManager(this);
 
+            LoadAdmins();
+            
             database.InitializeDatabase(ModuleDirectory);
 
             // This sets default config ConVars

@@ -17,6 +17,7 @@ public partial class MatchZy
 
             if (!IsPlayerValid(player))
                 return HookResult.Continue;
+
             Log(
                 $"[FULL CONNECT] Player ID: {player!.UserId}, Name: {player.PlayerName} has connected!"
             );
@@ -38,9 +39,11 @@ public partial class MatchZy
                         Log(
                             $"[EventPlayerConnectFull] KICKING PLAYER STEAMID: {steamId}, Name: {player.PlayerName} (NOT ALLOWED!)"
                         );
+
                         PrintToAllChat(
                             $"Kicking player {player.PlayerName} - Not a player in this game."
                         );
+
                         KickPlayer(player);
                         return HookResult.Continue;
                     }
@@ -51,6 +54,7 @@ public partial class MatchZy
             {
                 playerData[player.UserId.Value] = player;
                 connectedPlayers++;
+
                 if (readyAvailable && !matchStarted)
                 {
                     playerReadyStatus[player.UserId.Value] = false;
@@ -60,13 +64,9 @@ public partial class MatchZy
                     playerReadyStatus[player.UserId.Value] = true;
                 }
             }
-            // May not be required, but just to be on safe side so that player data is properly updated in dictionaries
-            // Update: Commenting the below function as it was being called multiple times on map change.
-            // UpdatePlayersMap();
 
             if (readyAvailable && !matchStarted)
             {
-                // Start Warmup when first player connect and match is not started.
                 if (GetRealPlayersCount() == 1)
                 {
                     Log($"[FULL CONNECT] First player has connected, starting warmup!");
@@ -75,20 +75,29 @@ public partial class MatchZy
                 }
             }
 
-            if (
+            // Welcome message
+            AdvertMessages.Center(
+                player,
+                "matchzy.advertisement.playerconnected",
+                player.PlayerName
+            );
+
+            // Deprecated since using advertisement feature
+            /*if (
                 playerConnectMessage.Value.Trim() != ""
                 && playerConnectMessage.Value.Trim() != "\"\""
             )
             {
                 List<string> connectMessages = [.. playerConnectMessage.Value.Split("$$$")];
+
                 foreach (string message in connectMessages)
                 {
                     PrintToPlayerChat(
-                        player!,
+                        player,
                         GetColorTreatedString(FormatCvarValue(message.Trim()))
                     );
                 }
-            }
+            }*/
 
             return HookResult.Continue;
         }
