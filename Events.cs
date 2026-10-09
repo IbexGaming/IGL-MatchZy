@@ -279,6 +279,9 @@ public class MatchZyChatMessageEvent : MatchZyMapEvent
     [JsonPropertyName("message")]
     public required string Message { get; init; }
 
+    [JsonPropertyName("teamonly")]
+    public required bool TeamOnly { get; init; }
+
     public MatchZyChatMessageEvent()
         : base("chat_message") { }
 }

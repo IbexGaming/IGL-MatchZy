@@ -490,6 +490,7 @@ namespace MatchZy
                             Team = chatTeam,
                             Side = chatSide,
                             Message = originalMessage,
+                            TeamOnly = @event.Teamonly,
                         };
                         Task.Run(async () =>
                         {
