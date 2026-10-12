@@ -1,5 +1,11 @@
 # MatchZy Changelog
 
+# 0.11.0
+
+#### October 12, 2026
+
+- Add teamonly bool that specifies if a chat message is only sent to team chat for match chat events.
+
 # 0.10.4
 
 #### October 2, 2026
