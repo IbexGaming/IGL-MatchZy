@@ -17,13 +17,7 @@ namespace MatchZy
                 );
 
                 using var httpClient = new HttpClient();
-                using var jsonContent = new StringContent(
-                    JsonSerializer.Serialize(@event, @event.GetType()),
-                    Encoding.UTF8,
-                    "application/json"
-                );
-
-                string jsonString = await jsonContent.ReadAsStringAsync();
+                string jsonString = JsonSerializer.Serialize(@event, @event.GetType());
 
                 Log($"[SendEventAsync] SENDING DATA: {jsonString}");
 
@@ -38,9 +32,11 @@ namespace MatchZy
                     );
                 }
 
-                var httpResponseMessage = await httpClient.PostAsync(
+                using var httpResponseMessage = await PostWithRetriesAsync(
+                    httpClient,
                     matchConfig.RemoteLogURL,
-                    jsonContent
+                    () => new StringContent(jsonString, Encoding.UTF8, "application/json"),
+                    "[SendEventAsync]"
                 );
 
                 if (httpResponseMessage.IsSuccessStatusCode)
