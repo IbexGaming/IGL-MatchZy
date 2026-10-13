@@ -99,17 +99,29 @@ namespace MatchZy
                         15,
                         () =>
                         {
+                            string uploadURL = demoUploadURL;
                             Task.Run(async () =>
                             {
-                                await UploadFileAsync(
+                                bool uploadSuccessful = await UploadFileAsync(
                                     demoPath,
-                                    demoUploadURL,
+                                    uploadURL,
                                     demoUploadHeaderKey,
                                     demoUploadHeaderValue,
                                     liveMatchId,
                                     currentMapNumber,
                                     roundNumber
                                 );
+                                if (uploadURL == "")
+                                    return;
+
+                                var demoUploadedEvent = new MatchZyDemoUploadedEvent
+                                {
+                                    MatchId = liveMatchId,
+                                    MapNumber = currentMapNumber,
+                                    FileName = Path.GetFileName(demoPath),
+                                    Success = uploadSuccessful,
+                                };
+                                await SendEventAsync(demoUploadedEvent);
                             });
                         }
                     );
