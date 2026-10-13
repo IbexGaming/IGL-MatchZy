@@ -494,10 +494,7 @@ namespace MatchZy
                             Message = originalMessage,
                             TeamOnly = @event.Teamonly,
                         };
-                        Task.Run(async () =>
-                        {
-                            await SendEventAsync(chatEvent);
-                        });
+                        _ = SendEventAsync(chatEvent);
                     }
 
                     // Handling player commands

@@ -446,10 +446,7 @@ namespace MatchZy
                 Team2 = new(matchzyTeam2.id, matchzyTeam2.teamName),
             };
 
-            Task.Run(async () =>
-            {
-                await SendEventAsync(seriesStartedEvent);
-            });
+            _ = SendEventAsync(seriesStartedEvent);
 
             Log($"[LoadMatchFromJSON] Success with matchid: {liveMatchId}!");
             return true;

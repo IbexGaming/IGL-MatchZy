@@ -395,10 +395,7 @@ namespace MatchZy
                 MapNumber = matchConfig.CurrentMapNumber,
             };
 
-            Task.Run(async () =>
-            {
-                await SendEventAsync(goingLiveEvent);
-            });
+            _ = SendEventAsync(goingLiveEvent);
         }
 
         private void KillPhaseTimers()
@@ -1026,9 +1023,10 @@ namespace MatchZy
                 ),
             };
 
+            Task mapResultEventSent = SendEventAsync(mapResultEvent);
             Task.Run(async () =>
             {
-                await SendEventAsync(mapResultEvent);
+                await mapResultEventSent;
                 await database.SetMapEndData(
                     liveMatchId,
                     currentMapNumber,
@@ -1271,9 +1269,10 @@ namespace MatchZy
                         ),
                     };
 
+                    Task roundEndEventSent = SendEventAsync(roundEndEvent);
                     Task.Run(async () =>
                     {
-                        await SendEventAsync(roundEndEvent);
+                        await roundEndEventSent;
                         await database.UpdatePlayerStatsAsync(
                             matchId,
                             currentMapNumber,
@@ -1439,10 +1438,7 @@ namespace MatchZy
                     Team = (pausingTeam == matchzyTeam1) ? "team1" : "team2",
                     Side = player?.TeamNum == 2 ? "t" : "ct",
                 };
-                Task.Run(async () =>
-                {
-                    await SendEventAsync(pausedEvent);
-                });
+                _ = SendEventAsync(pausedEvent);
             }
         }
 
@@ -1494,10 +1490,7 @@ namespace MatchZy
                 MatchId = liveMatchId,
                 MapNumber = matchConfig.CurrentMapNumber,
             };
-            Task.Run(async () =>
-            {
-                await SendEventAsync(forcePausedEvent);
-            });
+            _ = SendEventAsync(forcePausedEvent);
         }
 
         private void ForceUnpauseMatch(CCSPlayerController? player, CommandInfo? command)
@@ -1516,10 +1509,7 @@ namespace MatchZy
                     MapNumber = matchConfig.CurrentMapNumber,
                     PauseDuration = (int)(DateTime.Now - _pauseStartTime).TotalSeconds,
                 };
-                Task.Run(async () =>
-                {
-                    await SendEventAsync(forceUnpausedEvent);
-                });
+                _ = SendEventAsync(forceUnpausedEvent);
                 UnpauseMatch();
 
                 if (player == null)
