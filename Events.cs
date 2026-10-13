@@ -11,6 +11,10 @@ public class MatchZyEvent
 
     [JsonPropertyName("event")]
     public string EventName { get; }
+
+    // Unique per event and reused across retries so receivers can deduplicate deliveries.
+    [JsonPropertyName("event_id")]
+    public string EventId { get; init; } = Guid.NewGuid().ToString();
 }
 
 public class MatchZyMatchEvent : MatchZyEvent
