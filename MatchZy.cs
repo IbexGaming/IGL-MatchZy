@@ -89,6 +89,8 @@ namespace MatchZy
 
         public override void Load(bool hotReload)
         {
+            Task.Run(ProcessEventQueueAsync);
+
             LoadAdmins();
 
             database.InitializeDatabase(ModuleDirectory);
@@ -680,6 +682,11 @@ namespace MatchZy
             Console.WriteLine(
                 $"[{ModuleName} {ModuleVersion} LOADED] MatchZy by WD- (https://github.com/shobhit-pathak/)"
             );
+        }
+
+        public override void Unload(bool hotReload)
+        {
+            eventQueue.Writer.TryComplete();
         }
     }
 }
