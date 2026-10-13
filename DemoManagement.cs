@@ -21,6 +21,7 @@ namespace MatchZy
 
         public bool isDemoRecording = false;
         public bool isDemoRecordingEnabled = true;
+        public bool isDemoDeleteAfterUploadEnabled = false;
 
         public void StartDemoRecording()
         {
@@ -113,6 +114,23 @@ namespace MatchZy
                                 );
                                 if (uploadURL == "")
                                     return;
+
+                                if (uploadSuccessful && isDemoDeleteAfterUploadEnabled)
+                                {
+                                    try
+                                    {
+                                        File.Delete(demoPath);
+                                        Log(
+                                            $"[StopDemoRecording] Deleted local demo after successful upload: {demoPath}"
+                                        );
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Log(
+                                            $"[StopDemoRecording ERROR] Failed to delete local demo {demoPath}: {e.Message}"
+                                        );
+                                    }
+                                }
 
                                 var demoUploadedEvent = new MatchZyDemoUploadedEvent
                                 {
