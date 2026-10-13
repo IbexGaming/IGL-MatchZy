@@ -39,10 +39,7 @@ namespace MatchZy
             vetoStateTimer = AddTimer(1, VetoCountdown, TimerFlags.REPEAT);
             isVeto = true;
             var vetoStartedEvent = new MatchZyVetoStartedEvent { MatchId = liveMatchId };
-            Task.Run(async () =>
-            {
-                await SendEventAsync(vetoStartedEvent);
-            });
+            _ = SendEventAsync(vetoStartedEvent);
             readyAvailable = false;
             isWarmup = false;
             KillPhaseTimers();
@@ -297,10 +294,7 @@ namespace MatchZy
                 Team = (matchzyTeam == matchzyTeam1) ? "team1" : "team2",
             };
 
-            Task.Run(async () =>
-            {
-                await SendEventAsync(mapPickedEvent);
-            });
+            _ = SendEventAsync(mapPickedEvent);
 
             lastVetoTeam = (CsTeam)team;
 
@@ -331,10 +325,7 @@ namespace MatchZy
                 Team = (matchzyTeam == matchzyTeam1) ? "team1" : "team2",
             };
 
-            Task.Run(async () =>
-            {
-                await SendEventAsync(mapMapVetoedEvent);
-            });
+            _ = SendEventAsync(mapMapVetoedEvent);
 
             lastVetoTeam = (CsTeam)team;
 
@@ -691,10 +682,7 @@ namespace MatchZy
                 Team = (matchzyTeam == matchzyTeam1) ? "team1" : "team2",
                 Side = sideFormatted.ToLower(),
             };
-            Task.Run(async () =>
-            {
-                await SendEventAsync(sidePickedEvent);
-            });
+            _ = SendEventAsync(sidePickedEvent);
         }
 
         public void GenerateDefaultVetoSetup()

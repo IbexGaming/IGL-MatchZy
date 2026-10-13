@@ -414,10 +414,7 @@ namespace MatchZy
                         Side = player?.TeamNum == 2 ? "t" : "ct",
                         PauseDuration = (int)(DateTime.Now - _pauseStartTime).TotalSeconds,
                     };
-                    Task.Run(async () =>
-                    {
-                        await SendEventAsync(unpausedEvent);
-                    });
+                    _ = SendEventAsync(unpausedEvent);
                     SendDiscordTechUnpauseEmbed();
                     Server.ExecuteCommand("mp_unpause_match;");
                     isPaused = false;
@@ -486,10 +483,7 @@ namespace MatchZy
                                 (reverseTeamSides["TERRORIST"] == matchzyTeam1) ? "team1" : "team2",
                             Side = "t",
                         };
-                        Task.Run(async () =>
-                        {
-                            await SendEventAsync(timeoutEvent);
-                        });
+                        _ = SendEventAsync(timeoutEvent);
                     }
                     else
                     {
@@ -509,10 +503,7 @@ namespace MatchZy
                             Team = (reverseTeamSides["CT"] == matchzyTeam1) ? "team1" : "team2",
                             Side = "ct",
                         };
-                        Task.Run(async () =>
-                        {
-                            await SendEventAsync(timeoutEvent);
-                        });
+                        _ = SendEventAsync(timeoutEvent);
                     }
                     else
                     {
