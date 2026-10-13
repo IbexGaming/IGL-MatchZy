@@ -2223,12 +2223,9 @@ namespace MatchZy
                     return;
                 }
 
-                using FileStream fileStream = File.OpenRead(filePath);
-
-                byte[] fileContent = new byte[fileStream.Length];
-                await fileStream.ReadExactlyAsync(fileContent, 0, (int)fileStream.Length);
-
-                using ByteArrayContent content = new(fileContent);
+                // StreamContent over a seekable FileStream sets Content-Length from the file size
+                // without loading the whole file into memory.
+                using StreamContent content = new(File.OpenRead(filePath));
                 content.Headers.Add("Content-Type", "application/octet-stream");
 
                 content.Headers.Add("MatchZy-FileName", Path.GetFileName(filePath));
