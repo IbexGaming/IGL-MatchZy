@@ -2256,7 +2256,9 @@ namespace MatchZy
 
             try
             {
-                using var httpClient = new HttpClient();
+                // Demos are hundreds of MB; the default 100s timeout would cut off uploads on
+                // slower uplinks and every retry would resend the whole file.
+                using var httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(30) };
                 Log(
                     $"[UploadFileAsync] Going to upload the file on {fileUploadURL}. Complete path: {filePath}"
                 );
