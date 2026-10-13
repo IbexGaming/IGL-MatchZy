@@ -81,6 +81,9 @@ Again, inside `csgo/cfg/MatchZy`, a file named `config.cfg` should be present. T
 :   If defined, recorded demo will be [uploaded](../gotv#automatic-upload) to this URL once the map ends. Make sure that the URL is wrapped in double quotes (""). 
 Example: `matchzy_demo_upload_url "https://your-website.com/upload-endpoint"` <br>**`Default: ""`**
 
+####`matchzy_demo_delete_after_upload`
+:   Whether to delete the local demo file after it was successfully [uploaded](../gotv#automatic-upload). The demo is kept if the upload fails.<br>**`Default: false`**
+
 ####`matchzy_kick_when_no_match_loaded`
 :   Whether to kick all clients and prevent anyone from joining the server if no match is loaded. This means if server is in match mode, a match needs to be set-up using `matchzy_loadmatch`/`matchzy_loadmatch_url` to load and configure a match.<br>**`Default: false`**
 

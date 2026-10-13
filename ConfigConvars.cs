@@ -297,6 +297,24 @@ namespace MatchZy
         }
 
         [ConsoleCommand(
+            "matchzy_demo_delete_after_upload",
+            "Whether to delete the local demo file after it was successfully uploaded. Default value: false"
+        )]
+        public void MatchZyDemoDeleteAfterUpload(CCSPlayerController? player, CommandInfo command)
+        {
+            if (player != null)
+                return;
+            string args = command.ArgString;
+
+            isDemoDeleteAfterUploadEnabled = bool.TryParse(
+                args,
+                out bool isDemoDeleteAfterUploadEnabledValue
+            )
+                ? isDemoDeleteAfterUploadEnabledValue
+                : args != "0" && isDemoDeleteAfterUploadEnabled;
+        }
+
+        [ConsoleCommand(
             "get5_demo_upload_url",
             "If defined, recorded demos will be uploaded to this URL once the map ends."
         )]

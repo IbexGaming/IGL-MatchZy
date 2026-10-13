@@ -32,6 +32,11 @@ read the [headers](#headers) for file metadata.
 
 Example: `matchzy_demo_upload_url "https://your-website.com/upload-endpoint"`
 
+Failed uploads are retried up to 5 times with exponential backoff (2s, 4s, 8s, 16s) on network errors and on
+`408`, `429` and `5xx` responses. Other `4xx` responses are not retried. Once the upload has finished, a
+`demo_upload_ended` event is sent to the remote log URL with the result. Set `matchzy_demo_delete_after_upload true`
+to delete the local demo file after a successful upload.
+
 ### Headers
 
 MatchZy will add these HTTP headers to its demo upload request:
