@@ -1,5 +1,12 @@
 # MatchZy Changelog
 
+# Unreleased
+
+- Demo and backup uploads are now streamed from disk instead of being loaded into memory, which also fixes uploads of files larger than 2GB
+- Demo/backup uploads and remote log events are now retried up to 5 times with exponential backoff (2s, 4s, 8s, 16s) on network errors and `408`, `429` and `5xx` responses
+- The `demo_upload_ended` event is now sent after a demo upload when `matchzy_demo_upload_url` is set
+- Added `matchzy_demo_delete_after_upload` cvar to delete the local demo file after a successful upload (Default: `false`)
+
 # 0.11.0
 
 #### October 12, 2026
