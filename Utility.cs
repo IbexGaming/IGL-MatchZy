@@ -1443,6 +1443,16 @@ namespace MatchZy
                 }
                 PrintToAllChat(Localizer["matchzy.pause.pausedthematch", pauseTeamName]);
                 // Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{pauseTeamName}{ChatColors.Default} has paused the match. Type .unpause to unpause the match");
+                SendDiscordEmbed(
+                    Localizer["matchzy.discord.tech_pause_title"],
+                    Localizer[
+                        "matchzy.discord.tech_pause_description",
+                        pauseTeamName,
+                        Server.MapName
+                    ],
+                    HexColors.Red,
+                    mentionAdmins: true
+                );
 
                 SetMatchPausedFlags();
                 var pausingTeam =
