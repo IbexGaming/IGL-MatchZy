@@ -439,12 +439,6 @@ namespace MatchZy
             UpdatePlayersMap();
             UpdateHostname();
 
-            SendDiscordEmbed(
-                "Match Loaded",
-                $"Series starting with {matchConfig.NumMaps} maps between {matchzyTeam1.teamName} and {matchzyTeam2.teamName}",
-                HexColors.Red
-            );
-
             var seriesStartedEvent = new MatchZySeriesStartedEvent
             {
                 MatchId = liveMatchId,
