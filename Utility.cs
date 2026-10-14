@@ -391,6 +391,19 @@ namespace MatchZy
 
             PrintToAllChat($"Match is {ChatColors.Green}live!");
 
+            SendDiscordEmbed(
+                Localizer["matchzy.discord.map_live_title"],
+                Localizer[
+                    "matchzy.discord.map_live_description",
+                    matchzyTeam1.teamName,
+                    matchzyTeam2.teamName,
+                    Server.MapName,
+                    matchConfig.CurrentMapNumber + 1,
+                    matchConfig.NumMaps
+                ],
+                HexColors.Blue
+            );
+
             var goingLiveEvent = new GoingLiveEvent
             {
                 MatchId = liveMatchId,
