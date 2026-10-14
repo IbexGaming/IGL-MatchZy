@@ -1471,6 +1471,24 @@ namespace MatchZy
             }
         }
 
+        private void SendDiscordTechUnpauseEmbed()
+        {
+            // Admin pauses are started by admins themselves, so only technical pauses are reported
+            if ((string)unpauseData["pauseTeam"] == "Admin")
+                return;
+
+            SendDiscordEmbed(
+                Localizer["matchzy.discord.tech_unpause_title"],
+                Localizer[
+                    "matchzy.discord.tech_unpause_description",
+                    unpauseData["pauseTeam"],
+                    Server.MapName,
+                    (int)(DateTime.Now - _pauseStartTime).TotalSeconds
+                ],
+                HexColors.Green
+            );
+        }
+
         private void ForcePauseMatch(CCSPlayerController? player, CommandInfo? command)
         {
             if (!matchStarted)
@@ -1545,6 +1563,7 @@ namespace MatchZy
                 {
                     await SendEventAsync(forceUnpausedEvent);
                 });
+                SendDiscordTechUnpauseEmbed();
                 UnpauseMatch();
 
                 if (player == null)

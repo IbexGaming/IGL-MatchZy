@@ -417,6 +417,7 @@ namespace MatchZy
                     {
                         await SendEventAsync(unpausedEvent);
                     });
+                    SendDiscordTechUnpauseEmbed();
                     Server.ExecuteCommand("mp_unpause_match;");
                     isPaused = false;
                     unpauseData["ct"] = false;
@@ -425,6 +426,7 @@ namespace MatchZy
                 else if (unpauseTeamName == "Admin")
                 {
                     PrintToAllChat(Localizer["matchzy.pause.adminunpausedthematch"]);
+                    SendDiscordTechUnpauseEmbed();
                     Server.ExecuteCommand("mp_unpause_match;");
                     isPaused = false;
                     unpauseData["ct"] = false;
