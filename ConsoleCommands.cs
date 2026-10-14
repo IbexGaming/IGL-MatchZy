@@ -287,17 +287,11 @@ namespace MatchZy
             if (player == null || string.IsNullOrWhiteSpace(message))
                 return;
 
-            string teamName;
-
             // Get team of the player
-            if (player.Team == CsTeam.CounterTerrorist)
-            {
-                teamName = matchzyTeam1.teamName;
-            }
-            else
-            {
-                teamName = matchzyTeam2.teamName;
-            }
+            string teamName =
+                player.TeamNum == 2 ? reverseTeamSides["TERRORIST"].teamName
+                : player.TeamNum == 3 ? reverseTeamSides["CT"].teamName
+                : "Spectator";
 
             // ConVars and player data can only be read on the main thread, so everything is captured before Task.Run
             var playerName = player.PlayerName;
@@ -327,7 +321,7 @@ namespace MatchZy
                     }
 
                     PrintToAllChat(
-                        $"<color=green>{teamName} ({playerName})</color> {Localizer["matchzy.calladmin.admincalled"]}"
+                        $"{ChatColors.Green}{teamName} ({playerName}){ChatColors.Default} {Localizer["matchzy.calladmin.admincalled"]}"
                     );
                 });
             });
