@@ -87,6 +87,9 @@ namespace MatchZy
         public FakeConVar<string> playerConnectMessage = new(
             "matchzy_player_connect_message",
             "Message to show to a player when they connect. Use $$$ to break message into multiple lines. Set to \"\" to disable.",
+            ""
+        );
+
         public FakeConVar<string> discordAdminGroupId = new(
             "matchzy_discord_admin_group_id",
             "ID of the Discord admin group to mention in Admin Discord webhook messages.",
