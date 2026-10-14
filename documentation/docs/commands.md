@@ -13,7 +13,7 @@ Most of the commands can also be used using ! prefix instead of . (like !ready)
 - `.tac` Starts a tactical timeout
 - `.coach <side>` Starts coaching the specified side. Example: `.coach t` to start coaching terrorist side!
 - `.uncoach` Leaves coaching slot
-- `.admin` Calls an Admin to your server
+- `.admin <message>` Calls an Admin to your server by sending the message to Discord. Example: `.admin player disconnected`
 
 # Practice Mode Commands
 
