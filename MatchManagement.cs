@@ -5,7 +5,6 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
-using MatchZy.Integrations;
 using MatchZy.Util;
 using Newtonsoft.Json.Linq;
 
@@ -440,25 +439,11 @@ namespace MatchZy
             UpdatePlayersMap();
             UpdateHostname();
 
-            Task.Run(async () =>
-            {
-                try
-                {
-                    await DiscordIntegration.SendEmbed(
-                        "Match Loaded",
-                        $"Series starting with {matchConfig.NumMaps} maps between {matchzyTeam1.teamName} and {matchzyTeam2.teamName}",
-                        HexColors.Red,
-                        discordWebhookURL,
-                        publicIp.Value
-                    );
-                }
-                catch (Exception ex)
-                {
-                    Log(
-                        $"[MatchManagement] Exception when sending server start embed: {ex.Message}"
-                    );
-                }
-            });
+            SendDiscordEmbed(
+                "Match Loaded",
+                $"Series starting with {matchConfig.NumMaps} maps between {matchzyTeam1.teamName} and {matchzyTeam2.teamName}",
+                HexColors.Red
+            );
 
             var seriesStartedEvent = new MatchZySeriesStartedEvent
             {
@@ -754,30 +739,29 @@ namespace MatchZy
                 // Making sure that map end event is fired first
                 await Task.Delay(2000);
                 await SendEventAsync(seriesResultEvent);
-                await DiscordIntegration.SendEmbed(
-                    Localizer["matchzy.discord.series_end_title"],
-                    winnerName == null
-                        ? Localizer[ // If draw
-                            "matchzy.discord.series_end_draw_description",
-                            matchzyTeam1.teamName,
-                            matchzyTeam2.teamName,
-                            team1Score,
-                            team2Score
-                        ]
-                        : Localizer[ // If one team wins
-                            "matchzy.discord.series_end_victory_description",
-                            winnerName,
-                            team1Score,
-                            team2Score,
-                            matchzyTeam1.teamName == winnerName
-                                ? matchzyTeam2.teamName
-                                : matchzyTeam1.teamName
-                        ],
-                    HexColors.Green,
-                    discordWebhookURL,
-                    publicIp.Value
-                );
             });
+
+            SendDiscordEmbed(
+                Localizer["matchzy.discord.series_end_title"],
+                winnerName == null
+                    ? Localizer[ // If draw
+                        "matchzy.discord.series_end_draw_description",
+                        matchzyTeam1.teamName,
+                        matchzyTeam2.teamName,
+                        team1Score,
+                        team2Score
+                    ]
+                    : Localizer[ // If one team wins
+                        "matchzy.discord.series_end_victory_description",
+                        winnerName,
+                        team1Score,
+                        team2Score,
+                        matchzyTeam1.teamName == winnerName
+                            ? matchzyTeam2.teamName
+                            : matchzyTeam1.teamName
+                    ],
+                HexColors.Green
+            );
 
             if (resetCvarsOnSeriesEnd)
                 ResetChangedConvars();

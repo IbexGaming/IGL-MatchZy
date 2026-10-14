@@ -5,7 +5,6 @@ using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Events;
 using CounterStrikeSharp.API.Modules.Utils;
-using MatchZy.Integrations;
 using MatchZy.Util;
 
 namespace MatchZy
@@ -109,27 +108,10 @@ namespace MatchZy
 
             AddTimer(
                 2.0f,
-                async () =>
+                () =>
                 {
-                    try
-                    {
-                        var hostname = ConVar.Find("hostname")?.StringValue ?? "Unknown Server";
-                        var success = await DiscordIntegration.SendEmbed(
-                            "Server has started.",
-                            hostname,
-                            HexColors.Green,
-                            discordWebhookURL,
-                            publicIp.Value
-                        );
-                        if (!success)
-                        {
-                            Log("Failed to send server start embed via DiscordIntegration.");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Log($"Exception when sending server start embed: {ex.Message}");
-                    }
+                    var hostname = ConVar.Find("hostname")?.StringValue ?? "Unknown Server";
+                    SendDiscordEmbed("Server has started.", hostname, HexColors.Green);
                 }
             );
 

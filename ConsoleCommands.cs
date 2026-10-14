@@ -288,7 +288,9 @@ namespace MatchZy
                     player.PlayerName,
                     message,
                     discordWebhookURL,
-                    discordAdminGroupId.Value
+                    discordAdminGroupId.Value,
+                    publicIp.Value,
+                    GetServerPort()
                 )
                 .Result; // Explicitly await the result here
 

@@ -10,6 +10,8 @@ using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
+using MatchZy.Integrations;
+using MatchZy.Util;
 using Newtonsoft.Json.Linq;
 
 namespace MatchZy
@@ -2084,6 +2086,45 @@ namespace MatchZy
         private void Log(string message)
         {
             Console.WriteLine("[MatchZy] " + message);
+        }
+
+        private int? GetServerPort()
+        {
+            return ConVar.Find("hostport")?.GetPrimitiveValue<int>();
+        }
+
+        private void SendDiscordEmbed(
+            string title,
+            string description,
+            HexColor color,
+            bool mentionAdmins = false
+        )
+        {
+            if (string.IsNullOrEmpty(discordWebhookURL))
+                return;
+
+            // ConVars can only be read on the main thread, so everything is captured before Task.Run
+            var webhookUrl = discordWebhookURL;
+            var ip = publicIp.Value;
+            var port = GetServerPort();
+            var mentionRoleId = mentionAdmins ? discordAdminGroupId.Value : null;
+
+            Task.Run(async () =>
+            {
+                var success = await DiscordIntegration.SendEmbed(
+                    title,
+                    description,
+                    color,
+                    webhookUrl,
+                    ip,
+                    port,
+                    mentionRoleId
+                );
+                if (!success)
+                {
+                    Log($"[SendDiscordEmbed] Failed to send Discord embed: {title}");
+                }
+            });
         }
 
         private void AutoStart()
