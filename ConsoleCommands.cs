@@ -283,39 +283,50 @@ namespace MatchZy
             if (string.IsNullOrEmpty(message))
                 return;
 
-            var success = DiscordIntegration
-                .SendAdminMessage(
-                    player.PlayerName,
-                    message,
-                    discordWebhookURL,
-                    discordAdminGroupId.Value,
-                    publicIp.Value,
-                    GetServerPort()
-                )
-                .Result; // Explicitly await the result here
+            string teamName;
 
-            if (!success)
+            // Get team of the player
+            if (player.Team == CsTeam.CounterTerrorist)
             {
-                player.PrintToChat(Localizer["matchzy.calladmin.admincalled"]);
+                teamName = matchzyTeam1.teamName;
             }
             else
             {
-                string teamName;
-
-                // Get team of the player
-                if (player.Team == CsTeam.CounterTerrorist)
-                {
-                    teamName = matchzyTeam1.teamName;
-                }
-                else
-                {
-                    teamName = matchzyTeam2.teamName;
-                }
-
-                PrintToAllChat(
-                    $"<color=green>{teamName} ({player.PlayerName})</color> {Localizer["matchzy.calladmin.admincalled"]}"
-                );
+                teamName = matchzyTeam2.teamName;
             }
+
+            // ConVars and player data can only be read on the main thread, so everything is captured before Task.Run
+            var playerName = player.PlayerName;
+            var webhookUrl = discordWebhookURL;
+            var adminGroupId = discordAdminGroupId.Value;
+            var ip = publicIp.Value;
+            var port = GetServerPort();
+
+            Task.Run(async () =>
+            {
+                var success = await DiscordIntegration.SendAdminMessage(
+                    playerName,
+                    message,
+                    webhookUrl,
+                    adminGroupId,
+                    ip,
+                    port
+                );
+
+                Server.NextFrame(() =>
+                {
+                    if (!success)
+                    {
+                        if (player.IsValid)
+                            player.PrintToChat(Localizer["matchzy.calladmin.callfailded"]);
+                        return;
+                    }
+
+                    PrintToAllChat(
+                        $"<color=green>{teamName} ({playerName})</color> {Localizer["matchzy.calladmin.admincalled"]}"
+                    );
+                });
+            });
         }
 
         [ConsoleCommand("css_tech", "Pause the match")]
