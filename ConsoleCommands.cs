@@ -5,6 +5,7 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
+using MatchZy.Integrations;
 
 namespace MatchZy
 {
@@ -272,6 +273,60 @@ namespace MatchZy
             SideSwitchCommand(player, CsTeam.CounterTerrorist);
         }
 
+        [ConsoleCommand("css_admin", "Call an Admin")]
+        public void OnMessageAdmin(CCSPlayerController? player, CommandInfo? command)
+        {
+            if (command == null)
+                return;
+
+            HandleAdminCallCommand(player, command.ArgString);
+        }
+
+        private void HandleAdminCallCommand(CCSPlayerController? player, string message)
+        {
+            if (player == null || string.IsNullOrWhiteSpace(message))
+                return;
+
+            // Get team of the player
+            string teamName =
+                player.TeamNum == 2 ? reverseTeamSides["TERRORIST"].teamName
+                : player.TeamNum == 3 ? reverseTeamSides["CT"].teamName
+                : "Spectator";
+
+            // ConVars and player data can only be read on the main thread, so everything is captured before Task.Run
+            var playerName = player.PlayerName;
+            var webhookUrl = discordWebhookURL;
+            var adminGroupId = discordAdminGroupId.Value;
+            var ip = publicIp.Value;
+            var port = GetServerPort();
+
+            Task.Run(async () =>
+            {
+                var success = await DiscordIntegration.SendAdminMessage(
+                    playerName,
+                    message,
+                    webhookUrl,
+                    adminGroupId,
+                    ip,
+                    port
+                );
+
+                Server.NextFrame(() =>
+                {
+                    if (!success)
+                    {
+                        if (player.IsValid)
+                            player.PrintToChat(Localizer["matchzy.calladmin.callfailded"]);
+                        return;
+                    }
+
+                    PrintToAllChat(
+                        $"{ChatColors.Green}{teamName} ({playerName}){ChatColors.Default} {Localizer["matchzy.calladmin.admincalled"]}"
+                    );
+                });
+            });
+        }
+
         [ConsoleCommand("css_tech", "Pause the match")]
         public void OnTechCommand(CCSPlayerController? player, CommandInfo? command)
         {
@@ -362,6 +417,7 @@ namespace MatchZy
                     {
                         await SendEventAsync(unpausedEvent);
                     });
+                    SendDiscordTechUnpauseEmbed();
                     Server.ExecuteCommand("mp_unpause_match;");
                     isPaused = false;
                     unpauseData["ct"] = false;
@@ -370,6 +426,7 @@ namespace MatchZy
                 else if (unpauseTeamName == "Admin")
                 {
                     PrintToAllChat(Localizer["matchzy.pause.adminunpausedthematch"]);
+                    SendDiscordTechUnpauseEmbed();
                     Server.ExecuteCommand("mp_unpause_match;");
                     isPaused = false;
                     unpauseData["ct"] = false;

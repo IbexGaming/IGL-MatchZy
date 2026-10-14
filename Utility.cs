@@ -10,6 +10,8 @@ using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
+using MatchZy.Integrations;
+using MatchZy.Util;
 using Newtonsoft.Json.Linq;
 
 namespace MatchZy
@@ -388,6 +390,19 @@ namespace MatchZy
             Server.ExecuteCommand("mp_match_end_restart true");
 
             PrintToAllChat($"Match is {ChatColors.Green}live!");
+
+            SendDiscordEmbed(
+                Localizer["matchzy.discord.map_live_title"],
+                Localizer[
+                    "matchzy.discord.map_live_description",
+                    matchzyTeam1.teamName,
+                    matchzyTeam2.teamName,
+                    Server.MapName,
+                    matchConfig.CurrentMapNumber + 1,
+                    matchConfig.NumMaps
+                ],
+                HexColors.Blue
+            );
 
             var goingLiveEvent = new GoingLiveEvent
             {
@@ -1428,6 +1443,16 @@ namespace MatchZy
                 }
                 PrintToAllChat(Localizer["matchzy.pause.pausedthematch", pauseTeamName]);
                 // Server.PrintToChatAll($"{chatPrefix} {ChatColors.Green}{pauseTeamName}{ChatColors.Default} has paused the match. Type .unpause to unpause the match");
+                SendDiscordEmbed(
+                    Localizer["matchzy.discord.tech_pause_title"],
+                    Localizer[
+                        "matchzy.discord.tech_pause_description",
+                        pauseTeamName,
+                        Server.MapName
+                    ],
+                    HexColors.Red,
+                    mentionAdmins: true
+                );
 
                 SetMatchPausedFlags();
                 var pausingTeam =
@@ -1444,6 +1469,24 @@ namespace MatchZy
                     await SendEventAsync(pausedEvent);
                 });
             }
+        }
+
+        private void SendDiscordTechUnpauseEmbed()
+        {
+            // Admin pauses are started by admins themselves, so only technical pauses are reported
+            if ((string)unpauseData["pauseTeam"] == "Admin")
+                return;
+
+            SendDiscordEmbed(
+                Localizer["matchzy.discord.tech_unpause_title"],
+                Localizer[
+                    "matchzy.discord.tech_unpause_description",
+                    unpauseData["pauseTeam"],
+                    Server.MapName,
+                    (int)(DateTime.Now - _pauseStartTime).TotalSeconds
+                ],
+                HexColors.Green
+            );
         }
 
         private void ForcePauseMatch(CCSPlayerController? player, CommandInfo? command)
@@ -1520,6 +1563,7 @@ namespace MatchZy
                 {
                     await SendEventAsync(forceUnpausedEvent);
                 });
+                SendDiscordTechUnpauseEmbed();
                 UnpauseMatch();
 
                 if (player == null)
@@ -2084,6 +2128,45 @@ namespace MatchZy
         private void Log(string message)
         {
             Console.WriteLine("[MatchZy] " + message);
+        }
+
+        private int? GetServerPort()
+        {
+            return ConVar.Find("hostport")?.GetPrimitiveValue<int>();
+        }
+
+        private void SendDiscordEmbed(
+            string title,
+            string description,
+            HexColor color,
+            bool mentionAdmins = false
+        )
+        {
+            if (string.IsNullOrEmpty(discordWebhookURL))
+                return;
+
+            // ConVars can only be read on the main thread, so everything is captured before Task.Run
+            var webhookUrl = discordWebhookURL;
+            var ip = publicIp.Value;
+            var port = GetServerPort();
+            var mentionRoleId = mentionAdmins ? discordAdminGroupId.Value : null;
+
+            Task.Run(async () =>
+            {
+                var success = await DiscordIntegration.SendEmbed(
+                    title,
+                    description,
+                    color,
+                    webhookUrl,
+                    ip,
+                    port,
+                    mentionRoleId
+                );
+                if (!success)
+                {
+                    Log($"[SendDiscordEmbed] Failed to send Discord embed: {title}");
+                }
+            });
         }
 
         private void AutoStart()
