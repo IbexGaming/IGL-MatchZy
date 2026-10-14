@@ -276,11 +276,15 @@ namespace MatchZy
         [ConsoleCommand("css_admin", "Call an Admin")]
         public void OnMessageAdmin(CCSPlayerController? player, CommandInfo? command)
         {
-            if (player == null || command == null)
+            if (command == null)
                 return;
 
-            var message = command.ArgByIndex(1);
-            if (string.IsNullOrEmpty(message))
+            HandleAdminCallCommand(player, command.ArgString);
+        }
+
+        private void HandleAdminCallCommand(CCSPlayerController? player, string message)
+        {
+            if (player == null || string.IsNullOrWhiteSpace(message))
                 return;
 
             string teamName;

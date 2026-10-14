@@ -129,7 +129,6 @@ namespace MatchZy
 
             commandActions = new Dictionary<string, Action<CCSPlayerController?, CommandInfo?>>
             {
-                { ".admin", OnMessageAdmin },
                 { ".ready", OnPlayerReady },
                 { ".r", OnPlayerReady },
                 { ".forceready", OnForceReadyCommandCommand },
@@ -531,6 +530,10 @@ namespace MatchZy
                     if (message.StartsWith(".restore"))
                     {
                         HandleRestoreCommand(player, messageCommandArg);
+                    }
+                    if (message.StartsWith(".admin"))
+                    {
+                        HandleAdminCallCommand(player, messageCommandArg);
                     }
                     if (message.StartsWith(".asay"))
                     {
