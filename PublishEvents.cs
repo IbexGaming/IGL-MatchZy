@@ -89,7 +89,9 @@ namespace MatchZy
                 $"[SendEventAsync] Sending Event: {queuedEvent.EventName} for matchId: {queuedEvent.MatchId} mapNumber: {queuedEvent.MapNumber} on {queuedEvent.URL}"
             );
 
-            using var httpClient = new HttpClient();
+            // Events are sent one at a time, so a short timeout keeps a slow endpoint from holding
+            // back every later event for minutes.
+            using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
 
             Log($"[SendEventAsync] SENDING DATA: {queuedEvent.JsonString}");
 
