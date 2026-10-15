@@ -1043,10 +1043,9 @@ namespace MatchZy
                 ),
             };
 
-            Task mapResultEventSent = SendEventAsync(mapResultEvent);
+            _ = SendEventAsync(mapResultEvent);
             Task.Run(async () =>
             {
-                await mapResultEventSent;
                 await database.SetMapEndData(
                     liveMatchId,
                     currentMapNumber,
@@ -1295,10 +1294,9 @@ namespace MatchZy
                         ),
                     };
 
-                    Task roundEndEventSent = SendEventAsync(roundEndEvent);
+                    _ = SendEventAsync(roundEndEvent);
                     Task.Run(async () =>
                     {
-                        await roundEndEventSent;
                         await database.UpdatePlayerStatsAsync(
                             matchId,
                             currentMapNumber,
