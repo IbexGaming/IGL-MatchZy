@@ -460,6 +460,10 @@ components:
         event:
           type: string
           description: The name of the event.
+        event_id:
+          type: string
+          format: uuid
+          description: Unique ID of the event. Stays the same when the event is retried, use it to deduplicate.
     MatchZyMatchEvent:
       allOf:
         - "$ref": "#/components/schemas/MatchZyEvent"

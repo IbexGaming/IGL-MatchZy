@@ -395,10 +395,7 @@ namespace MatchZy
                 MapNumber = matchConfig.CurrentMapNumber,
             };
 
-            Task.Run(async () =>
-            {
-                await SendEventAsync(goingLiveEvent);
-            });
+            _ = SendEventAsync(goingLiveEvent);
         }
 
         private void KillPhaseTimers()
@@ -1026,9 +1023,9 @@ namespace MatchZy
                 ),
             };
 
+            _ = SendEventAsync(mapResultEvent);
             Task.Run(async () =>
             {
-                await SendEventAsync(mapResultEvent);
                 await database.SetMapEndData(
                     liveMatchId,
                     currentMapNumber,
@@ -1271,9 +1268,9 @@ namespace MatchZy
                         ),
                     };
 
+                    _ = SendEventAsync(roundEndEvent);
                     Task.Run(async () =>
                     {
-                        await SendEventAsync(roundEndEvent);
                         await database.UpdatePlayerStatsAsync(
                             matchId,
                             currentMapNumber,
@@ -1439,10 +1436,7 @@ namespace MatchZy
                     Team = (pausingTeam == matchzyTeam1) ? "team1" : "team2",
                     Side = player?.TeamNum == 2 ? "t" : "ct",
                 };
-                Task.Run(async () =>
-                {
-                    await SendEventAsync(pausedEvent);
-                });
+                _ = SendEventAsync(pausedEvent);
             }
         }
 
@@ -1494,10 +1488,7 @@ namespace MatchZy
                 MatchId = liveMatchId,
                 MapNumber = matchConfig.CurrentMapNumber,
             };
-            Task.Run(async () =>
-            {
-                await SendEventAsync(forcePausedEvent);
-            });
+            _ = SendEventAsync(forcePausedEvent);
         }
 
         private void ForceUnpauseMatch(CCSPlayerController? player, CommandInfo? command)
@@ -1516,10 +1507,7 @@ namespace MatchZy
                     MapNumber = matchConfig.CurrentMapNumber,
                     PauseDuration = (int)(DateTime.Now - _pauseStartTime).TotalSeconds,
                 };
-                Task.Run(async () =>
-                {
-                    await SendEventAsync(forceUnpausedEvent);
-                });
+                _ = SendEventAsync(forceUnpausedEvent);
                 UnpauseMatch();
 
                 if (player == null)
@@ -2192,7 +2180,51 @@ namespace MatchZy
             return value;
         }
 
-        public async Task UploadFileAsync(
+        // Posts to the given URL, retrying network errors and 408/429/5xx responses with exponential
+        // backoff (2s, 4s, 8s, 16s). Other 4xx responses are returned immediately since retrying
+        // will not fix them. createContent is called once per attempt so streams can be reopened.
+        // The response of the last attempt is returned; the exception of the last attempt is rethrown.
+        private async Task<HttpResponseMessage> PostWithRetriesAsync(
+            HttpClient httpClient,
+            string url,
+            Func<HttpContent> createContent,
+            string logPrefix
+        )
+        {
+            const int maxAttempts = 5;
+            for (int attempt = 1; ; attempt++)
+            {
+                try
+                {
+                    using HttpContent content = createContent();
+                    HttpResponseMessage response = await httpClient.PostAsync(url, content);
+                    int statusCode = (int)response.StatusCode;
+                    bool isRetryableStatus =
+                        statusCode == 408 || statusCode == 429 || statusCode >= 500;
+                    if (!isRetryableStatus || attempt == maxAttempts)
+                        return response;
+
+                    Log(
+                        $"{logPrefix} Attempt {attempt}/{maxAttempts} failed with status code: {response.StatusCode}"
+                    );
+                    response.Dispose();
+                }
+                // TaskCanceledException is what HttpClient throws when its timeout elapses.
+                catch (Exception e)
+                    when (attempt < maxAttempts
+                        && (e is HttpRequestException || e is TaskCanceledException)
+                    )
+                {
+                    Log($"{logPrefix} Attempt {attempt}/{maxAttempts} failed: {e.Message}");
+                }
+
+                TimeSpan backoff = TimeSpan.FromSeconds(Math.Pow(2, attempt));
+                Log($"{logPrefix} Retrying in {backoff.TotalSeconds}s");
+                await Task.Delay(backoff);
+            }
+        }
+
+        public async Task<bool> UploadFileAsync(
             string? filePath,
             string fileUploadURL,
             string headerKey,
@@ -2207,12 +2239,14 @@ namespace MatchZy
                 Log(
                     $"[UploadFileAsync] Not able to upload the file, either filePath or fileUploadURL is not set. filePath: {filePath} fileUploadURL: {fileUploadURL}"
                 );
-                return;
+                return false;
             }
 
             try
             {
-                using var httpClient = new HttpClient();
+                // Demos are hundreds of MB; the default 100s timeout would cut off uploads on
+                // slower uplinks and every retry would resend the whole file.
+                using var httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(30) };
                 Log(
                     $"[UploadFileAsync] Going to upload the file on {fileUploadURL}. Complete path: {filePath}"
                 );
@@ -2220,51 +2254,60 @@ namespace MatchZy
                 if (!File.Exists(filePath))
                 {
                     Log($"[UploadFileAsync ERROR] File not found: {filePath}");
-                    return;
+                    return false;
                 }
 
-                using FileStream fileStream = File.OpenRead(filePath);
+                HttpContent CreateContent()
+                {
+                    // StreamContent over a seekable FileStream sets Content-Length from the file size
+                    // without loading the whole file into memory.
+                    StreamContent content = new(File.OpenRead(filePath));
+                    content.Headers.Add("Content-Type", "application/octet-stream");
 
-                byte[] fileContent = new byte[fileStream.Length];
-                await fileStream.ReadExactlyAsync(fileContent, 0, (int)fileStream.Length);
+                    content.Headers.Add("MatchZy-FileName", Path.GetFileName(filePath));
+                    content.Headers.Add("MatchZy-MatchId", matchId.ToString());
+                    content.Headers.Add("MatchZy-MapNumber", mapNumber.ToString());
+                    content.Headers.Add("MatchZy-RoundNumber", roundNumber.ToString());
 
-                using ByteArrayContent content = new(fileContent);
-                content.Headers.Add("Content-Type", "application/octet-stream");
-
-                content.Headers.Add("MatchZy-FileName", Path.GetFileName(filePath));
-                content.Headers.Add("MatchZy-MatchId", matchId.ToString());
-                content.Headers.Add("MatchZy-MapNumber", mapNumber.ToString());
-                content.Headers.Add("MatchZy-RoundNumber", roundNumber.ToString());
-
-                // For Get5 Panel
-                content.Headers.Add("Get5-FileName", Path.GetFileName(filePath));
-                content.Headers.Add("Get5-MatchId", matchId.ToString());
-                content.Headers.Add("Get5-MapNumber", mapNumber.ToString());
-                content.Headers.Add("Get5-RoundNumber", roundNumber.ToString());
+                    // For Get5 Panel
+                    content.Headers.Add("Get5-FileName", Path.GetFileName(filePath));
+                    content.Headers.Add("Get5-MatchId", matchId.ToString());
+                    content.Headers.Add("Get5-MapNumber", mapNumber.ToString());
+                    content.Headers.Add("Get5-RoundNumber", roundNumber.ToString());
+                    return content;
+                }
 
                 if (!string.IsNullOrEmpty(headerKey) && !string.IsNullOrEmpty(headerValue))
                 {
                     httpClient.DefaultRequestHeaders.Add(headerKey, headerValue);
                 }
 
-                HttpResponseMessage response = await httpClient.PostAsync(fileUploadURL, content);
+                using HttpResponseMessage response = await PostWithRetriesAsync(
+                    httpClient,
+                    fileUploadURL,
+                    CreateContent,
+                    "[UploadFileAsync]"
+                );
 
                 if (response.IsSuccessStatusCode)
                 {
                     Log(
                         $"[UploadFileAsync] File upload successful for matchId: {matchId} mapNumber: {mapNumber} fileName: {Path.GetFileName(filePath)}."
                     );
+                    return true;
                 }
                 else
                 {
                     Log(
                         $"[UploadFileAsync ERROR] Failed to upload file. Status code: {response.StatusCode} Response: {await response.Content.ReadAsStringAsync()}"
                     );
+                    return false;
                 }
             }
             catch (Exception e)
             {
                 Log($"[UploadFileAsync FATAL] An error occurred: {e.Message}");
+                return false;
             }
         }
 
