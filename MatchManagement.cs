@@ -708,14 +708,15 @@ namespace MatchZy
                 (winnerName == null) ? "none"
                 : matchzyTeam1.seriesScore > matchzyTeam2.seriesScore ? "team1"
                 : "team2";
+            string winnerSide =
+                (winnerTeam == "none") ? "0"
+                : teamSides[winnerTeam == "team1" ? matchzyTeam1 : matchzyTeam2] == "CT" ? "3"
+                : "2";
 
             var seriesResultEvent = new MatchZySeriesResultEvent()
             {
                 MatchId = matchId,
-                Winner = new Winner(
-                    t1score > t2score && reverseTeamSides["CT"] == matchzyTeam1 ? "3" : "2",
-                    winnerTeam
-                ),
+                Winner = new Winner(winnerSide, winnerTeam),
                 Team1SeriesScore = team1Score,
                 Team2SeriesScore = team2Score,
                 TimeUntilRestore = 10,

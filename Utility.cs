@@ -1078,7 +1078,11 @@ namespace MatchZy
             }
             if (remainingMaps <= 0)
             {
-                EndSeries(winnerName, restartDelay - 1, t1score, t2score);
+                string seriesWinnerName =
+                    matchzyTeam1.seriesScore > matchzyTeam2.seriesScore
+                        ? matchzyTeam1.teamName
+                        : matchzyTeam2.teamName;
+                EndSeries(seriesWinnerName, restartDelay - 1, t1score, t2score);
                 return;
             }
             if (matchzyTeam1.seriesScore > matchzyTeam2.seriesScore)
