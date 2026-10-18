@@ -335,6 +335,8 @@ namespace MatchZy
                 NumMaps = jsonDataObject["num_maps"]!.Value<int>(),
                 MinPlayersToReady = minimumReadyRequired,
             };
+            // The previous match's veto must not decide who starts this veto
+            lastVetoTeam = CsTeam.None;
 
             GetOptionalMatchValues(jsonDataObject);
 
@@ -490,8 +492,8 @@ namespace MatchZy
 
         public void SetTeamNames()
         {
-            Server.ExecuteCommand($"mp_teamname_1 {reverseTeamSides["CT"].teamName}");
-            Server.ExecuteCommand($"mp_teamname_2 {reverseTeamSides["TERRORIST"].teamName}");
+            Server.ExecuteCommand($"mp_teamname_1 \"{reverseTeamSides["CT"].teamName}\"");
+            Server.ExecuteCommand($"mp_teamname_2 \"{reverseTeamSides["TERRORIST"].teamName}\"");
         }
 
         public void GetCvarValues(JObject jsonDataObject)
@@ -618,7 +620,7 @@ namespace MatchZy
                     coach.Clan = $"[{matchzyTeam2.teamName} COACH]";
                 }
             }
-            Server.ExecuteCommand($"mp_teamname_{teamNum} {teamName};");
+            Server.ExecuteCommand($"mp_teamname_{teamNum} \"{teamName}\";");
         }
 
         public void SwapSidesInTeamData(bool swapTeams)
@@ -687,6 +689,15 @@ namespace MatchZy
             return playerTeam;
         }
 
+        // winnerTeam is "team1", "team2" or "none"; the side is the winning team's current side, "0" for none
+        private Winner CreateWinner(string winnerTeam)
+        {
+            if (winnerTeam == "none")
+                return new Winner("0", winnerTeam);
+            Team team = winnerTeam == "team1" ? matchzyTeam1 : matchzyTeam2;
+            return new Winner(teamSides[team] == "CT" ? "3" : "2", winnerTeam);
+        }
+
         public void EndSeries(string? winnerName, int restartDelay, int t1score, int t2score)
         {
             long matchId = liveMatchId;
@@ -712,10 +723,7 @@ namespace MatchZy
             var seriesResultEvent = new MatchZySeriesResultEvent()
             {
                 MatchId = matchId,
-                Winner = new Winner(
-                    t1score > t2score && reverseTeamSides["CT"] == matchzyTeam1 ? "3" : "2",
-                    winnerTeam
-                ),
+                Winner = CreateWinner(winnerTeam),
                 Team1SeriesScore = team1Score,
                 Team2SeriesScore = team2Score,
                 TimeUntilRestore = 10,

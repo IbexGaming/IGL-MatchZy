@@ -348,6 +348,19 @@ namespace MatchZy
                         liveSetupRequired = true;
                     }
                 }
+                // Backups made before bomb stats were stored don't have these keys
+                if (backupData.TryGetValue("bomb_plants", out var savedBombPlants))
+                {
+                    bombPlants =
+                        JsonSerializer.Deserialize<Dictionary<ulong, int>>(savedBombPlants)
+                        ?? new();
+                }
+                if (backupData.TryGetValue("bomb_defuses", out var savedBombDefuses))
+                {
+                    bombDefuses =
+                        JsonSerializer.Deserialize<Dictionary<ulong, int>>(savedBombDefuses)
+                        ?? new();
+                }
                 if (backupData.TryGetValue("TerroristTimeOuts", out var terroristTimeouts))
                 {
                     gameRules.TerroristTimeOuts = int.Parse(terroristTimeouts);
@@ -384,8 +397,8 @@ namespace MatchZy
                             string fileName = Path.GetFileName(tempFilePath);
 
                             Server.ExecuteCommand($"mp_backup_restore_load_file {fileName}");
-                            Server.ExecuteCommand($"mp_teamname_1 {matchzyTeam1.teamName}");
-                            Server.ExecuteCommand($"mp_teamname_2 {matchzyTeam2.teamName}");
+                            Server.ExecuteCommand($"mp_teamname_1 \"{matchzyTeam1.teamName}\"");
+                            Server.ExecuteCommand($"mp_teamname_2 \"{matchzyTeam2.teamName}\"");
                             StartDemoRecording();
                         }
                     );
@@ -480,6 +493,8 @@ namespace MatchZy
                     { "team2_series_score", matchzyTeam2.seriesScore.ToString() },
                     { "TerroristTimeOuts", gameRules.TerroristTimeOuts.ToString() },
                     { "CTTimeOuts", gameRules.CTTimeOuts.ToString() },
+                    { "bomb_plants", JsonSerializer.Serialize(bombPlants) },
+                    { "bomb_defuses", JsonSerializer.Serialize(bombDefuses) },
                     { "match_loaded", isMatchSetup.ToString() },
                     { "match_config", GetMatchConfig() },
                     { "valve_backup", valveBackupContent },

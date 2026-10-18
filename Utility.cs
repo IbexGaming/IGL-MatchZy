@@ -465,6 +465,8 @@ namespace MatchZy
 
                 isRoundRestorePending = false;
                 playerHasTakenDamage = false;
+                bombPlants.Clear();
+                bombDefuses.Clear();
 
                 // Unready all players
                 foreach (var key in playerReadyStatus.Keys)
@@ -526,8 +528,8 @@ namespace MatchZy
                 matchzyTeam1.seriesScore = 0;
                 matchzyTeam2.seriesScore = 0;
 
-                Server.ExecuteCommand($"mp_teamname_1 {matchzyTeam1.teamName}");
-                Server.ExecuteCommand($"mp_teamname_2 {matchzyTeam2.teamName}");
+                Server.ExecuteCommand($"mp_teamname_1 \"{matchzyTeam1.teamName}\"");
+                Server.ExecuteCommand($"mp_teamname_2 \"{matchzyTeam2.teamName}\"");
 
                 teamSides[matchzyTeam1] = "CT";
                 teamSides[matchzyTeam2] = "TERRORIST";
@@ -868,8 +870,8 @@ namespace MatchZy
                 // Server.ExecuteCommand($"mp_teamname_2 {matchzyTeam2.teamName}");
             }
 
-            Server.ExecuteCommand($"mp_teamname_1 {reverseTeamSides["CT"].teamName}");
-            Server.ExecuteCommand($"mp_teamname_2 {reverseTeamSides["TERRORIST"].teamName}");
+            Server.ExecuteCommand($"mp_teamname_1 \"{reverseTeamSides["CT"].teamName}\"");
+            Server.ExecuteCommand($"mp_teamname_2 \"{reverseTeamSides["TERRORIST"].teamName}\"");
 
             HandleClanTags();
 
@@ -1002,9 +1004,10 @@ namespace MatchZy
             {
                 MatchId = liveMatchId,
                 MapNumber = currentMapNumber,
-                Winner = new Winner(
-                    t1score > t2score && reverseTeamSides["CT"] == matchzyTeam1 ? "3" : "2",
-                    t1score > t2score ? "team1" : "team2"
+                Winner = CreateWinner(
+                    t1score > t2score ? "team1"
+                    : t2score > t1score ? "team2"
+                    : "none"
                 ),
                 StatsTeam1 = new MatchZyStatsTeam(
                     matchzyTeam1.id,
@@ -1050,32 +1053,25 @@ namespace MatchZy
                 return;
             }
 
+            // Counted from maps played, as a drawn map doesn't add to either series score
             int remainingMaps =
-                matchConfig.NumMaps - matchzyTeam1.seriesScore - matchzyTeam2.seriesScore;
+                Math.Min(matchConfig.NumMaps, matchConfig.Maplist.Count)
+                - (matchConfig.CurrentMapNumber + 1);
+            int seriesLead = matchzyTeam1.seriesScore - matchzyTeam2.seriesScore;
             Log(
                 $"[HandleMatchEnd] MATCH ENDED, remainingMaps: {remainingMaps}, NumMaps: {matchConfig.NumMaps}, Team1SeriesScore: {matchzyTeam1.seriesScore}, Team2SeriesScore: {matchzyTeam2.seriesScore}"
             );
-            if (matchzyTeam1.seriesScore == matchzyTeam2.seriesScore && remainingMaps <= 0)
+            // With clinch, the series ends once the trailing team can no longer catch up
+            if (
+                remainingMaps <= 0
+                || (matchConfig.SeriesCanClinch && Math.Abs(seriesLead) > remainingMaps)
+            )
             {
-                EndSeries(null, restartDelay - 1, t1score, t2score);
-            }
-            else if (matchConfig.SeriesCanClinch)
-            {
-                int mapsToWinSeries = (matchConfig.NumMaps / 2) + 1;
-                if (matchzyTeam1.seriesScore == mapsToWinSeries)
-                {
-                    EndSeries(winnerName, restartDelay - 1, t1score, t2score);
-                    return;
-                }
-                else if (matchzyTeam2.seriesScore == mapsToWinSeries)
-                {
-                    EndSeries(winnerName, restartDelay - 1, t1score, t2score);
-                    return;
-                }
-            }
-            else if (remainingMaps <= 0)
-            {
-                EndSeries(winnerName, restartDelay - 1, t1score, t2score);
+                string? seriesWinnerName =
+                    seriesLead > 0 ? matchzyTeam1.teamName
+                    : seriesLead < 0 ? matchzyTeam2.teamName
+                    : null;
+                EndSeries(seriesWinnerName, restartDelay - 1, t1score, t2score);
                 return;
             }
             if (matchzyTeam1.seriesScore > matchzyTeam2.seriesScore)
@@ -1124,6 +1120,8 @@ namespace MatchZy
                     isMatchLive = false;
                     isPractice = false;
                     isDryRun = false;
+                    bombPlants.Clear();
+                    bombDefuses.Clear();
                     StartWarmup();
                     SetMapSides();
                 }
@@ -1240,7 +1238,9 @@ namespace MatchZy
                     int tTeamNum = reverseTeamSides["TERRORIST"] == matchzyTeam1 ? 1 : 2;
                     Winner winner = new(
                         @event.Winner.ToString(),
-                        t1score > t2score ? "team1" : "team2"
+                        @event.Winner == (int)CsTeam.CounterTerrorist ? $"team{ctTeamNum}"
+                            : @event.Winner == (int)CsTeam.Terrorist ? $"team{tTeamNum}"
+                            : "none"
                     );
 
                     var roundEndEvent = new MatchZyRoundEndedEvent
@@ -2019,8 +2019,8 @@ namespace MatchZy
                         KnifeKills = 0,
                         HeadshotKills = playerStats.HeadShotKills,
                         RoundsPlayed = roundsPlayed,
-                        BombDefuses = 0,
-                        BombPlants = 0,
+                        BombDefuses = bombDefuses.GetValueOrDefault(steamid64),
+                        BombPlants = bombPlants.GetValueOrDefault(steamid64),
                         Kills1 = 0,
                         Kills2 = playerStats.Enemy2Ks,
                         Kills3 = playerStats.Enemy3Ks,

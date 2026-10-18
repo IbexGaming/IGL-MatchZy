@@ -1,5 +1,16 @@
 # MatchZy Changelog
 
+# Unreleased
+
+- Fixed team names with spaces being cut off on the scoreboard (`mp_teamname` was not quoted).
+- Chat commands that take arguments (`.map`, `.restore`, `.in`, `.ln`, ...) now match the exact command word, so e.g. `.info` no longer runs `.in` and `.mapx` no longer runs `.map`.
+- Fixed bomb plants and defuses always being 0 in the player stats sent with `round_end`. They are counted while the match is live, stored in round backups (a round restore rolls them back) and reset each map.
+- Fixed `round_end` `winner.team` being the team ahead on score instead of the team that won the round.
+- Fixed a drawn map breaking a series (the next map lookup ran past the map list). Drawn maps count as played, and with clinch enabled a series ends once the trailing team can no longer catch up.
+- Fixed `series_end` naming the last map's winner instead of the series winner when all maps are played.
+- **Changed:** `map_result` and `series_end` `winner.side` is the winning team's side (it was derived from round scores). A draw is now side `"0"` / team `"none"` (previously reported as a team2 win).
+- Fixed the previous match's veto deciding which team starts the next match's veto.
+
 # 0.11.0
 
 #### October 12, 2026
