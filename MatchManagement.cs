@@ -689,6 +689,15 @@ namespace MatchZy
             return playerTeam;
         }
 
+        // winnerTeam is "team1", "team2" or "none"; the side is the winning team's current side, "0" for none
+        private Winner CreateWinner(string winnerTeam)
+        {
+            if (winnerTeam == "none")
+                return new Winner("0", winnerTeam);
+            Team team = winnerTeam == "team1" ? matchzyTeam1 : matchzyTeam2;
+            return new Winner(teamSides[team] == "CT" ? "3" : "2", winnerTeam);
+        }
+
         public void EndSeries(string? winnerName, int restartDelay, int t1score, int t2score)
         {
             long matchId = liveMatchId;
@@ -710,15 +719,11 @@ namespace MatchZy
                 (winnerName == null) ? "none"
                 : matchzyTeam1.seriesScore > matchzyTeam2.seriesScore ? "team1"
                 : "team2";
-            string winnerSide =
-                (winnerTeam == "none") ? "0"
-                : teamSides[winnerTeam == "team1" ? matchzyTeam1 : matchzyTeam2] == "CT" ? "3"
-                : "2";
 
             var seriesResultEvent = new MatchZySeriesResultEvent()
             {
                 MatchId = matchId,
-                Winner = new Winner(winnerSide, winnerTeam),
+                Winner = CreateWinner(winnerTeam),
                 Team1SeriesScore = team1Score,
                 Team2SeriesScore = team2Score,
                 TimeUntilRestore = 10,

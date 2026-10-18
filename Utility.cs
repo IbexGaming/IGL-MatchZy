@@ -1004,9 +1004,10 @@ namespace MatchZy
             {
                 MatchId = liveMatchId,
                 MapNumber = currentMapNumber,
-                Winner = new Winner(
-                    t1score > t2score && reverseTeamSides["CT"] == matchzyTeam1 ? "3" : "2",
-                    t1score > t2score ? "team1" : "team2"
+                Winner = CreateWinner(
+                    t1score > t2score ? "team1"
+                    : t2score > t1score ? "team2"
+                    : "none"
                 ),
                 StatsTeam1 = new MatchZyStatsTeam(
                     matchzyTeam1.id,
