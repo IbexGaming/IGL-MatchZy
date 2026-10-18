@@ -1054,35 +1054,23 @@ namespace MatchZy
             }
 
             // Counted from maps played, as a drawn map doesn't add to either series score
-            int remainingMaps = matchConfig.NumMaps - (matchConfig.CurrentMapNumber + 1);
+            int remainingMaps =
+                Math.Min(matchConfig.NumMaps, matchConfig.Maplist.Count)
+                - (matchConfig.CurrentMapNumber + 1);
+            int seriesLead = matchzyTeam1.seriesScore - matchzyTeam2.seriesScore;
             Log(
                 $"[HandleMatchEnd] MATCH ENDED, remainingMaps: {remainingMaps}, NumMaps: {matchConfig.NumMaps}, Team1SeriesScore: {matchzyTeam1.seriesScore}, Team2SeriesScore: {matchzyTeam2.seriesScore}"
             );
-            if (matchzyTeam1.seriesScore == matchzyTeam2.seriesScore && remainingMaps <= 0)
+            // With clinch, the series ends once the trailing team can no longer catch up
+            if (
+                remainingMaps <= 0
+                || (matchConfig.SeriesCanClinch && Math.Abs(seriesLead) > remainingMaps)
+            )
             {
-                EndSeries(null, restartDelay - 1, t1score, t2score);
-                return;
-            }
-            if (matchConfig.SeriesCanClinch)
-            {
-                int mapsToWinSeries = (matchConfig.NumMaps / 2) + 1;
-                if (matchzyTeam1.seriesScore == mapsToWinSeries)
-                {
-                    EndSeries(winnerName, restartDelay - 1, t1score, t2score);
-                    return;
-                }
-                else if (matchzyTeam2.seriesScore == mapsToWinSeries)
-                {
-                    EndSeries(winnerName, restartDelay - 1, t1score, t2score);
-                    return;
-                }
-            }
-            if (remainingMaps <= 0)
-            {
-                string seriesWinnerName =
-                    matchzyTeam1.seriesScore > matchzyTeam2.seriesScore
-                        ? matchzyTeam1.teamName
-                        : matchzyTeam2.teamName;
+                string? seriesWinnerName =
+                    seriesLead > 0 ? matchzyTeam1.teamName
+                    : seriesLead < 0 ? matchzyTeam2.teamName
+                    : null;
                 EndSeries(seriesWinnerName, restartDelay - 1, t1score, t2score);
                 return;
             }
