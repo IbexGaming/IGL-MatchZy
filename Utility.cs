@@ -1052,16 +1052,17 @@ namespace MatchZy
                 return;
             }
 
-            int remainingMaps =
-                matchConfig.NumMaps - matchzyTeam1.seriesScore - matchzyTeam2.seriesScore;
+            // Counted from maps played, as a drawn map doesn't add to either series score
+            int remainingMaps = matchConfig.NumMaps - (matchConfig.CurrentMapNumber + 1);
             Log(
                 $"[HandleMatchEnd] MATCH ENDED, remainingMaps: {remainingMaps}, NumMaps: {matchConfig.NumMaps}, Team1SeriesScore: {matchzyTeam1.seriesScore}, Team2SeriesScore: {matchzyTeam2.seriesScore}"
             );
             if (matchzyTeam1.seriesScore == matchzyTeam2.seriesScore && remainingMaps <= 0)
             {
                 EndSeries(null, restartDelay - 1, t1score, t2score);
+                return;
             }
-            else if (matchConfig.SeriesCanClinch)
+            if (matchConfig.SeriesCanClinch)
             {
                 int mapsToWinSeries = (matchConfig.NumMaps / 2) + 1;
                 if (matchzyTeam1.seriesScore == mapsToWinSeries)
@@ -1075,7 +1076,7 @@ namespace MatchZy
                     return;
                 }
             }
-            else if (remainingMaps <= 0)
+            if (remainingMaps <= 0)
             {
                 EndSeries(winnerName, restartDelay - 1, t1score, t2score);
                 return;
