@@ -449,6 +449,7 @@ namespace MatchZy
 
                     var parts = originalMessage.Split(' ');
                     var messageCommand = parts.Length > 0 ? parts[0] : string.Empty;
+                    var command = messageCommand.ToLower();
                     var messageCommandArg =
                         parts.Length > 1 ? string.Join(' ', parts.Skip(1)) : string.Empty;
 
@@ -504,20 +505,20 @@ namespace MatchZy
                         commandActions[message](player, null);
                     }
 
-                    if (message.StartsWith(".map"))
+                    if (command == ".map")
                     {
                         HandleMapChangeCommand(player, messageCommandArg);
                     }
-                    if (message.StartsWith(".readyrequired"))
+                    if (command == ".readyrequired")
                     {
                         HandleReadyRequiredCommand(player, messageCommandArg);
                     }
 
-                    if (message.StartsWith(".restore"))
+                    if (command == ".restore")
                     {
                         HandleRestoreCommand(player, messageCommandArg);
                     }
-                    if (message.StartsWith(".asay"))
+                    if (command == ".asay")
                     {
                         if (IsPlayerAdmin(player, "css_asay", "@css/chat"))
                         {
@@ -539,35 +540,35 @@ namespace MatchZy
                             SendPlayerNotAdminMessage(player);
                         }
                     }
-                    if (message.StartsWith(".savenade") || message.StartsWith(".sn"))
+                    if (command == ".savenade" || command == ".sn")
                     {
                         HandleSaveNadeCommand(player, messageCommandArg);
                     }
-                    if (message.StartsWith(".delnade") || message.StartsWith(".dn"))
+                    if (command == ".delnade" || command == ".dn")
                     {
                         HandleDeleteNadeCommand(player, messageCommandArg);
                     }
-                    if (message.StartsWith(".deletenade"))
+                    if (command == ".deletenade")
                     {
                         HandleDeleteNadeCommand(player, messageCommandArg);
                     }
-                    if (message.StartsWith(".importnade") || message.StartsWith(".in"))
+                    if (command == ".importnade" || command == ".in")
                     {
                         HandleImportNadeCommand(player, messageCommandArg);
                     }
-                    if (message.StartsWith(".listnades") || message.StartsWith(".lin"))
+                    if (command == ".listnades" || command == ".lin")
                     {
                         HandleListNadesCommand(player, messageCommandArg);
                     }
-                    if (message.StartsWith(".loadnade") || message.StartsWith(".ln"))
+                    if (command == ".loadnade" || command == ".ln")
                     {
                         HandleLoadNadeCommand(player, messageCommandArg);
                     }
-                    if (message.StartsWith(".spawn"))
+                    if (command == ".spawn")
                     {
                         HandleSpawnCommand(player, messageCommandArg, player.TeamNum, "spawn");
                     }
-                    if (message.StartsWith(".ctspawn") || message.StartsWith(".cts"))
+                    if (command == ".ctspawn" || command == ".cts")
                     {
                         HandleSpawnCommand(
                             player,
@@ -576,7 +577,7 @@ namespace MatchZy
                             "ctspawn"
                         );
                     }
-                    if (message.StartsWith(".tspawn") || message.StartsWith(".ts"))
+                    if (command == ".tspawn" || command == ".ts")
                     {
                         HandleSpawnCommand(
                             player,
@@ -585,15 +586,15 @@ namespace MatchZy
                             "tspawn"
                         );
                     }
-                    if (message.StartsWith(".team1"))
+                    if (command == ".team1")
                     {
                         HandleTeamNameChangeCommand(player, messageCommandArg, 1);
                     }
-                    if (message.StartsWith(".team2"))
+                    if (command == ".team2")
                     {
                         HandleTeamNameChangeCommand(player, messageCommandArg, 2);
                     }
-                    if (message.StartsWith(".rcon"))
+                    if (command == ".rcon")
                     {
                         if (IsPlayerAdmin(player, "css_rcon", "@css/rcon"))
                         {
@@ -605,31 +606,31 @@ namespace MatchZy
                             SendPlayerNotAdminMessage(player);
                         }
                     }
-                    if (message.StartsWith(".coach"))
+                    if (command == ".coach")
                     {
                         HandleCoachCommand(player, messageCommandArg);
                     }
-                    if (message.StartsWith(".ban"))
+                    if (command == ".ban")
                     {
                         HandeMapBanCommand(player, messageCommandArg);
                     }
-                    if (message.StartsWith(".pick"))
+                    if (command == ".pick")
                     {
                         HandeMapPickCommand(player, messageCommandArg);
                     }
-                    if (message.StartsWith(".back"))
+                    if (command == ".back")
                     {
                         HandleBackCommand(player, messageCommandArg);
                     }
-                    if (message.StartsWith(".delay"))
+                    if (command == ".delay")
                     {
                         HandleDelayCommand(player, messageCommandArg);
                     }
-                    if (message.StartsWith(".throwindex"))
+                    if (command == ".throwindex")
                     {
                         HandleThrowIndexCommand(player, messageCommandArg);
                     }
-                    if (message.StartsWith(".throwidx"))
+                    if (command == ".throwidx")
                     {
                         HandleThrowIndexCommand(player, messageCommandArg);
                     }
