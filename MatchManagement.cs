@@ -336,6 +336,8 @@ namespace MatchZy
                 NumMaps = jsonDataObject["num_maps"]!.Value<int>(),
                 MinPlayersToReady = minimumReadyRequired,
             };
+            // The previous match's veto must not decide who starts this veto
+            lastVetoTeam = CsTeam.None;
 
             GetOptionalMatchValues(jsonDataObject);
 
