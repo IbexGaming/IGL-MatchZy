@@ -394,8 +394,8 @@ namespace MatchZy
                             Team startingTTeam = sidesSwitched
                                 ? reverseTeamSides["CT"]
                                 : reverseTeamSides["TERRORIST"];
-                            Server.ExecuteCommand($"mp_teamname_1 {startingCtTeam.teamName}");
-                            Server.ExecuteCommand($"mp_teamname_2 {startingTTeam.teamName}");
+                            Server.ExecuteCommand($"mp_teamname_1 \"{startingCtTeam.teamName}\"");
+                            Server.ExecuteCommand($"mp_teamname_2 \"{startingTTeam.teamName}\"");
                             StartDemoRecording();
                         }
                     );

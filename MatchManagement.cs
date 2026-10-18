@@ -488,8 +488,8 @@ namespace MatchZy
 
         public void SetTeamNames()
         {
-            Server.ExecuteCommand($"mp_teamname_1 {reverseTeamSides["CT"].teamName}");
-            Server.ExecuteCommand($"mp_teamname_2 {reverseTeamSides["TERRORIST"].teamName}");
+            Server.ExecuteCommand($"mp_teamname_1 \"{reverseTeamSides["CT"].teamName}\"");
+            Server.ExecuteCommand($"mp_teamname_2 \"{reverseTeamSides["TERRORIST"].teamName}\"");
         }
 
         public void GetCvarValues(JObject jsonDataObject)
@@ -616,7 +616,7 @@ namespace MatchZy
                     coach.Clan = $"[{matchzyTeam2.teamName} COACH]";
                 }
             }
-            Server.ExecuteCommand($"mp_teamname_{teamNum} {teamName};");
+            Server.ExecuteCommand($"mp_teamname_{teamNum} \"{teamName}\";");
         }
 
         public void SwapSidesInTeamData(bool swapTeams)
