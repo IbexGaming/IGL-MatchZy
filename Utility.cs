@@ -1238,7 +1238,9 @@ namespace MatchZy
                     int tTeamNum = reverseTeamSides["TERRORIST"] == matchzyTeam1 ? 1 : 2;
                     Winner winner = new(
                         @event.Winner.ToString(),
-                        $"team{(@event.Winner == (int)CsTeam.CounterTerrorist ? ctTeamNum : tTeamNum)}"
+                        @event.Winner == (int)CsTeam.CounterTerrorist ? $"team{ctTeamNum}"
+                            : @event.Winner == (int)CsTeam.Terrorist ? $"team{tTeamNum}"
+                            : "none"
                     );
 
                     var roundEndEvent = new MatchZyRoundEndedEvent
