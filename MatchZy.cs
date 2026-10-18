@@ -455,7 +455,7 @@ namespace MatchZy
 
                     var parts = originalMessage.Split(' ');
                     var messageCommand = parts.Length > 0 ? parts[0] : string.Empty;
-                    var command = messageCommand.ToLower();
+                    var command = messageCommand.ToLowerInvariant();
                     var messageCommandArg =
                         parts.Length > 1 ? string.Join(' ', parts.Skip(1)) : string.Empty;
 
