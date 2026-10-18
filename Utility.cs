@@ -465,6 +465,8 @@ namespace MatchZy
 
                 isRoundRestorePending = false;
                 playerHasTakenDamage = false;
+                bombPlants.Clear();
+                bombDefuses.Clear();
 
                 // Unready all players
                 foreach (var key in playerReadyStatus.Keys)
@@ -1124,6 +1126,8 @@ namespace MatchZy
                     isMatchLive = false;
                     isPractice = false;
                     isDryRun = false;
+                    bombPlants.Clear();
+                    bombDefuses.Clear();
                     StartWarmup();
                     SetMapSides();
                 }
@@ -2019,8 +2023,8 @@ namespace MatchZy
                         KnifeKills = 0,
                         HeadshotKills = playerStats.HeadShotKills,
                         RoundsPlayed = roundsPlayed,
-                        BombDefuses = 0,
-                        BombPlants = 0,
+                        BombDefuses = bombDefuses.GetValueOrDefault(steamid64),
+                        BombPlants = bombPlants.GetValueOrDefault(steamid64),
                         Kills1 = 0,
                         Kills2 = playerStats.Enemy2Ks,
                         Kills3 = playerStats.Enemy3Ks,

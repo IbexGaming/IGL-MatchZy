@@ -81,6 +81,10 @@ namespace MatchZy
 
         public bool playerHasTakenDamage = false;
 
+        // Bomb plants / defuses per SteamID on the current map, counted while the match is live
+        public Dictionary<ulong, int> bombPlants = new();
+        public Dictionary<ulong, int> bombDefuses = new();
+
         // User command - action map
         public Dictionary<string, Action<CCSPlayerController?, CommandInfo?>>? commandActions;
 
@@ -223,6 +227,8 @@ namespace MatchZy
             RegisterEventHandler<EventRoundStart>(EventRoundStartHandler);
             RegisterEventHandler<EventRoundFreezeEnd>(EventRoundFreezeEndHandler);
             RegisterEventHandler<EventPlayerGivenC4>(EventPlayerGivenC4);
+            RegisterEventHandler<EventBombPlanted>(EventBombPlantedHandler);
+            RegisterEventHandler<EventBombDefused>(EventBombDefusedHandler);
             RegisterEventHandler<EventPlayerDeath>(
                 EventPlayerDeathPreHandler,
                 hookMode: HookMode.Pre
