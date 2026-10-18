@@ -526,8 +526,8 @@ namespace MatchZy
                 matchzyTeam1.seriesScore = 0;
                 matchzyTeam2.seriesScore = 0;
 
-                Server.ExecuteCommand($"mp_teamname_1 {matchzyTeam1.teamName}");
-                Server.ExecuteCommand($"mp_teamname_2 {matchzyTeam2.teamName}");
+                Server.ExecuteCommand($"mp_teamname_1 \"{matchzyTeam1.teamName}\"");
+                Server.ExecuteCommand($"mp_teamname_2 \"{matchzyTeam2.teamName}\"");
 
                 teamSides[matchzyTeam1] = "CT";
                 teamSides[matchzyTeam2] = "TERRORIST";
@@ -868,8 +868,8 @@ namespace MatchZy
                 // Server.ExecuteCommand($"mp_teamname_2 {matchzyTeam2.teamName}");
             }
 
-            Server.ExecuteCommand($"mp_teamname_1 {reverseTeamSides["CT"].teamName}");
-            Server.ExecuteCommand($"mp_teamname_2 {reverseTeamSides["TERRORIST"].teamName}");
+            Server.ExecuteCommand($"mp_teamname_1 \"{reverseTeamSides["CT"].teamName}\"");
+            Server.ExecuteCommand($"mp_teamname_2 \"{reverseTeamSides["TERRORIST"].teamName}\"");
 
             HandleClanTags();
 
