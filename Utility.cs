@@ -1333,37 +1333,40 @@ namespace MatchZy
 
         public bool IsTeamSwapRequired()
         {
-            // Handling OTs and side swaps (Referred from Get5)
             var gameRules = Utilities
                 .FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules")
                 .First()
                 .GameRules!;
             int roundsPlayed = gameRules.TotalRoundsPlayed;
 
+            return AreTeamsPlayingSwitchedSides(roundsPlayed)
+                != AreTeamsPlayingSwitchedSides(roundsPlayed - 1);
+        }
+
+        // Whether the team that started as CT is playing T after the given number of rounds
+        public bool AreTeamsPlayingSwitchedSides(int roundsPlayed)
+        {
+            // Handling OTs and side swaps (Referred from Get5)
             int roundsPerHalf = ConVar.Find("mp_maxrounds")!.GetPrimitiveValue<int>() / 2;
             int roundsPerOTHalf =
                 ConVar.Find("mp_overtime_maxrounds")!.GetPrimitiveValue<int>() / 2;
 
             bool halftimeEnabled = ConVar.Find("mp_halftime")!.GetPrimitiveValue<bool>();
 
-            if (halftimeEnabled)
+            if (!halftimeEnabled || roundsPlayed < roundsPerHalf)
             {
-                if (roundsPlayed == roundsPerHalf)
-                {
-                    return true;
-                }
-                // Now in OT.
-                if (roundsPlayed >= 2 * roundsPerHalf)
-                {
-                    int otround = roundsPlayed - 2 * roundsPerHalf; // round 33 -> round 3, etc.
-                    // Do side swaps at OT halves (rounds 3, 9, ...)
-                    if ((otround + roundsPerOTHalf) % (2 * roundsPerOTHalf) == 0)
-                    {
-                        return true;
-                    }
-                }
+                return false;
             }
-            return false;
+            // Side swap at regulation halftime
+            int swaps = 1;
+            // Now in OT.
+            if (roundsPlayed >= 2 * roundsPerHalf)
+            {
+                int otround = roundsPlayed - 2 * roundsPerHalf; // round 33 -> round 3, etc.
+                // Do side swaps at OT halves (rounds 3, 9, ...)
+                swaps += (otround / roundsPerOTHalf + 1) / 2;
+            }
+            return swaps % 2 == 1;
         }
 
         private void PauseMatch(CCSPlayerController? player, CommandInfo? command)

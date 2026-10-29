@@ -384,8 +384,18 @@ namespace MatchZy
                             string fileName = Path.GetFileName(tempFilePath);
 
                             Server.ExecuteCommand($"mp_backup_restore_load_file {fileName}");
-                            Server.ExecuteCommand($"mp_teamname_1 {matchzyTeam1.teamName}");
-                            Server.ExecuteCommand($"mp_teamname_2 {matchzyTeam2.teamName}");
+                            // mp_teamname_1 belongs to the team that started as CT, the game swaps names on its own at halftime
+                            bool sidesSwitched = AreTeamsPlayingSwitchedSides(
+                                int.Parse(roundNumber ?? "0")
+                            );
+                            Team startingCtTeam = sidesSwitched
+                                ? reverseTeamSides["TERRORIST"]
+                                : reverseTeamSides["CT"];
+                            Team startingTTeam = sidesSwitched
+                                ? reverseTeamSides["CT"]
+                                : reverseTeamSides["TERRORIST"];
+                            Server.ExecuteCommand($"mp_teamname_1 {startingCtTeam.teamName}");
+                            Server.ExecuteCommand($"mp_teamname_2 {startingTTeam.teamName}");
                             StartDemoRecording();
                         }
                     );
