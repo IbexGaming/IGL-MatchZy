@@ -678,7 +678,7 @@ namespace MatchZy
             RegisterEventHandler<EventDecoyStarted>(EventDecoyDetonateHandler);
 
             Console.WriteLine(
-                $"[{ModuleName} {ModuleVersion} LOADED] MatchZy by WD- (https://github.com/shobhit-pathak/)"
+                $"[{ModuleName} {ModuleVersion} LOADED] IGL-MatchZy by Ibex Gaming League (https://github.com/IbexGaming) & WD- (https://github.com/shobhit-pathak/)"
             );
         }
     }
