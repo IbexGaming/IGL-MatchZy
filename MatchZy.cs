@@ -383,6 +383,8 @@ namespace MatchZy
             RegisterEventHandler<EventPlayerDeath>(
                 (@event, info) =>
                 {
+                    OnKastPlayerDeath(@event);
+
                     // Setting money back to 16000 when a player dies in warmup
                     var player = @event.Userid;
                     if (!isWarmup)
