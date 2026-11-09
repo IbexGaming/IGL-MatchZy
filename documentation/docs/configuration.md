@@ -62,6 +62,9 @@ Again, inside `csgo/cfg/MatchZy`, a file named `config.cfg` should be present. T
 ####`matchzy_stop_command_no_damage`
 :   Whether the stop command becomes unavailable if a player damages a player from the opposing team.<br>**`Default: false`**
 
+####`matchzy_trade_window_seconds`
+:   Seconds after a player's death in which killing their killer counts as a trade. Used for `trade_kills` and `kast` in player stats. Measured in game time, so pauses do not count. Negative values are treated as 0. See [KAST & Trades](events_and_forwards.md#kast-trades).<br>**`Default: 5`**
+
 ####`matchzy_pause_after_restore`
 :   Whether to pause the match after round restore or not. Players can unpause the match using !unpause/.unpause. (Both the teams will have to use unpause command) or admins can use `.fup` to force-unpause the game<br>**`Default: true`**
 

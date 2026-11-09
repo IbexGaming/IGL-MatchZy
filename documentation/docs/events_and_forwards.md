@@ -45,3 +45,21 @@ Events fire in this order for a typical match:
 
 - The `side` field uses lowercase enum values: `ct`, `t`, or `spec`.
 - The `team` field uses enum values: `team1`, `team2`, or `spec` (for spectators in `chat_message`).
+
+### KAST & Trades
+
+The `trade_kills` and `kast` fields in the player stats of the `round_end` event follow these rules:
+
+- Tracking only runs while the match is live. Warmup, knife round and practice are ignored.
+- **Trade**: player V is traded when the enemy K who killed V is killed by one of V's teammates within [`matchzy_trade_window_seconds`](configuration.md#matchzy_trade_window_seconds) (default 5) of V's death.
+    - The window is inclusive: a kill at exactly the window length still counts.
+    - The window uses game time, so pauses do not count towards it.
+    - If K killed several players and is then killed within the window of each of those deaths, all of them are traded. The teammate who killed K gets **one** trade kill.
+    - If K dies to the world, the bomb, fall damage or a suicide, nobody is traded.
+- **K**ill: at least one kill of an enemy in the round. Team kills and suicides do not count.
+- **A**ssist: listed as assister on an enemy's death. Flash assists count.
+- **S**urvived: still alive when the round ends. Dying after the round is decided (e.g. to the bomb, or while saving) is not survival.
+- `kast` is the **number of rounds** in which at least one criterion was met, not a percentage. Divide by `rounds_played` to get KAST %.
+- Only non-bot players on T or CT at round end get the round counted. A player who disconnects mid-round gets nothing for that round.
+- Restoring a round backup rewinds `trade_kills` and `kast` to the restored round.
+- The values are kept in memory only. A plugin reload or server crash mid-match resets them, and so does a match reset.

@@ -769,12 +769,12 @@ components:
         trade_kills:
           type: integer
           minimum: 0
-          description: "The number of times the player got a kill in a trade."
+          description: "The number of kills that traded a teammate: the victim had killed a teammate of the player within matchzy_trade_window_seconds. One kill trading several teammates counts once."
           example: 3
         kast:
           type: integer
           minimum: 0
-          description: "The number of rounds where the player (k)illed a player, had an (a)ssist, (s)urvived or was (t)raded."
+          description: "The number of rounds (not a percentage) where the player (k)illed an enemy, had an (a)ssist on an enemy death, (s)urvived until round end or was (t)raded. Divide by rounds_played for KAST %."
           example: 23
         score:
           type: integer
