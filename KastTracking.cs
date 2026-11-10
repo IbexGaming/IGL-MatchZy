@@ -5,29 +5,6 @@ namespace MatchZy;
 
 /// <summary>
 /// Tracks trade kills and KAST (rounds with a Kill, Assist, Survival or being Traded).
-///
-/// Rules:
-/// <list type="bullet">
-/// <item>Only tracked while the match is live (not in warmup, knife round or practice).</item>
-/// <item><b>Trade</b>: player V is traded when the enemy K who killed V is killed by one of V's
-/// teammates within <c>matchzy_trade_window_seconds</c> of V's death. The window is inclusive and is
-/// measured in game time (<c>Server.CurrentTime</c>), so pauses do not count towards it. A negative
-/// window is treated as 0.</item>
-/// <item>If K killed several players (V1, V2, ...) and is then killed within the window of each death,
-/// every one of them is traded, but the teammate who killed K is credited with a single trade kill.</item>
-/// <item>If K dies to the world, the bomb, fall damage or a suicide, nobody is traded.</item>
-/// <item><b>K</b>: at least one kill of an enemy in the round. Team kills and suicides do not count.</item>
-/// <item><b>A</b>: listed as assister (including flash assists) on the death of an enemy.</item>
-/// <item><b>S</b>: still alive when the round ends. Dying after the round is decided (e.g. to the bomb
-/// or while saving) is not survival.</item>
-/// <item>KAST is the number of rounds in which at least one criterion was met, not a percentage.
-/// Consumers divide by <c>RoundsPlayed</c> themselves.</item>
-/// <item>Only non-bot players on T or CT at round end get the round counted. Players who disconnect
-/// mid-round get nothing for that round.</item>
-/// <item>Results are stored per round index (<c>TotalRoundsPlayed</c> at round start). Every round start
-/// drops results for that index and later ones, so a round backup restore rewinds them automatically.</item>
-/// <item>State lives in memory only: a plugin reload or server crash loses it, and it is reset with the match.</item>
-/// </list>
 /// </summary>
 public partial class MatchZy
 {
