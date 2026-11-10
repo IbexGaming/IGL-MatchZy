@@ -999,6 +999,10 @@ namespace MatchZy
             string statsPath =
                 Server.GameDirectory + "/csgo/MatchZy_Stats/" + liveMatchId.ToString();
 
+            // The last round has no following round start to score its KAST.
+            ScoreKastRound();
+            (var playerStatsDictionary, _, _) = GetPlayerStatsDict();
+
             var mapResultEvent = new MapResultEvent
             {
                 MatchId = liveMatchId,
@@ -1038,6 +1042,11 @@ namespace MatchZy
                     t2score,
                     team1SeriesScore,
                     team2SeriesScore
+                );
+                await database.UpdatePlayerStatsAsync(
+                    liveMatchId,
+                    currentMapNumber,
+                    playerStatsDictionary
                 );
                 await database.WritePlayerStatsToCsv(statsPath, liveMatchId, currentMapNumber);
             });
@@ -1229,7 +1238,6 @@ namespace MatchZy
                     }
 
                     ShowDamageInfo();
-                    OnKastRoundEnd();
 
                     (
                         Dictionary<ulong, Dictionary<string, object>> playerStatsDictionary,

@@ -53,6 +53,11 @@ public partial class MatchZy
 
     private void OnKastRoundStart()
     {
+        // Scored here rather than at round end so deaths during the post-round delay count.
+        // A score for state left over from before the match went live is dropped by the rewind below.
+        if (isMatchLive)
+            ScoreKastRound();
+
         currentKastRound = GetGameRules().TotalRoundsPlayed;
         kastRecentDeaths.Clear();
         kastKilledThisRound.Clear();
@@ -122,7 +127,7 @@ public partial class MatchZy
         kastRecentDeaths.Add((victim.SteamID, victim.TeamNum, attacker.UserId.Value, now));
     }
 
-    private void OnKastRoundEnd()
+    private void ScoreKastRound()
     {
         foreach (var player in playerData.Values)
         {

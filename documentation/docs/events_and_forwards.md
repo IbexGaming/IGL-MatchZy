@@ -60,6 +60,7 @@ The `trade_kills` and `kast` fields in the player stats of the `round_end` event
 - **A**ssist: listed as assister on an enemy's death. Flash assists count.
 - **S**urvived: still alive when the round ends. Dying after the round is decided (e.g. to the bomb, or while saving) is not survival.
 - `kast` is the **number of rounds** in which at least one criterion was met, not a percentage. Divide by `rounds_played` to get KAST %.
-- Only non-bot players on T or CT at round end get the round counted. A player who disconnects mid-round gets nothing for that round.
+- A round is scored when the next round starts, so that deaths in the post-round delay count. `kast` in a `round_end` event therefore covers the rounds before that one. The last round of a map is scored at map end, and it is included in the final stats written to the database and CSV.
+- Only non-bot players on T or CT when the round is scored get it counted. A player who disconnects before then gets nothing for that round.
 - Restoring a round backup rewinds `trade_kills` and `kast` to the restored round.
 - The values are kept in memory only. A plugin reload or server crash mid-match resets them, and so does a match reset.
