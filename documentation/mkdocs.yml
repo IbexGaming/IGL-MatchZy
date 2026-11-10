@@ -1,7 +1,7 @@
 site_name: MatchZy
-site_url: https://shobhit-pathak.github.io/MatchZy/
-repo_url: https://github.com/shobhit-pathak/MatchZy
-repo_name: shobhit-pathak/MatchZy
+site_url: https://ibexgaming.github.io/IGL-MatchZy/
+repo_url: https://github.com/IbexGaming/IGL-MatchZy
+repo_name: IbexGaming/IGL-MatchZy
 theme:
   name: material
   features:

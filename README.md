@@ -8,9 +8,9 @@ MatchZy is a plugin for CS2 (Counter Strike 2) for running and managing practice
 ## Feature Highlights:
 
 * Pug mode with simple commands to manage!
-* Support of [Get5 Panel!](https://shobhit-pathak.github.io/MatchZy/get5/)
+* Support of [Get5 Panel!](https://ibexgaming.github.io/IGL-MatchZy/get5/)
 * Support BO1/BO3/BO5 and Veto when using Match configuration or Get5 Panel!
-* [Setting up matches](https://shobhit-pathak.github.io/MatchZy/match_setup/) and locking players into their team
+* [Setting up matches](https://ibexgaming.github.io/IGL-MatchZy/match_setup/) and locking players into their team
 * Practice Mode with `.bot`, `.spawn`, `.ctspawn`, `.tspawn`, `.nobots`, `.rethrow`, `.last`, `.timer`, `.clear`, `.exitprac` and many more commands!
 * Knife round (With expected logic, i.e., team with most players win. If same number of players, then team with HP advantage wins. If same HP, winner is decided randomly)
 * Automatically starts demo recording and stop recording when match is ended (Make sure you have tv_enable 1)
@@ -27,7 +27,7 @@ MatchZy is a plugin for CS2 (Counter Strike 2) for running and managing practice
 
 ## Documentation
 
-## [shobhit-pathak.github.io/MatchZy/](https://shobhit-pathak.github.io/MatchZy/)
+## [ibexgaming.github.io/IGL-MatchZy/](https://ibexgaming.github.io/IGL-MatchZy/)
 
 ## Donation
 
