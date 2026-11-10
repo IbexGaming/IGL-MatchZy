@@ -34,7 +34,7 @@ The full reference is in [Events for match-api](#events-for-match-api) below.
 
 ### Map veto follows the IGL ruleset
 
-The veto order follows the [IGL CS2 ruleset](https://ibexgaming.org/rules/counterstrike2):
+The veto order follows the [IGL CS2 ruleset](https://github.com/ibexgaming/rules):
 
 | Format | Upstream MatchZy (7-map pool) | IGL-MatchZy (7-map pool) |
 |---|---|---|
