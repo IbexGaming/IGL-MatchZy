@@ -480,6 +480,7 @@ namespace MatchZy
 
                 isRoundRestorePending = false;
                 playerHasTakenDamage = false;
+                ResetKast();
 
                 // Unready all players
                 foreach (var key in playerReadyStatus.Keys)
@@ -1013,6 +1014,10 @@ namespace MatchZy
             string statsPath =
                 Server.GameDirectory + "/csgo/MatchZy_Stats/" + liveMatchId.ToString();
 
+            // The last round has no following round start to score its KAST.
+            ScoreKastRound();
+            (var playerStatsDictionary, _, _) = GetPlayerStatsDict();
+
             var mapResultEvent = new MapResultEvent
             {
                 MatchId = liveMatchId,
@@ -1052,6 +1057,11 @@ namespace MatchZy
                     t2score,
                     team1SeriesScore,
                     team2SeriesScore
+                );
+                await database.UpdatePlayerStatsAsync(
+                    liveMatchId,
+                    currentMapNumber,
+                    playerStatsDictionary
                 );
                 await database.WritePlayerStatsToCsv(statsPath, liveMatchId, currentMapNumber);
             });
@@ -1218,6 +1228,7 @@ namespace MatchZy
             if (!matchStarted)
                 return;
             playerHasTakenDamage = false;
+            OnKastRoundStart();
             HandleCoaches();
             CreateMatchZyRoundDataBackup();
             InitPlayerDamageInfo();
@@ -2082,8 +2093,8 @@ namespace MatchZy
                         FirstKillsCT = 0,
                         FirstDeathsT = 0,
                         FirstDeathsCT = 0,
-                        TradeKills = 0,
-                        Kast = 0,
+                        TradeKills = GetTradeKills(steamid64),
+                        Kast = GetKastRounds(steamid64),
                         Score = player.Score,
                         Mvps = player.MVPs,
                     };

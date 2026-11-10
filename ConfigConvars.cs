@@ -42,6 +42,12 @@ namespace MatchZy
             2
         );
 
+        public FakeConVar<float> tradeWindowSeconds = new(
+            "matchzy_trade_window_seconds",
+            "Seconds after a player's death in which killing their killer counts as a trade (used for trade kills and KAST). Default value: 5",
+            5f
+        );
+
         public FakeConVar<bool> everyoneIsAdmin = new(
             "matchzy_everyone_is_admin",
             "If set to true, all the players will have admin privilege. Default: false",
