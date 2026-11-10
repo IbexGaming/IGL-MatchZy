@@ -2,8 +2,10 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes;
 using CounterStrikeSharp.API.Modules.Commands;
+using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Events;
 using CounterStrikeSharp.API.Modules.Utils;
+using MatchZy.Util;
 
 namespace MatchZy
 {
@@ -81,6 +83,9 @@ namespace MatchZy
 
         public bool playerHasTakenDamage = false;
 
+        // Integration Settings
+        public string discordWebhookURL = "";
+
         // User command - action map
         public Dictionary<string, Action<CCSPlayerController?, CommandInfo?>>? commandActions;
 
@@ -100,6 +105,15 @@ namespace MatchZy
             teamSides[matchzyTeam2] = "TERRORIST";
             reverseTeamSides["CT"] = matchzyTeam1;
             reverseTeamSides["TERRORIST"] = matchzyTeam2;
+
+            AddTimer(
+                2.0f,
+                () =>
+                {
+                    var hostname = ConVar.Find("hostname")?.StringValue ?? "Unknown Server";
+                    SendDiscordEmbed("Server has started.", hostname, HexColors.Green);
+                }
+            );
 
             if (!hotReload)
             {
@@ -516,6 +530,10 @@ namespace MatchZy
                     if (message.StartsWith(".restore"))
                     {
                         HandleRestoreCommand(player, messageCommandArg);
+                    }
+                    if (message.StartsWith(".admin"))
+                    {
+                        HandleAdminCallCommand(player, messageCommandArg);
                     }
                     if (message.StartsWith(".asay"))
                     {

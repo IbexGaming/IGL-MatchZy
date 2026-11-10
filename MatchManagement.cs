@@ -5,6 +5,7 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Utils;
+using MatchZy.Util;
 using Newtonsoft.Json.Linq;
 
 namespace MatchZy
@@ -733,6 +734,28 @@ namespace MatchZy
                 await Task.Delay(2000);
                 await SendEventAsync(seriesResultEvent);
             });
+
+            SendDiscordEmbed(
+                Localizer["matchzy.discord.series_end_title"],
+                winnerName == null
+                    ? Localizer[ // If draw
+                        "matchzy.discord.series_end_draw_description",
+                        matchzyTeam1.teamName,
+                        matchzyTeam2.teamName,
+                        team1Score,
+                        team2Score
+                    ]
+                    : Localizer[ // If one team wins
+                        "matchzy.discord.series_end_victory_description",
+                        winnerName,
+                        team1Score,
+                        team2Score,
+                        matchzyTeam1.teamName == winnerName
+                            ? matchzyTeam2.teamName
+                            : matchzyTeam1.teamName
+                    ],
+                HexColors.Green
+            );
 
             if (resetCvarsOnSeriesEnd)
                 ResetChangedConvars();
