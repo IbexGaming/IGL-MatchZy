@@ -16,6 +16,7 @@ namespace MatchZy.Integrations
         /// Sends an admin message via a Discord webhook.
         /// </summary>
         /// <param name="player">The player who triggered the message.</param>
+        /// <param name="team">The team of the player.</param>
         /// <param name="message">The message to send.</param>
         /// <param name="webhookUrl">The URL of the Discord webhook.</param>
         /// <param name="discordAdminGroupId">The ID of the Discord role to mention.</param>
@@ -24,6 +25,7 @@ namespace MatchZy.Integrations
         /// <returns>True if the message was sent successfully, false otherwise.</returns>
         public static async Task<bool> SendAdminMessage(
             string player,
+            string team,
             string message,
             string webhookUrl,
             string discordAdminGroupId,
@@ -40,10 +42,11 @@ namespace MatchZy.Integrations
                 return false;
             }
 
-            string content = $"<@&{discordAdminGroupId}> {player}: {message}";
+            string content =
+                $"<@&{discordAdminGroupId}> {team} - {player} Called an Admin with the following Message: {message}";
             if (!string.IsNullOrEmpty(ip) && port != null)
             {
-                content += $"\n\n[Connect to the server](steam://connect/{ip}:{port})";
+                content += $"\n\nConnect to the server: connect {ip}:{port}";
             }
 
             var toSend = new { content };

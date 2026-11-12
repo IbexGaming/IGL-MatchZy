@@ -304,6 +304,7 @@ namespace MatchZy
             {
                 var success = await DiscordIntegration.SendAdminMessage(
                     playerName,
+                    teamName,
                     message,
                     webhookUrl,
                     adminGroupId,
