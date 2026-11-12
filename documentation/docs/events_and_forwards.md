@@ -8,10 +8,15 @@ To receive MatchZy events on a web server, define a [URL for event logging](../c
 will send all events to the URL as JSON over HTTP. You may add
 a [custom HTTP header](../configuration#matchzy_remote_log_header_key) to authenticate your request.
 
-!!! warning "Simple HTTP"
+!!! warning "Retries and deduplication"
 
-    There is no deduplication or retry-logic for failed requests. It is assumed that a stable connection can be made
-    between your game server and the URL at all times.
+    Events are sent one at a time in the order they happened. A failed request is retried up to 5 times with
+    exponential backoff (2s, 4s, 8s, 16s) on network errors and `408`, `429` and `5xx` responses, and later events
+    wait until it was sent or finally failed. Other `4xx` responses are not retried. Events are not persisted, so
+    events still queued when the plugin unloads or the server stops are lost.
+
+    Since a request can be retried after the server already processed it, the same event may be delivered more
+    than once. Every event carries a unique `event_id` that stays the same across retries; use it to deduplicate.
 
 ## Events
 
