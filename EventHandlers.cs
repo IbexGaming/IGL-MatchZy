@@ -275,6 +275,22 @@ public partial class MatchZy
         return HookResult.Continue;
     }
 
+    public HookResult EventBombPlantedHandler(EventBombPlanted @event, GameEventInfo info)
+    {
+        if (isMatchLive && IsPlayerValid(@event.Userid))
+            bombPlants[@event.Userid!.SteamID] =
+                bombPlants.GetValueOrDefault(@event.Userid!.SteamID) + 1;
+        return HookResult.Continue;
+    }
+
+    public HookResult EventBombDefusedHandler(EventBombDefused @event, GameEventInfo info)
+    {
+        if (isMatchLive && IsPlayerValid(@event.Userid))
+            bombDefuses[@event.Userid!.SteamID] =
+                bombDefuses.GetValueOrDefault(@event.Userid!.SteamID) + 1;
+        return HookResult.Continue;
+    }
+
     public void OnEntitySpawnedHandler(CEntityInstance entity)
     {
         try
