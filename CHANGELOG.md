@@ -1,6 +1,8 @@
 # MatchZy Changelog
 
-# Unreleased
+# 0.12.0
+
+### November 16, 2026
 
 - Demo and backup uploads are now streamed from disk instead of being loaded into memory, which also fixes uploads of files larger than 2GB
 - Demo/backup uploads and remote log events are now retried up to 5 times with exponential backoff (2s, 4s, 8s, 16s) on network errors and `408`, `429` and `5xx` responses
