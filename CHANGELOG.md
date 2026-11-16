@@ -16,6 +16,14 @@
 - Fixed `series_end` naming the last map's winner instead of the series winner when all maps are played.
 - **Changed:** `map_result` and `series_end` `winner.side` is the winning team's side (it was derived from round scores). A draw is now side `"0"` / team `"none"` (previously reported as a team2 win).
 - Fixed the previous match's veto deciding which team starts the next match's veto.
+- Fixed `round_end` `winner.team` for a round draw: it is now `"none"` (previously reported as the T team).
+- Added Discord webhook integration (`matchzy_discord_webhook_url`). Sends an embed when the server starts, when a map goes live, when a series ends, and when a technical pause starts and ends.
+- Added the `.admin <message>` chat command to call an admin. The message is sent to Discord, tagging the role set in `matchzy_discord_admin_group_id`.
+- Added `matchzy_public_ip` cvar, the server's public IP used for the server address in Discord messages (Default: `""`)
+- Added trade kills and KAST to player stats (`trade_kills`, `kast`). Added `matchzy_trade_window_seconds` cvar, the time after a death in which killing the killer counts as a trade (Default: `5`)
+- Fixed a round backup restore setting the team names on the wrong sides after halftime.
+- Remote log events now time out after 10 seconds, and map end / round end stats are written to the database without waiting for the event queue.
+- File uploads now time out after 30 minutes instead of 100 seconds, so large demos can finish on slower uplinks.
 
 # 0.11.0
 
