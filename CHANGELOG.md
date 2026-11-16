@@ -1,5 +1,11 @@
 # MatchZy Changelog
 
+# 0.12.1
+
+### November 16, 2026
+
+- Update CounterStrikeSharp to 1.0.380
+
 # 0.12.0
 
 ### November 16, 2026
